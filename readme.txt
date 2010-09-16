@@ -27,6 +27,10 @@ Features include:
 
 The hardest part of getting your resume online should be doing the work listed on it, not wrestling the publishing platform. Simply put, WP Resume steps aside and lets your experience shine.
 
+More information and troubleshooting, on the [Plugin Homepage](http://ben.balter.com/2010/09/12/wordpress-resume-plugin/)
+
+Please note: this is an initial release, so some problems are to be expected.
+
 == Installation ==
 
 This section describes how to install the plugin and get it working.
