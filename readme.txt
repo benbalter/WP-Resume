@@ -6,7 +6,7 @@ Requires at least: 3.0
 Tested up to: 3.0
 Stable tag: 1.0
 
-An out-of-the-box solution to get your resume online. Built on WordPress'scustom post types, it offers a uniquely familiar approach to publishing. 
+An out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing.
 
 == Description ==
 
