@@ -12,6 +12,10 @@ Out-of-the-box solution to get your resume online. Built on WordPress's custom p
 
 WP Resume is an out-of-the-box solution to get your resume online and keep it updated. Built on WordPress 3.0’s custom post type functionality, it offers a uniquely familiar approach to publishing. If you’ve got a WordPress site, you already know how to use WP Resume.
 
+You can [see it in action](http://ben.balter.com/resume/) or fore information and troubleshooting, check out the [Plugin Homepage](http://ben.balter.com/2010/09/12/wordpress-resume-plugin/).
+
+Please note: this is an initial release, so some problems are to be expected.
+
 Features include:
 
 * Support for sections (e.g., education, experience), organizations (e.g., somewhere state university, Cogs, Inc.), positions (e.g., bachelor of arts, chief widget specialist), and details (e.g., grew bottom line by 15%, president of the sustainability club)
@@ -26,10 +30,6 @@ Features include:
 * Extremely original title
 
 The hardest part of getting your resume online should be doing the work listed on it, not wrestling the publishing platform. Simply put, WP Resume steps aside and lets your experience shine.
-
-More information and troubleshooting, on the [Plugin Homepage](http://ben.balter.com/2010/09/12/wordpress-resume-plugin/)
-
-Please note: this is an initial release, so some problems are to be expected.
 
 == Installation ==
 
