@@ -37,7 +37,7 @@ The hardest part of getting your resume online should be doing the work listed o
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Configure settings via the Resume->Options menu
 
-== Use ==
+= Use =
 
 1. Add sections via the Resume->Add Sections menu.  Common sections might be "Experience", "Education", or "Awards".
 2. Add organizations via the Resume->Add Organizations menu.  These are often places you've worked (e.g., Cogs, Inc.) or places you've studies (e.g., University U.). 
@@ -52,7 +52,7 @@ The hardest part of getting your resume online should be doing the work listed o
 
 = Wouldn't it be really cool if it could do X? =
 
-Yes.  It probably would be.  Leave a comment on the plugin page(http://ben.balter.com/2010/09/12/wordpress-resume-plugin/), and I'll try my best to make it happen.
+Yes.  It probably would be.  [Leave a comment on the plugin page](http://ben.balter.com/2010/09/12/wordpress-resume-plugin/), and I'll try my best to make it happen.
 
 = Can I customize the layout and style of the resume =
 
