@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/resume/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomys to add a snazzy resume to your personal blog. 
-Version: 1.0a
+Version: 1.1a
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 */
@@ -256,7 +256,7 @@ function wpr_get_sections() {
 	foreach( $sections as $ID => $section ) {
 	
 		//if the term is in our order array
-		if ( array_key_exists( $section->term_id, $section_order ) ) { 
+		if ( is_array($section_order) && array_key_exists( $section->term_id, $section_order ) ) { 
 		
 			//push the term object into the output array keyed to it's order
 			$output[ $section_order[$section->term_id] ] = $section;
@@ -269,6 +269,9 @@ function wpr_get_sections() {
 	
 	//for those terms that we did not have a user-specified order, stick them at the end of the output array
 	foreach($sections as $section) $output[] = $section;
+	
+	//sanity check to prevent errors
+	if ( !is_array( $output ) ) return array();
 	
 	//sort by key
 	ksort($output);
