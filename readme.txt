@@ -4,7 +4,7 @@ Donate link: http://ben.balter.com/
 Tags: resume
 Requires at least: 3.0
 Tested up to: 3.0
-Stable tag: 1.0a
+Stable tag: trunk
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
 
@@ -79,5 +79,7 @@ Yes.  WP Resume includes a default stylesheet that can easily be overridden by y
 == Changelog ==
 
 = 1.0a =
-* Initial Release
+* Initial Alpha Release
 
+= 1.1a =
+* Fixed problem with resume expecting content and erring out when none existed
