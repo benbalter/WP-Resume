@@ -35,7 +35,46 @@ The hardest part of getting your resume online should be doing the work listed o
 
 1. Upload `plugin-name.php` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Configure settings via the resume menu and begin adding content
+3. Configure settings via the Resume->Options menu
+
+== Use ==
+
+1. Add sections via the Resume->Add Sections menu.  Common sections might be "Experience", "Education", or "Awards".
+2. Add organizations via the Resume->Add Organizations menu.  These are often places you've worked (e.g., Cogs, Inc.) or places you've studies (e.g., University U.). 
+	Place the organization's location in the description field.
+3. Add positions via the Resume-Add Positions menu. 
+	Your title (e.g., Widget Specialist) goes in the title field. 
+	Put details in the content field (e.g., increased bottom line by 25%).  
+	Put dates in the date fields (e.g., from: May 2005, to:August 2009). Neither is required.  Your resume will be sorted by the end date.
+4. Repeat step #3 as needed for each position.
+
+== Frequently Asked Questions == 
+
+= Wouldn't it be really cool if it could do X? =
+
+Yes.  It probably would be.  Leave a comment on the plugin page(http://ben.balter.com/2010/09/12/wordpress-resume-plugin/), and I'll try my best to make it happen.
+
+= Can I customize the layout and style of the resume =
+
+Yes.  WP Resume includes a default stylesheet that can easily be overridden by your theme's defaults or other CSS you may drop in.
+
+== Planned Features ==
+
+= 1.0b planned = 
+
+ * AJAX add of custom terms on add position page
+ * AJAX Inline editing of resume content
+ * Edit buttons on resume for logged in users
+ * Revise text on add term pages (description should be location)
+ * Filter Contact/Name HTML
+ * Default sections / options on activation
+ * WYSIWYG contact info editor
+ 
+= Beyond = 
+
+ * Import from LinkedIn via API
+ * Better SEO
+ * Export into machine-readable formats
 
 == Changelog ==
 
