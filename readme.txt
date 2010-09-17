@@ -69,6 +69,7 @@ Yes.  WP Resume includes a default stylesheet that can easily be overridden by y
  * Filter Contact/Name HTML
  * Default sections / options on activation
  * WYSIWYG contact info editor
+ * Drag and drop section ordering
  
 = Beyond = 
 
