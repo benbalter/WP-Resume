@@ -4,7 +4,7 @@ Donate link: http://ben.balter.com/
 Tags: resume
 Requires at least: 3.0
 Tested up to: 3.0
-Stable tag: 1.0
+Stable tag: 1.0a
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
 
