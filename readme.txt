@@ -3,7 +3,7 @@ Contributors: benbalter
 Donate link: http://ben.balter.com/
 Tags: resume
 Requires at least: 3.0
-Tested up to: 3.0
+Tested up to: 3.0.1
 Stable tag: trunk
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
@@ -59,28 +59,32 @@ Yes.  It probably would be.  [Leave a comment on the plugin page](http://ben.bal
 Yes.  WP Resume includes a default stylesheet that can easily be overridden by your theme's defaults or other CSS you may drop in.
 
 == Planned Features ==
-
-= 1.0b planned = 
-
- * AJAX add of custom terms on add position page
- * AJAX Inline editing of resume content
- * Edit buttons on resume for logged in users
- * Revise text on add term pages (description should be location)
- * Filter Contact/Name HTML
- * Default sections / options on activation
- * WYSIWYG contact info editor
- * Drag and drop section ordering
  
-= Beyond = 
-
- * Import from LinkedIn via API
- * Better SEO
- * Export into machine-readable formats
+* Import from LinkedIn via API
+* Better SEO
+* Export into machine-readable formats
+* AJAX Inline editing of resume content
+* Drag and drop section ordering
 
 == Changelog ==
 
-= 1.0a =
+= 1.0 (alpha) =
 * Initial Alpha Release
 
-= 1.1a =
+= 1.1 (alpha) =
 * Fixed problem with resume expecting content and erring out when none existed
+
+= 1.2 (beta) = 
+* Adding WYSIWG editor for contact information
+* Followed standard "loop" format for template
+* Position title and content now call WordPress filters and action hooks
+* Changed function names to avoid potential conflict with another plugin
+* Fixed fatal error when no content existed
+* HTML is now filtered (contact info & title)
+* Edit buttons on resume for logged in users
+* Fixed bug where CSS did not load properly in certain situations
+* Default sections / options are added on activation
+* Added help text to add term pages, revised some of the field labels for better clarity
+* Removed unused fields from add section page
+* AJAX adding of custom terms on add position page
+* Added procedure to update database to new field prefix on activation
