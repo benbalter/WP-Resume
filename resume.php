@@ -27,8 +27,8 @@ $options = wp_resume_get_options();
 					if ($organization->term_id != $current_org) {
 						if ($current_org != '') { ?>
 				</div>
-<?php 					$current_org = $organization->term_id;
-						}	?>
+<?php 				}	
+					$current_org = $organization->term_id; ?>
 				<div class="organization" id="<?php echo $organization->slug; ?>">
 					<div class="orgName"><?php echo $organization->name; ?></div>
 					<div class="location"><?php echo $organization->description; ?></div>
@@ -40,8 +40,8 @@ $options = wp_resume_get_options();
 <?php if ( current_user_can( 'edit_posts' ) ) 
 	edit_post_link('Edit'); ?>
 					</div>
-				</div>
 <?php 	endwhile; endif; ?>
+				</div>
 			</div>
 <?php 
 	}
