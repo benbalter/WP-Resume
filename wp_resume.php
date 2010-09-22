@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/resume/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 1.2 (Beta)
+Version: 1.3
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 */
@@ -331,7 +331,7 @@ function wp_resume_get_sections( $hide_empty = true ) {
 	
 	//sort by key
 	ksort($output);
-		
+				
 	//return the new array keyed to order
 	return $output;
 	
@@ -352,12 +352,12 @@ function wp_resume_query( $section ) {
 		'order' => 'DESC',
 		'nopaging' => true,
 		'wp_resume_section' => $section,
-		'meta_key'=> 'wp_resume_timestamp'
+		'meta_key'=> 'wp_resume_timestamp',
 	);
 
 	//query and return
-	return query_posts($args);
-	
+	$query = new wp_query($args);
+	return $query;
 }
 
 /**
@@ -367,6 +367,7 @@ function wp_resume_query( $section ) {
 function wp_resume_get_org( $postID ) {
 
 	$organization = wp_get_object_terms( $postID, 'wp_resume_organization' );
+	if ( !is_array( $organization ) ) return false;
 	return $organization[0];
 	
 }
@@ -392,6 +393,8 @@ function wp_resume_enqueue() {
 
 }
 
+add_action( 'wp_print_styles', 'wp_resume_enqueue' );
+
 /**
  * Adds an options submenu to the resume menu in the admin pannel
  * @since 1.0a
@@ -411,19 +414,6 @@ function wp_resume_options_int() {
     register_setting( 'wp_resume_options', 'wp_resume_options' );
 	$options = wp_resume_get_options();
 
-    //if they are changing the slug, 
-    //manually update and flush rules because rules need to be flushed here, but WP hasn't updated the option yet
-    if ( 	current_user_can('manage_options') && 
-    		!empty( $_POST['wp_resume_options']['slug'] ) && 
-    		$_POST['wp_resume_options']['slug'] != $options['slug'] 
-    	) {
-		
-		$options['slug'] = $_POST['wp_resume_options']['slug'];
-		update_option('wp_resume_options',$options);
-		wp_resume_flushRules();	
-	
-	}
-	
 	//If they just activated, make sure they have some sections
 	//This is a work around b/c register_acivation hook is having issues recognizing the custom taxonmomy
 	if ( $options['just_activated'] ) {
@@ -482,17 +472,24 @@ $options = wp_resume_get_options();
 ?>
 	<table class="form-table">
 		<tr valign="top">
-			<th scope="row"><label for="wp_resume_options[title]">Resume Title</label></th>
+			<th scope="row">Usage</label></th>
 			<td>
-				<input name="wp_resume_options[title]" type="text" id="wp_resume_options[title]" value="<?php echo $options['title']; ?>" class="regular-text" />
-				<span class="description">Usually your name, but can be anything you want</span>
+				<strong>To use WP Resume...</strong>
+				<ol>
+					<li>Add content to your resume through the menus on the left</li>
+					<li>If you wish, add a title, contact information, and order your sections below</li>
+					<li>Create a new page as you would normally
+					<li>Add the text <code>[wp_resume]</code> to the page's body</li>
+					<li>Your resume will now display on that page.</li>
+				</ol>
+					<i>Note: Although some styling is included by default, you can customize the layout by modifying <a href='theme-editor.php'>your theme's stylesheet</a></i>
 			</td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="wp_resume_options[slug]">Resume Slug</label></th>
+			<th scope="row"><label for="wp_resume_options[title]">Resume Title</label></th>
 			<td>
-				<?php echo bloginfo('home'); ?>/<input name="wp_resume_options[slug]" type="text" id="wp_resume_options[slug]" value="<?php echo $options['slug']; ?>" size="15"/>/ 
-				<span class="description">URL to access your resume.  <br /> Hint: If you create a page with the same slug, it makes administration easier <br /> (the resume template will override the page content, but menu order, title, etc. will remain true)</span>
+				<input name="wp_resume_options[title]" type="text" id="wp_resume_options[title]" value="<?php echo $options['title']; ?>" class="regular-text" />
+				<span class="description">Goes on the top of your resume.  Usually your name, but technically it can be anything you want.</span>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -513,13 +510,6 @@ $options = wp_resume_get_options();
 			<?php } ?>
 			</td>
 		</tr>
-		<tr valign="top">
-			<th scope="row"><label for="wp_resume_options[sidebar]">Display Sidebar</label></th>
-			<td>
-				<input name="wp_resume_options[sidebar]" type="radio" id="wp_resume_options[sidebar-yes]" <?php checked($options['sidebar'], '1'); ?> value="1" /> <label for="wp_resume_options['sidebar-yes']">Yes</label> 	<br />
-				<input name="wp_resume_options[sidebar]" type="radio" id="wp_resume_options[sidebar-no]" value="0"<?php checked($options['sidebar'], '0'); ?> /> <label for="wp_resume_options['sidebar-no']">No</label>
-			</td>
-		</tr>
 	</table>
 	<p class="submit">
          <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
@@ -536,6 +526,7 @@ $options = wp_resume_get_options();
 function wp_resume_activate() {
 	
 	//because we changed our function and taxonomy prefix in 1.2, check to see if we need to upgrade the database
+	//Also moves from slug to shortcode (1.3)
 	wp_resume_upgrade_db();
 			
 	//get current options incase this is a reactivate
@@ -544,19 +535,12 @@ function wp_resume_activate() {
 	//If they don't have a title set, set it to the blog name
 	if ( empty ($options['title'] ) ); 
 		$options['title'] = get_bloginfo('name');
-		
-	//If they don't have a slug, set it to 'resume'
-	if ( empty ($options['slug'] ) ); 
-		$options['slug'] = 'resume';
 	
 	//Set the update flag
 	$options['just_activated'] = true;
 	
 	//set our new options
 	update_option( 'wp_resume_options', $options);
-		
-	//flush the rules
-	add_filter( 'init', 'wp_resume_flushRules');
 
 } 
    
@@ -568,7 +552,7 @@ register_activation_hook( __FILE__, 'wp_resume_activate' );
  * @since 1.2
  */
 function wp_resume_upgrade_db() {
-	
+		
 	//get the Database object
 	global $wpdb;
 
@@ -588,81 +572,25 @@ function wp_resume_upgrade_db() {
 	$wpdb->query("UPDATE $wpdb->postmeta SET `meta_key` = 'wp_resume_to' WHERE `meta_key` = 'wpr_to'");
 	$wpdb->query("UPDATE $wpdb->postmeta SET `meta_key` = 'wp_resume_from' WHERE `meta_key` = 'wpr_from'");
 	$wpdb->query("UPDATE $wpdb->postmeta SET `meta_key` = 'wp_resume_timestamp' WHERE `meta_key` = 'wpr_timestamp'");
-}
 
-/**
- * Flushes rewrite rules on plugin activation so we can put our cutsom slug in
- * @since 1.0a
- */
-
-function wp_resume_flushRules(){
-
-	global $wp_rewrite;
-   	$wp_rewrite->flush_rules();
-
-}
-
-/**
- * Establish our slug as a rewrite rule
- * @since 1.0a
- * @params array $rules existing rules
- * @returns array updated rules
- */
-function wp_resume_rewrite_rules( $rules ) {
-	
-	//get the slug from options
+	//get our options
 	$options = wp_resume_get_options();
-	
-	//rewrite our slug to keep the page but append our custom var
-	$newrules[ $options['slug'].'/?$'] = 'index.php?wp_resume_resume=1&pagename=' . $options['slug'];
-	
-	//push the new rules backf
-	return $newrules + $rules;
 
-}
-add_filter('rewrite_rules_array','wp_resume_rewrite_rules');
-
-/**
- * If our custom query var is detected, load our template
- * @since 1.0a
- */
-function wp_resume_intercept() {
- 		
- 	global $wp_query;
- 	if( isset($wp_query->query_vars['wp_resume_resume']) ) {	
- 		
- 		add_action( 'wp_print_styles', 'wp_resume_enqueue' );
-		add_filter('template_include','wp_resume_template_filter');
-	
+	//Check to see if they have a slug from <1.2, if so, insert the shortcode into the page if it exists
+	if ( !empty( $options['slug'] ) ) {
+		
+		//lookup the postID bassed on the URL	
+		$postID = url_to_postid( get_bloginfo('home') . '/' .  $options['slug'] . '/' );
+		
+		//If we found a post, insert our shortcode
+		if ($postID) {
+			  $post['ID'] = $postID;
+			  $post['post_content'] = '[wp_resume]';
+			  wp_update_post($post);
+		}
 	}
-
 }
 
-add_action('template_redirect','wp_resume_intercept');
-
-/**
- * Redirets all template calls to our template
- */
-function wp_resume_template_filter( $template ) {
-	
-	return dirname( __FILE__ ) . '/resume.php';
-	
-}
-
-/**
- * Establishes a custom query var so we can detect our slug
- * @since 1.0a
- * @param array $vars current query vars
- * @returns array updated query vars
- */
-function wp_resume_query_var( $vars ) {
-
-    $vars[] = "wp_resume_resume";    
-    return $vars;
-
-}
-
-add_filter('query_vars', 'wp_resume_query_var');
 
 /**
  * Modifies the add organization page to provide help text and better descriptions
@@ -702,5 +630,14 @@ function wp_resume_section_helptext() { ?>
 
 add_action('wp_resume_section_add_form','wp_resume_section_helptext');
 
+/**
+ * Includes resume template on shortcode use 
+ * @since 1.3
+ */
+function wp_resume_shortcode() {
+	include('resume.php');
+}
+
+add_shortcode('wp_resume','wp_resume_shortcode');
 
 ?>
