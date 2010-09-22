@@ -26,12 +26,11 @@
 .resume .details {font-size: 14px;}
 .resume .organization .details, .resume .organization .title {margin:0;}
 .resume .organization .details { width: 100%;}
-.resume .post-edit-link {float:right; display: none; padding-left: 10px; margin-top: -50px;}
-.resume .details:hover .post-edit-link {display:inline;}
+.resume .details .post-edit-link {float:right; display: none; padding-left: 10px; margin-top: -2em;}
+.resume .organization:hover .post-edit-link {display:inline;}
 
 /* Clearfix */
 .clearfix:after {content: "."; display: block; clear: both; visibility: hidden; line-height: 0; height: 0;}
 .clearfix {	display: inline-block;}
 html[xmlns] .clearfix {	display: block;}
 * html .clearfix {	height: 1%; }
-

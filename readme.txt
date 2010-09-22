@@ -14,8 +14,6 @@ WP Resume is an out-of-the-box solution to get your resume online and keep it up
 
 You can [see it in action](http://ben.balter.com/resume/) or fore information and troubleshooting, check out the [Plugin Homepage](http://ben.balter.com/2010/09/12/wordpress-resume-plugin/).
 
-Please note: this is an initial release, so some problems are to be expected.
-
 Features include:
 
 * Support for sections (e.g., education, experience), organizations (e.g., somewhere state university, Cogs, Inc.), positions (e.g., bachelor of arts, chief widget specialist), and details (e.g., grew bottom line by 15%, president of the sustainability club)
@@ -24,8 +22,7 @@ Features include:
 * Built on existing WordPress code, utilizing a single custom post type and two custom taxonomies
 * The WYSIWYG editing experience you know and love
 * Revisioning
-* Integrates with your theme like they were made for each other
-* Custom URL
+* Integrates with your theme like they were made for each other (via a shortcode)
 * Does not use pretentious accents on the word "resume"
 * Extremely original title
 
@@ -35,18 +32,22 @@ The hardest part of getting your resume online should be doing the work listed o
 
 1. Upload `plugin-name.php` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Configure settings via the Resume->Options menu
 
 = Use =
 
-1. Add sections via the Resume->Add Sections menu.  Common sections might be "Experience", "Education", or "Awards".
-2. Add organizations via the Resume->Add Organizations menu.  These are often places you've worked (e.g., Cogs, Inc.) or places you've studies (e.g., University U.). 
-	Place the organization's location in the description field.
-3. Add positions via the Resume-Add Positions menu. 
-	Your title (e.g., Widget Specialist) goes in the title field. 
-	Put details in the content field (e.g., increased bottom line by 25%).  
-	Put dates in the date fields (e.g., from: May 2005, to:August 2009). Neither is required.  Your resume will be sorted by the end date.
-4. Repeat step #3 as needed for each position.
+WP Resume groups your resume content into sections. Common sections might be "Experience", "Education", or "Awards".
+
+Within each section, your positions are grouped by organizations.  These are often places you've worked (e.g., Cogs, Inc.) or places you've studies (e.g., University U.). 
+
+Each position has a title (e.g., Widget Specialist), details (e.g., increased bottom line by 25%), and dates of service (e.g., from: May 2005, to:August 2009). Dates are not required, but the positions on your resume are sorted chronologically.
+
+1. Add content to your resume through the Resume->Add New Position panel in the WordPress administrative backend
+2. If you wish, add a title, contact information, and order your sections in the Resume->Options panel
+3. Create a new page as you would normally
+4. Add the text [wp_resume] to the page's body
+5. Your resume will now display on that page.
+
+Note: Although some styling is included by default, you can customize the layout by modifying your theme's stylesheet
 
 == Frequently Asked Questions == 
 
@@ -88,3 +89,12 @@ Yes.  WP Resume includes a default stylesheet that can easily be overridden by y
 * Removed unused fields from add section page
 * AJAX adding of custom terms on add position page
 * Added procedure to update database to new field prefix on activation
+
+= 1.3 =
+* For greater flexibility and theme integration, switched from URL Rewrite rules via a "slug" option to [wp_resume] shortcode
+* Added walkthrough to options page
+* Check for <1.3 slug on activation and add shortcode to associated page if exists
+* Fixed edit link CSS
+* Fixed problem where template would prematurely close the resume div prior to last section
+* Resume template now uses a sub-loop so as not to interfere with the page itself
+* Lost the beta tag
