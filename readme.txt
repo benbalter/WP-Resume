@@ -100,4 +100,4 @@ Yes.  WP Resume includes a default stylesheet that can easily be overridden by y
 * Lost the beta tag
 
 = 1.31 =
-* Default CSS modified to reset #header and #header h2 backgrounds to none.
+* Minor fix to the included stylesheet to reset #header and #header h2 backgrounds to none in case they conflict with the theme’s defaults.
