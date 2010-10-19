@@ -44,7 +44,7 @@ Each position has a title (e.g., Widget Specialist), details (e.g., increased bo
 1. Add content to your resume through the Resume->Add New Position panel in the WordPress administrative backend
 2. If you wish, add a title, contact information, and order your sections in the Resume->Options panel
 3. Create a new page as you would normally
-4. Add the text `[wp_resume]` to the page's body
+4. Add the text [wp_resume] to the page's body
 5. Your resume will now display on that page.
 
 Note: Although some styling is included by default, you can customize the layout by modifying your theme's stylesheet
@@ -98,3 +98,6 @@ Yes.  WP Resume includes a default stylesheet that can easily be overridden by y
 * Fixed problem where template would prematurely close the resume div prior to last section
 * Resume template now uses a sub-loop so as not to interfere with the page itself
 * Lost the beta tag
+
+= 1.3 =
+* Default CSS modified to reset #header and #header h2 backgrounds to none.

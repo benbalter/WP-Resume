@@ -5,8 +5,8 @@
  */
 
 /* Header */
-.resume #header {text-align:center; margin-bottom: 25px; }	
-.resume #header h2 { font-size: 48px; letter-spacing: 2px; font-weight: bold; }
+.resume #header {text-align:center; margin-bottom: 25px; background: none;}	
+.resume #header h2 { font-size: 48px; letter-spacing: 2px; font-weight: bold; background: none;}
 .resume #header ul {list-style: none; padding: 0px;}
 .resume #header ul li {display: inline; padding: 0 50px 0 50px; margin-bottom:0px;}
 

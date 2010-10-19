@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/resume/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 1.3
+Version: 1.31
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 */
