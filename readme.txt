@@ -99,5 +99,5 @@ Yes.  WP Resume includes a default stylesheet that can easily be overridden by y
 * Resume template now uses a sub-loop so as not to interfere with the page itself
 * Lost the beta tag
 
-= 1.3 =
+= 1.31 =
 * Default CSS modified to reset #header and #header h2 backgrounds to none.
