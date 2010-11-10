@@ -1,7 +1,7 @@
 === Plugin Name ===
 Contributors: benbalter
 Donate link: http://ben.balter.com/
-Tags: resume
+Tags: resume, online reputation, personal branding, experience, education, awards, cv
 Requires at least: 3.0
 Tested up to: 3.0.1
 Stable tag: trunk
@@ -12,13 +12,14 @@ Out-of-the-box solution to get your resume online. Built on WordPress's custom p
 
 WP Resume is an out-of-the-box solution to get your resume online and keep it updated. Built on WordPress 3.0’s custom post type functionality, it offers a uniquely familiar approach to publishing. If you’ve got a WordPress site, you already know how to use WP Resume.
 
-You can [see it in action](http://ben.balter.com/resume/) or fore information and troubleshooting, check out the [Plugin Homepage](http://ben.balter.com/2010/09/12/wordpress-resume-plugin/).
+You can [see it in action](http://ben.balter.com/resume/) or for information and troubleshooting, check out the [Plugin Homepage](http://ben.balter.com/2010/09/12/wordpress-resume-plugin/).
 
 Features include:
 
 * Support for sections (e.g., education, experience), organizations (e.g., somewhere state university, Cogs, Inc.), positions (e.g., bachelor of arts, chief widget specialist), and details (e.g., grew bottom line by 15%, president of the sustainability club)
 * Follows best practices in resume layout and design
 * One click install, just start adding content
+* Drag and drop ordering of resume elements
 * Built on existing WordPress code, utilizing a single custom post type and two custom taxonomies
 * The WYSIWYG editing experience you know and love
 * Revisioning
@@ -39,7 +40,7 @@ WP Resume groups your resume content into sections. Common sections might be "Ex
 
 Within each section, your positions are grouped by organizations.  These are often places you've worked (e.g., Cogs, Inc.) or places you've studies (e.g., University U.). 
 
-Each position has a title (e.g., Widget Specialist), details (e.g., increased bottom line by 25%), and dates of service (e.g., from: May 2005, to:August 2009). Dates are not required, but the positions on your resume are sorted chronologically.
+Each position has a title (e.g., Widget Specialist), details (e.g., increased bottom line by 25%), and dates of service (e.g., from: May 2005, to:August 2009). Dates are not required, but the positions on your resume are sorted reverse chronologically by default (you can always manually arrange them on the options page).
 
 1. Add content to your resume through the Resume->Add New Position panel in the WordPress administrative backend
 2. If you wish, add a title, contact information, and order your sections in the Resume->Options panel
@@ -65,7 +66,6 @@ Yes.  WP Resume includes a default stylesheet that can easily be overridden by y
 * Better SEO
 * Export into machine-readable formats
 * AJAX Inline editing of resume content
-* Drag and drop section ordering
 
 == Changelog ==
 
@@ -101,3 +101,9 @@ Yes.  WP Resume includes a default stylesheet that can easily be overridden by y
 
 = 1.31 =
 * Minor fix to the included stylesheet to reset #header and #header h2 backgrounds to none in case they conflict with the theme’s defaults.
+
+= 1.4 = 
+* Drag-and-drop ordering of resume elements (sections, organizations, and positions)
+* Now sorts based on WordPress's built-in menu_order field rather than a custom meta value (smaller database footprint)
+* Help text added to add/edit position page to aide in new ordering functionality
+* Updates old versions of plugin data on activation/upgrade

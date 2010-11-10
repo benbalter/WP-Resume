@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 1.31
+Version: 1.4
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 */
@@ -42,12 +42,12 @@ function wp_resume_register_cpt_and_t() {
     'publicly_queryable' => true,
     'show_ui' => true, 
     'query_var' => true,
-    'rewrite' => false,
+	'rewrite' => false,
     'capability_type' => 'post',
     'hierarchical' => false,
     'menu_position' => null,
     'register_meta_box_cb' => 'wp_resume_meta_callback',
-    'supports' => array( 'title', 'editor', 'revisions', 'custom-fields'),
+    'supports' => array( 'title', 'editor', 'revisions', 'custom-fields', 'page-attributes'),
     'taxonomies' => array('wp_resume_section', 'wp_resume_organization'),
   ); 
   
@@ -98,7 +98,7 @@ add_action( 'init', 'wp_resume_register_cpt_and_t', 10 );
  */
 function wp_resume_meta_callback() {
 
-	//pull out the standard post meta box, we don't need it
+	//pull out the standard post meta box , we don't need it
 	remove_meta_box( 'postcustom', 'wp_resume_position', 'normal' );
 	
 	//build our own section taxonomy selector using radios rather than checkboxes
@@ -111,6 +111,37 @@ function wp_resume_meta_callback() {
 	//build the date meta input box
 	add_meta_box( 'dates', 'Date', 'wp_resume_date_box', 'wp_resume_position', 'normal', 'high');
 	
+	//build custom order box w/ helptext
+	add_meta_box( 'pageparentdiv', 'Resume Order', 'wp_resume_order_box', 'wp_resume_position', 'side', 'low');
+}
+
+function wp_resume_order_box($post) {
+?>
+	<p><strong>Order</strong></p>
+	<p>	
+		<div style="float:right; width: 200px; padding-right:10px; margin-top: -1em; display: inline;">
+			<i>Hint:</i> Your resume will be sorted based on this number (ascending). <a href="#" id="wp_resume_help_toggle">More</a><br /> <br />
+
+			<div id="wp_resume_help">When you add a new position, feel free to leave this number at "0" and a best guess will be made based on the position's end date (reverse chronological order). <br /><br />Of Course, you can always <a href="edit.php?post_type=wp_resume_position&page=wp_resume_options#sections">fine tune your resume order</a> on the options page.</div>
+		</div>
+		<label class="screen-reader-text" for="menu_order">Order</label>
+		<input type="text" name="menu_order" size="4" id="menu_order" value="<?php echo $post->menu_order; ?>">
+	</p>
+	<p style="clear: both; height: 5px;" id="wp_resume_clearfix"> </p>
+	<script>
+		jQuery(document).ready(function($){
+			$('#wp_resume_help, #wp_resume_clearfix').hide();
+			$('#wp_resume_help_toggle').click(function(){
+				$('#wp_resume_help, #wp_resume_clearfix').toggle('fast');
+				if ($(this).text() == "More")
+					$(this).text('Less');
+				else
+					$(this).text('More');
+				return false;
+			});
+		});
+	</script>
+<?php
 }
 
 /**
@@ -221,7 +252,6 @@ add_action('wp_ajax_add_wp_resume_organization', 'wp_resume_ajax_add');
  * @since 1.0a
  * @params object $post the post object WP passes
  */
-
 function wp_resume_date_box( $post ) {	
 
 	//pull the current values where applicable
@@ -241,33 +271,80 @@ function wp_resume_date_box( $post ) {
  */
 function wp_resume_save_wp_resume_position( $post_id ) {
 
-	//Verify our nonce 	
+	//Verify our nonce, also varifies that we are on the edit page and not updating elsewhere
   	if ( !wp_verify_nonce( $_POST['wp_resume_nonce'], 'wp_resume_taxonomy' , 'wp_resume_nonce' ) )
   	  	return $post_id;
   	  	  	
   	//If we're autosaving we don't really care all that much about taxonomies and metadata
   	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
   	  	return $post_id;
+  	  	
+  	//If this is a post revision and not the actual post, kick
+  	//(the save_post action hook gets called twice on every page save)
+  	if ( wp_is_post_revision($post_id) )
+  		return $post_id;
   	
   	//Verify user permissions
   	if ( !current_user_can( 'edit_post', $post_id ) )
   	    return $post_id;
-  	
+     	   	
   	//Associate the wp_resume_position with our taxonomies
   	wp_set_object_terms( $post_id, (int) $_POST['wp_resume_section'], 'wp_resume_section' );
   	wp_set_object_terms( $post_id, (int) $_POST['wp_resume_organization'], 'wp_resume_organization' );
   	
-  	//Convert the "to" date to a unix timestamp so we can sort blocks chronologically
- 	$timestamp = strtotime( $_POST['to']  );
- 	
- 	//if the "to" field isn't a date (e.g., present) put it at the top
- 	if ( !$timestamp )  $timestamp = (string) time();
-
  	//update the posts date meta
-	update_post_meta( $post_id, 'wp_resume_timestamp', $timestamp );
 	update_post_meta( $post_id, 'wp_resume_from', $_POST['from'] );
   	update_post_meta( $post_id, 'wp_resume_to', $_POST['to'] );
- 
+ 		 	  	
+  	//If they did not set a menu order, calculate a best guess bassed off of chronology
+  	//(menu order uses the posts's menu_order field and is 1 bassed by default)
+  	if ($_POST['menu_order'] == 0) {
+  		
+  		//grab the DB Obj.
+  		global $wpdb;
+  	
+  		//calculate the current timestamp
+  		$timestamp = strtotime( $_POST['to'] );
+  		if ( !$timestamp ) $timestamp = time();
+		
+		//set a counter
+		$new_post_position = 1;
+		
+		//loop through posts 
+		$section = get_term ($_POST['wp_resume_section'], 'wp_resume_section');
+		$args = array(
+			'post_type' => 'wp_resume_position',
+			'orderby' => 'menu_order',
+			'order' => 'ASC',
+			'numberposts' => -1,
+			'wp_resume_section' =>	$section->slug,
+			'exclude' => $post_id
+		);
+		$posts = get_posts( $args );
+
+		foreach ($posts as $post) {
+	
+  			//build timestamp of post we're checking
+  			$ts_check = strtotime( get_post_meta( $post->ID, 'wp_resume_to', true) );
+  			if (!$ts_check) 
+  				$ts_check = time();
+  			
+  			//If we've inserted our new post in the menu_order, increment all subsequent positions
+  			if ($new_post_position != 1)
+  				//manually update the post b/c calling wp_update_post would create a recurssion loop
+		  		$wpdb->update($wpdb->posts,array('menu_order'=>$post->menu_order+1),array('ID'=>$post->ID));
+  			
+  			//If the new post's timestamp is earlier than the current post, stick the new post here
+  			if ($timestamp <= $ts_check && $new_post_position == 1) 
+  				$new_post_position = $post->menu_order + 1;	
+  		
+  		}
+  		
+		//manually update the post b/c calling wp_update_post would create a recurssion loop
+  		$wpdb->update($wpdb->posts,array('menu_order'=>$new_post_position),array('ID'=>$post_id));
+  		
+   	}
+
 }
 add_action( 'save_post', 'wp_resume_save_wp_resume_position' );
 
@@ -348,11 +425,10 @@ function wp_resume_query( $section ) {
 	//build our query
 	$args = array(
 		'post_type' => 'wp_resume_position',
-		'orderby' => 'meta_value_num',
-		'order' => 'DESC',
+		'orderby' => 'menu_order',
+		'order' => 'ASC',
 		'nopaging' => true,
 		'wp_resume_section' => $section,
-		'meta_key'=> 'wp_resume_timestamp',
 	);
 
 	//query and return
@@ -411,7 +487,7 @@ add_action( 'admin_menu', 'wp_resume_menu' );
  */
 function wp_resume_options_int() {
     
-    register_setting( 'wp_resume_options', 'wp_resume_options' );
+    register_setting( 'wp_resume_options', 'wp_resume_options', 'wp_resume_options_validate' );
 	$options = wp_resume_get_options();
 
 	//If they just activated, make sure they have some sections
@@ -444,10 +520,46 @@ function wp_resume_options_int() {
 		wp_enqueue_script('media-upload');
 		wp_enqueue_script('post');
 		add_action( 'admin_print_footer_scripts', 'wp_tiny_mce', 25 );
+		wp_enqueue_style('wp_resume_admin_stylesheet', plugins_url(  'admin-style.css', __FILE__ ) );
+		wp_enqueue_script( array("jquery", "jquery-ui-core", "interface", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable") );
 	}
 }
 
 add_action( 'admin_init', 'wp_resume_options_int' );
+
+
+/**
+ * Valdidates options submission data and stores position order
+ * @params array $data post data
+ * @since 1.5
+ * @returns array of validated data (without position order)
+ */
+function wp_resume_options_validate($data) {
+	
+	//strip html from title
+	$data['title'] = wp_filter_nohtml_kses($data['title']);
+	
+	//Filter HTML
+	$data['contact_info'] = wp_filter_kses($data['contact_info']);
+	
+	//sanitize section order data
+	foreach ($data['order'] as &$section)
+		$section = intval( $section );
+
+	//if there is no position_order data (e.g., if this is activation) no need to store
+	if ( !is_array($data['position_order'] ) ) 
+		return $data;
+		
+	//store position order data
+	foreach ($data['position_order'] as $positionID => $order) {
+		$post['ID'] = intval( $positionID );
+		$post['menu_order'] = intval( $order );
+		wp_update_post( $post );
+ 	}
+	unset ( $data['position_order'] );
+	
+	return $data;
+}
 
 /**
  * Creates the options sub-panel
@@ -457,8 +569,15 @@ function wp_resume_options() {
 ?>
 <div class="wrap">
 	<h2>Resume Options</h2>
-	<form method="post" action='options.php'>
+	<form method="post" action='options.php' id="wp_resume_form">
 <?php 
+
+if ($_POST) {
+	echo "BLAH";
+	foreach ($_POST['wp_resume_position_order'] as $position => $order) {
+		echo "$position: $order";
+	}
+}
 		
 //provide feedback
 settings_errors();
@@ -477,7 +596,7 @@ $options = wp_resume_get_options();
 				<strong>To use WP Resume...</strong>
 				<ol>
 					<li>Add content to your resume through the menus on the left</li>
-					<li>If you wish, add a title, contact information, and order your sections below</li>
+					<li>If you wish, add a title, contact information, and order your resume below</li>
 					<li>Create a new page as you would normally
 					<li>Add the text <code>[wp_resume]</code> to the page's body</li>
 					<li>Your resume will now display on that page.</li>
@@ -488,7 +607,7 @@ $options = wp_resume_get_options();
 		<tr valign="top">
 			<th scope="row"><label for="wp_resume_options[title]">Resume Title</label></th>
 			<td>
-				<input name="wp_resume_options[title]" type="text" id="wp_resume_options[title]" value="<?php echo $options['title']; ?>" class="regular-text" />
+				<input name="wp_resume_options[title]" type="text" id="wp_resume_options[title]" value="<?php echo $options['title']; ?>" class="regular-text" /><BR />
 				<span class="description">Goes on the top of your resume.  Usually your name, but technically it can be anything you want.</span>
 			</td>
 		</tr>
@@ -498,19 +617,70 @@ $options = wp_resume_get_options();
 			<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
 				<?php the_editor($options['contact_info'], 'wp_resume_options[contact_info]' ); ?>	
 			</div>
-			<span class="description">This can be any text or HTML you want and will appear directly below the title.</div>	
+			<span class="description">Generally used for contact information such as your e-mail address, street address, and phone number, this can be any text or HTML you want and will appear directly below the title on your resume.</div>	
 			</td>
 		</tr>
 		<tr valign="top">
-			<th scope="row">Section Order</th>
+			<th scope="row">Resume Order</th>
 			<td>
-			<?php foreach ( wp_resume_get_sections(false) as $section ) { ?>
-			<input type="text" class="small-text" name="wp_resume_options[order][<?php echo $section->term_id; ?>]" id="<?php echo $section->slug; ?>" value="<?php echo $options['order'][$section->term_id]; ?>" />
-			<label for="<?php echo $section->slug; ?>"><?php echo $section->name; ?></label><br />
-			<?php } ?>
+			<ul id="sections">
+<?php foreach ( wp_resume_get_sections(false) as $section ) { ?>
+				<li class="section" id="<?php echo $section->term_id; ?>">
+<?php 				echo $section->name; ?>
+					<ul class="organizations">
+<?php				$current_org='';
+					$posts = wp_resume_query( $section->slug );
+					if ( $posts->have_posts() ) : while ( $posts->have_posts() ) : $posts->the_post();
+						$organization = wp_resume_get_org( get_the_ID() ); 
+						if ($organization && $organization->term_id != $current_org) {
+							if ($current_org != '') { 
+?>								</ul>
+							</ul>
+<?php 						} 
+							$current_org = $organization->term_id; 
+?>
+							<li class="organization" id="<?php echo $organization->term_id; ?>">
+								<?php echo $organization->name; ?>
+								<ul class="positions">
+<?php						}  ?>
+								<li class="position" id="<?php the_ID(); ?>">
+									<?php echo the_title(); ?> <?php if ($date = wp_resume_format_date( get_the_ID() ) ) echo "($date)"; ?>
+								</li>
+<?php 				endwhile; ?>
+								</ul>				
+<?php				endif;	 ?>
+					</ul>
+				<?php } ?>
+			</ul>
+			<span class="description">New positions are automatically displayed in reverse chronological order, but you can fine tune that order by rearranging the elements in the list above.</span>
 			</td>
 		</tr>
 	</table>
+	<script>
+	jQuery(document).ready(function($) {
+    $("#sections, .positions, .organizations").sortable({
+    	axis:'y', 
+    	containment: 'parent',
+    	opacity: .5,
+    	update: function(){},
+		placeholder: 'placeholder',
+		forcePlaceholderSize: 'true',
+    });
+    $("#sections").disableSelection();
+	$('.button-primary').click(function(){
+		var i = 0;
+		$('.section').each(function(){
+			$('#wp_resume_form').append('<input type="hidden" name="wp_resume_options[order]['+$(this).attr('id')+']" value="' + i + '">');
+			i = i +1;
+		});
+		var i = 1;
+		$('.position').each(function(){
+			$('#wp_resume_form').append('<input type="hidden" name="wp_resume_options[position_order]['+$(this).attr('id')+']" value="' + i + '">');
+			i = i +1;
+		});
+	}); 
+});
+	</script>
 	<p class="submit">
          <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 	</p>
@@ -541,6 +711,10 @@ function wp_resume_activate() {
 	
 	//set our new options
 	update_option( 'wp_resume_options', $options);
+	
+	//flush rewrite rules
+	global $wp_rewrite;
+   	$wp_rewrite->flush_rules();
 
 } 
    
@@ -589,6 +763,39 @@ function wp_resume_upgrade_db() {
 			  wp_update_post($post);
 		}
 	}
+	
+	//Convert our old timestamp sort system into menu order
+	
+	//Loop through sections
+	foreach ( wp_resume_get_sections() as $section) {
+	
+		//Query DB for all posts w/i that section
+		$args = array(
+			'post_type' => 'wp_resume_position',
+			'orderby' => 'meta_value_num',
+			'order' => 'DESC',
+			'nopaging' => true,
+			'wp_resume_section' => $section->slug,
+			'meta_key'=> 'wp_resume_timestamp',
+		);
+		$posts = get_posts( $args );
+		
+		//set internal counter
+		$i = 1;
+		
+		//loop through each post within section by timestamp DESC and add a 1-indexed menu order value
+		foreach ($posts as $post) {
+			
+			//update row
+			$wpdb->update($wpdb->posts,array('menu_order'=>$i),array('ID'=>$post->ID)); 
+			
+			//increment internal counter 	
+  			$i++;	
+  			
+  		}
+  	
+  	}
+
 }
 
 
