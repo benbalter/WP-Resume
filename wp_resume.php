@@ -634,7 +634,9 @@ $options = wp_resume_get_options();
 						$organization = wp_resume_get_org( get_the_ID() ); 
 						if ($organization && $organization->term_id != $current_org) {
 							if ($current_org != '') { 
-?>								</ul>
+?>								
+									</li>
+								</ul>
 <?php 						} 
 							$current_org = $organization->term_id; 
 ?>
