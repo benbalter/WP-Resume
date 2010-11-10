@@ -635,7 +635,6 @@ $options = wp_resume_get_options();
 						if ($organization && $organization->term_id != $current_org) {
 							if ($current_org != '') { 
 ?>								</ul>
-							</ul>
 <?php 						} 
 							$current_org = $organization->term_id; 
 ?>
@@ -650,6 +649,7 @@ $options = wp_resume_get_options();
 								</ul>				
 <?php				endif;	 ?>
 					</ul>
+				</li>
 				<?php } ?>
 			</ul>
 			<span class="description">New positions are automatically displayed in reverse chronological order, but you can fine tune that order by rearranging the elements in the list above.</span>
