@@ -67,13 +67,31 @@ Yes.  WP Resume includes a default stylesheet that can easily be overridden by y
 * Export into machine-readable formats
 * AJAX Inline editing of resume content
 
+== Screenshots ==
+
+1. Example resume output with default CSS (can be customized to fit your site)
+2. Add position page -- identical to the add post page with a few extra boxes
+3. Resume menu in wp-admin sidebar
+
 == Changelog ==
 
-= 1.0 (alpha) =
-* Initial Alpha Release
+= 1.4 = 
+* Drag-and-drop ordering of resume elements (sections, organizations, and positions)
+* Now sorts based on WordPress's built-in menu_order field rather than a custom meta value (smaller database footprint)
+* Help text added to add/edit position page to aide in new ordering functionality
+* Updates old versions of plugin data on activation/upgrade
 
-= 1.1 (alpha) =
-* Fixed problem with resume expecting content and erring out when none existed
+= 1.31 =
+* Minor fix to the included stylesheet to reset #header and #header h2 backgrounds to none in case they conflict with the theme’s defaults.
+
+= 1.3 =
+* For greater flexibility and theme integration, switched from URL Rewrite rules via a "slug" option to [wp_resume] shortcode
+* Added walkthrough to options page
+* Check for <1.3 slug on activation and add shortcode to associated page if exists
+* Fixed edit link CSS
+* Fixed problem where template would prematurely close the resume div prior to last section
+* Resume template now uses a sub-loop so as not to interfere with the page itself
+* Lost the beta tag
 
 = 1.2 (beta) = 
 * Adding WYSIWG editor for contact information
@@ -90,20 +108,8 @@ Yes.  WP Resume includes a default stylesheet that can easily be overridden by y
 * AJAX adding of custom terms on add position page
 * Added procedure to update database to new field prefix on activation
 
-= 1.3 =
-* For greater flexibility and theme integration, switched from URL Rewrite rules via a "slug" option to [wp_resume] shortcode
-* Added walkthrough to options page
-* Check for <1.3 slug on activation and add shortcode to associated page if exists
-* Fixed edit link CSS
-* Fixed problem where template would prematurely close the resume div prior to last section
-* Resume template now uses a sub-loop so as not to interfere with the page itself
-* Lost the beta tag
+= 1.1 (alpha) =
+* Fixed problem with resume expecting content and erring out when none existed
 
-= 1.31 =
-* Minor fix to the included stylesheet to reset #header and #header h2 backgrounds to none in case they conflict with the theme’s defaults.
-
-= 1.4 = 
-* Drag-and-drop ordering of resume elements (sections, organizations, and positions)
-* Now sorts based on WordPress's built-in menu_order field rather than a custom meta value (smaller database footprint)
-* Help text added to add/edit position page to aide in new ordering functionality
-* Updates old versions of plugin data on activation/upgrade
+= 1.0 (alpha) =
+* Initial Alpha Release
