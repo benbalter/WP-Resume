@@ -11,7 +11,8 @@ License: GPL2
 
 /**
  * @author Benjamin J. Balter
- * @shoutout Andrew Nacin (http://andrewnacin.com)
+ * @shoutout Andrew Nacin (http://andrewnacin.com) for help with CPTs
+ * @shoutout Andrew Norcross (http://andrewnorcross.com) for the drag-and-drop CSS
  */
 
 /**
