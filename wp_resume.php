@@ -6,12 +6,12 @@ Description: Out-of-the-box plugin which utilizes custom post types and taxonomi
 Version: 1.41
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
+License: GPL2
 */
 
 /**
  * @author Benjamin J. Balter
  * @shoutout Andrew Nacin (http://andrewnacin.com)
- * @license Creative Commons BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
  */
 
 /**
