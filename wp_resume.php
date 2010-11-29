@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 1.4
+Version: 1.41
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 */
@@ -390,7 +390,7 @@ function wp_resume_get_sections( $hide_empty = true ) {
 	
 	//Loop through each section
 	foreach( $sections as $ID => $section ) {
-	
+		
 		//if the term is in our order array
 		if ( is_array($section_order) && array_key_exists( $section->term_id, $section_order ) ) { 
 		
@@ -492,21 +492,30 @@ function wp_resume_options_int() {
 
 	//If they just activated, make sure they have some sections
 	//This is a work around b/c register_acivation hook is having issues recognizing the custom taxonmomy
-	if ( $options['just_activated'] ) {
+	if ( isset($options['just_activated']) && $options['just_activated'] ) {
 
-		//add the sections
-		wp_insert_term( 'Education', 'wp_resume_section');
-		wp_insert_term( 'Experience', 'wp_resume_section' );
-		wp_insert_term( 'Awards', 'wp_resume_section' );
+		//check to see if we have any sections
+		if ( sizeof( wp_resume_get_sections(false) ) == 0 ) {
+			//add the sections
+			wp_insert_term( 'Education', 'wp_resume_section');
+			wp_insert_term( 'Experience', 'wp_resume_section' );
+			wp_insert_term( 'Awards', 'wp_resume_section' );
+		}
+		
+		//because we changed our function and taxonomy prefix in 1.2, check to see if we need to upgrade the database
+		//Also moves from slug to shortcode (1.3)
+		wp_resume_upgrade_db();
 		
 		//get rid of the flag
 		$options['just_activated'] = false;
 
-		//set default order
+		//set default order if none exists
 		$i = 0;
-		foreach ( wp_resume_get_sections( false ) as $section)
-			$options['order'][$section->term_id] = $i++;
-			
+		foreach ( wp_resume_get_sections( false ) as $section) {
+			if ( empty ( $options['order'][$section->term_id]) )
+				$options['order'][$section->term_id] = $i++;
+		}
+		
 		//store the new options
 		update_option('wp_resume_options',$options);
 		
@@ -547,7 +556,7 @@ function wp_resume_options_validate($data) {
 		$section = intval( $section );
 
 	//if there is no position_order data (e.g., if this is activation) no need to store
-	if ( !is_array($data['position_order'] ) ) 
+	if ( !isset($data['position_order'] ) ) 
 		return $data;
 		
 	//store position order data
@@ -571,13 +580,6 @@ function wp_resume_options() {
 	<h2>Resume Options</h2>
 	<form method="post" action='options.php' id="wp_resume_form">
 <?php 
-
-if ($_POST) {
-	echo "BLAH";
-	foreach ($_POST['wp_resume_position_order'] as $position => $order) {
-		echo "$position: $order";
-	}
-}
 		
 //provide feedback
 settings_errors();
@@ -696,10 +698,6 @@ $options = wp_resume_get_options();
  * @since 1.0a
  */
 function wp_resume_activate() {
-	
-	//because we changed our function and taxonomy prefix in 1.2, check to see if we need to upgrade the database
-	//Also moves from slug to shortcode (1.3)
-	wp_resume_upgrade_db();
 			
 	//get current options incase this is a reactivate
 	$options = wp_resume_get_options();
@@ -788,8 +786,9 @@ function wp_resume_upgrade_db() {
 		//loop through each post within section by timestamp DESC and add a 1-indexed menu order value
 		foreach ($posts as $post) {
 			
-			//update row
-			$wpdb->update($wpdb->posts,array('menu_order'=>$i),array('ID'=>$post->ID)); 
+			//update row if necessary
+			if ( empty( $post->menu_order ) )
+				$wpdb->update($wpdb->posts,array('menu_order'=>$i),array('ID'=>$post->ID)); 
 			
 			//increment internal counter 	
   			$i++;	
@@ -848,5 +847,5 @@ function wp_resume_shortcode() {
 }
 
 add_shortcode('wp_resume','wp_resume_shortcode');
-
+add_action('admin_init', 'wp_resume_activate');
 ?>
