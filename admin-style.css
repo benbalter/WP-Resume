@@ -1,0 +1,9 @@
+#sections, .organizations {list-style: none;margin-left: 20px;}
+#sections {font-size: 14px;}
+.section {margin: 10px 0 10px 0;}
+.organization {margin: 5px 0 5px 0;}
+.organizations {font-weight: bold;}
+.positions {list-style: circle; font-weight: normal; margin-left: 20px;}
+#sections li {}
+.placeholder {background: #eee; border: 1px dashed black; width: 200px;}
+#wp_resume_form textarea {width: 606px;}

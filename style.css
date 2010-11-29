@@ -1,0 +1,36 @@
+/**
+ * Default WP_resume stylesheet. Feel free to override with your own stlyes
+ * @package wp_resume
+ * @since 1.0a
+ */
+
+/* Header */
+.resume #header {text-align:center; margin-bottom: 25px; background: none;}	
+.resume #header h2 { font-size: 48px; letter-spacing: 2px; font-weight: bold; background: none;}
+.resume #header ul {list-style: none; padding: 0px;}
+.resume #header ul li {display: inline; padding: 0 50px 0 50px; margin-bottom:0px;}
+
+
+/* Sections */
+.resume .section {margin-bottom:20px; }
+.resume .label {font-size: 20px; font-weight: bold; margin-bottom: 20px; border-bottom: 1px solid black; }
+
+/* Blocks */
+.resume .orgName {float: left; font-size: 16px; text-transform: uppercase;  }
+.resume .location {float:right; color: #aaa; font-size: 14px;}
+.resume .title {font-style: italic; float:left; clear:left;  font-size: 15px; }
+.resume .date {float:right; color: #aaa; clear:right; font-size: 14px;}
+.resume .organization { margin-bottom: 10px; }
+.resume .organization ul {clear:both; text-align:justify; padding-left:16px; list-style-type:square; margin:0 !important;}
+.resume .details {clear: both; text-align: justify; margin-bottom: 10px; }
+.resume .details {font-size: 14px;}
+.resume .organization .details, .resume .organization .title {margin:0;}
+.resume .organization .details { width: 100%;}
+.resume .details .post-edit-link {float:right; display: none; padding-left: 10px; margin-top: -2em;}
+.resume .organization:hover .post-edit-link {display:inline;}
+
+/* Clearfix */
+.clearfix:after {content: "."; display: block; clear: both; visibility: hidden; line-height: 0; height: 0;}
+.clearfix {	display: inline-block;}
+html[xmlns] .clearfix {	display: block;}
+* html .clearfix {	height: 1%; }
