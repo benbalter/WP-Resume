@@ -550,7 +550,7 @@ function wp_resume_options_validate($data) {
 	$data['title'] = wp_filter_nohtml_kses($data['title']);
 	
 	//Filter HTML
-	$data['contact_info'] = wp_filter_kses($data['contact_info']);
+	$data['contact_info'] = wp_filter_post_kses($data['contact_info']);
 	
 	//sanitize section order data
 	foreach ($data['order'] as &$section)
