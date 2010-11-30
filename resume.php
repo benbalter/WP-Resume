@@ -6,7 +6,7 @@
  * @since 1.0a
  */
 
-if (!defined('WP_USE_THEMES') 
+if (!defined('WP_USE_THEMES') )
 	define('WP_USE_THEMES', false);
 
 $options = wp_resume_get_options();
