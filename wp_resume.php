@@ -513,7 +513,7 @@ function wp_resume_options_int() {
 		//set default order if none exists
 		$i = 0;
 		foreach ( wp_resume_get_sections( false ) as $section) {
-			if ( empty ( $options['order'][$section->term_id]) )
+			if ( empty ( $options['order'][$section->term_id] ) )
 				$options['order'][$section->term_id] = $i++;
 		}
 		
