@@ -1,0 +1,30 @@
+/**
+ * WP_resume backend stylesheet.
+ * @package wp_resume
+ * @since 1.41
+ * @author Andrew Norcross
+ */
+ 
+.placeholder {background: #eee; border: 1px dashed black; margin: 20px 0;}
+#wp_resume_form textarea {width: 606px;}
+
+#sections { margin: 20px 0; }
+#sections {width: 500px;} 
+#sections li {
+    padding: 10px;	
+    /*width: 90%; */
+    font-weight: bold;
+
+    background: #f0f0f0; /* for non-css3 browsers */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f7f7f7', endColorstr='#e7e7e7'); /* for IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7), to(#e7e7e7)); /* for webkit browsers */
+    background: -moz-linear-gradient(top,  #f7f7f7,  #e7e7e7); /* for firefox 3.6+ */
+    cursor: move;
+
+    border: 1px solid #ddd;
+    border-raidus: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+#loading-animation { display: none; }
