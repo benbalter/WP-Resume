@@ -4,13 +4,13 @@ Donate link: http://ben.balter.com/
 Tags: resume, online reputation, personal branding, experience, education, awards, cv
 Requires at least: 3.0
 Tested up to: 3.0.1
-Stable tag: 1.4
+Stable tag: 1.41
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
 
 == Description ==
 
-WP Resume is an out-of-the-box solution to get your resume online and keep it updated. Built on WordPress 3.0’s custom post type functionality, it offers a uniquely familiar approach to publishing. If you’ve got a WordPress site, you already know how to use WP Resume.
+WP Resume is an out-of-the-box solution to get your resume online and keep it updated. Built on WordPress 3.0's custom post type functionality, it offers a uniquely familiar approach to publishing. If you've got a WordPress site, you already know how to use WP Resume.
 
 You can [see it in action](http://ben.balter.com/resume/) or for information and troubleshooting, check out the [Plugin Homepage](http://ben.balter.com/2010/09/12/wordpress-resume-plugin/).
 
@@ -76,7 +76,9 @@ Yes.  WP Resume includes a default stylesheet that can easily be overridden by y
 == Changelog ==
 
 = 1.41 =
-* Fixed minor bug where activated would display a notice level warning if wp_debug was on (moved db_upgrade procedure to admin_init to solve)
+* Fixed minor bug where activated would display a notice level warning if wp_debug was on 
+* Moved db_upgrade procedure to admin_init hook
+* Made sure db_upgrade does not overwrite existing settings
 * Gave the section ordering backend a much needed coat of paint (h/t Andrew Norcross)
 
 = 1.4 = 
@@ -86,7 +88,7 @@ Yes.  WP Resume includes a default stylesheet that can easily be overridden by y
 * Updates old versions of plugin data on activation/upgrade
 
 = 1.31 =
-* Minor fix to the included stylesheet to reset #header and #header h2 backgrounds to none in case they conflict with the theme’s defaults.
+* Minor fix to the included stylesheet to reset #header and #header h2 backgrounds to none in case they conflict with the theme's defaults.
 
 = 1.3 =
 * For greater flexibility and theme integration, switched from URL Rewrite rules via a "slug" option to [wp_resume] shortcode

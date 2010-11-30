@@ -5,7 +5,10 @@
  * @author Benjamin J. Balter
  * @since 1.0a
  */
-define('WP_USE_THEMES', false);
+
+if (!defined('WP_USE_THEMES') 
+	define('WP_USE_THEMES', false);
+
 $options = wp_resume_get_options();
 ?>
 		<div class='resume'>
