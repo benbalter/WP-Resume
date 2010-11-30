@@ -80,6 +80,7 @@ Yes.  WP Resume includes a default stylesheet that can easily be overridden by y
 * Moved db_upgrade procedure to admin_init hook
 * Made sure db_upgrade does not overwrite existing settings
 * Gave the section ordering backend a much needed coat of paint (h/t Andrew Norcross)
+* Fixed the contact info kses filter to allow tags normally allowed in posts (was comment filter)
 
 = 1.4 = 
 * Drag-and-drop ordering of resume elements (sections, organizations, and positions)
