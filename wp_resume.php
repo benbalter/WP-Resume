@@ -848,5 +848,4 @@ function wp_resume_shortcode() {
 }
 
 add_shortcode('wp_resume','wp_resume_shortcode');
-add_action('admin_init', 'wp_resume_activate');
 ?>
