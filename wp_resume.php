@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 1.41
+Version: 1.5
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -361,10 +361,10 @@ function wp_resume_format_date( $ID ) {
 	$to = get_post_meta( $ID, 'wp_resume_to', true ); 
 	
 	//if we have a start date, format as "[from] - [to]" (e.g., May 2005 - May 2006)
-	if ( $from ) return $from . ' &ndash; ' . $to;
+	if ( $from ) return '<span class="dtstart">' . $from . '</span> &ndash; <span class="dtend">' . $to . '</span>';
 	
 	//if we only have a to, just pass back the to (e.g., "May 2015")
-	if ( $to ) return $to;
+	if ( $to ) return '<span class="dtend">' . $to . '</span>';
 	
 	//If there's no date meta, just pass back an empty string so we dont generate errors
 	return '';
@@ -455,19 +455,20 @@ function wp_resume_get_org( $postID ) {
  */
 function wp_resume_get_options() {
 	$options = get_option('wp_resume_options');
-	$options['title'] = stripslashes( $options['title'] );
-	$options['contact_info'] = stripslashes( $options['contact_info'] );
 	return $options;
 }
 
 /**
- * Adds custom CSS and Javascript to WP's queue
+ * Adds custom CSS to WP's queue
+ * Checks to see if file 'resume-style.css' exists in the current template directory, otherwise includes default
  * @since 1.0a
  */
 function wp_resume_enqueue() {
-        	
-	wp_enqueue_style('wp_resume_stylesheet', plugins_url(  'style.css', __FILE__ ) );
 
+    if ( file_exists ( get_theme_root() . '/' . get_template() . '/resume-style.css' ) )
+    	wp_enqueue_style('wp-resume-custom-stylesheet', get_bloginfo('template_directory') . '/resume-style.css' );
+	else 
+		wp_enqueue_style('wp-resume-default-stylesheet', plugins_url(  'resume-style.css', __FILE__ ) );
 }
 
 add_action( 'wp_print_styles', 'wp_resume_enqueue' );
@@ -546,11 +547,22 @@ add_action( 'admin_init', 'wp_resume_options_int' );
  */
 function wp_resume_options_validate($data) {
 	
-	//strip html from title
-	$data['title'] = wp_filter_nohtml_kses($data['title']);
+	//strip html from fields
+	$data['name'] = wp_filter_post_kses( $data['name'] );
+
+	foreach ($data['contact_info_field'] as $id=>$value) {
+		if ( !$value ) continue;
+		
+		$field = explode('|',$data['contact_info_field'][$id]);
+		if ( sizeof($field) == 1)
+		    $data['contact_info'][$field[0]] = wp_filter_post_kses( $data['contact_info_value'][$id] );
+		else
+		    $data['contact_info'][$field[0]][$field[1]] = wp_filter_post_kses( $data['contact_info_value'][$id] );
+
+	}
 	
-	//Filter HTML
-	$data['contact_info'] = wp_filter_post_kses($data['contact_info']);
+	unset($data['contact_info_field']);
+	unset($data['contact_info_value']);
 	
 	//sanitize section order data
 	foreach ($data['order'] as &$section)
@@ -570,6 +582,39 @@ function wp_resume_options_validate($data) {
 	
 	return $data;
 }
+
+function wp_resume_contact_fields() {
+	$fields['email'] = 'E-Mail';
+	$fields['tel'] = 'Phone';
+	$fields['other'] = 'Other';	
+	$fields['adr']['street-address'] = "Street Address";
+	$fields['adr']['locality'] = "City/Locality";
+	$fields['adr']['region'] = 'State/Region';
+	$fields['adr']['postal-code'] = 'Zip/Postal Code';
+	$fields['adr']['country-name'] = 'Country';
+	return $fields;
+}
+
+
+function wp_resume_contact_info_row( $value = '', $field_id = '' ) { ?>
+	<li id="contact_info_row[]" class="contact_info_row">
+	    <select name="wp_resume_options[contact_info_field][]" id="contact_info_field[]">
+	    <option></option>
+	    <?php 	foreach (wp_resume_contact_fields() as $id => $field) { ?>
+				<?php 	if ( is_array($field) ) {
+							foreach ($field as $subid => $subfield) { ?>
+								<option value="<?php echo $id . '|' . $subid; ?>" <?php if ($field_id == $subid) echo "SELECTED"; ?>>
+									<?php echo $subfield; ?>
+								</option>				
+							<?php }
+						} else { ?>
+							<option value="<?php echo $id; ?>" <?php if ($field_id == $id) echo "SELECTED"; ?>><?php echo $field; ?></option>	
+						<?php } ?>
+	    <?php } ?>
+	    </select>
+	    <input type="text" name="wp_resume_options[contact_info_value][]" id="contact_info_value[]" value="<?php echo $value; ?>"/> <br />
+	</li>
+<?php } 
 
 /**
  * Creates the options sub-panel
@@ -599,28 +644,51 @@ $options = wp_resume_get_options();
 				<strong>To use WP Resume...</strong>
 				<ol>
 					<li>Add content to your resume through the menus on the left</li>
-					<li>If you wish, add a title, contact information, and order your resume below</li>
+					<li>If you wish, add your name, contact information, summary, and order your resume below</li>
 					<li>Create a new page as you would normally
 					<li>Add the text <code>[wp_resume]</code> to the page's body</li>
 					<li>Your resume will now display on that page.</li>
 				</ol>
-					<i>Note: Although some styling is included by default, you can customize the layout by modifying <a href='theme-editor.php'>your theme's stylesheet</a></i>
 			</td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="wp_resume_options[title]">Resume Title</label></th>
+			<th scope="row"><label for="wp_resume_options[name]">Name</label></th>
 			<td>
-				<input name="wp_resume_options[title]" type="text" id="wp_resume_options[title]" value="<?php echo $options['title']; ?>" class="regular-text" /><BR />
-				<span class="description">Goes on the top of your resume.  Usually your name, but technically it can be anything you want.</span>
+				<input name="wp_resume_options[name]" type="text" id="wp_resume_options[name]" value="<?php echo $options['name']; ?>" class="regular-text" /><BR />
+				<span class="description">Your name -- displays on the top of your resume.</span>
 			</td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="wp_resume_options[contact_info]">Contact Information</label></th>
+			<th scope="row">Contact Information</th>
+			<td>
+				<ul class="contact_info_blank" style="display:none;">
+					<?php wp_resume_contact_info_row(); ?>
+				</ul>
+				<ul id="contact_info">
+					<?php array_walk_recursive($options['contact_info'], 'wp_resume_contact_info_row'); ?>
+				</ul>
+				<a href="#" id="add_contact_field">+ Add Field</a><br />
+				<script>
+					jQuery(document).ready(function($){
+						$('#contact_info').append( $('.contact_info_blank').html() );
+						$('.contact_info_row:last').show();
+						$('#add_contact_field').click(function(){
+							$('#contact_info').append( $('.contact_info_blank').html() );
+							$('.contact_info_row:last').fadeIn();						
+							return false;
+						});
+					});
+				</script>
+				<span class="description">(optional) Add any contact info you would like included in your resume.</span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="wp_resume_options[summary]">Summary</label></th>
 			<td id="poststuff">
 			<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
-				<?php the_editor($options['contact_info'], 'wp_resume_options[contact_info]' ); ?>	
+				<?php the_editor($options['summary'], 'wp_resume_options[summary]' ); ?>	
 			</div>
-			<span class="description">Generally used for contact information such as your e-mail address, street address, and phone number, this can be any text or HTML you want and will appear directly below the title on your resume.</div>	
+			<span class="description">(optional) Plain-text summary of your resume, professional goals, etc. Will appear on your resume below your contact information before the body.</div>	
 			</td>
 		</tr>
 		<tr valign="top">
@@ -658,6 +726,19 @@ $options = wp_resume_get_options();
 				<?php } ?>
 			</ul>
 			<span class="description">New positions are automatically displayed in reverse chronological order, but you can fine tune that order by rearranging the elements in the list above.</span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<th scrope="row">Customizing WP Resume</th>
+			<td>
+				<Strong>Style Sheets</strong><br />
+				Although some styling is included by default, you can customize the layout by modifying <a href='theme-editor.php'>your theme's stylesheet</a>.<br /><br />
+				
+				<strong>Templates</strong> <br />
+				Any WP Resume template file (resume.php, resume-style.css, resume-text.php, etc.) found in your theme's directory will override the plugin's included template. Feel free to copy the file from the plugin directory into your theme's template directory and modify the file to meet your needs.<br /><br />
+				
+				<strong>Feeds</strong> <br />
+				WP Resume allows you to access your data in three machine-readable formats. By default, the resume outputs in an <a href="http://microformats.org/wiki/hresume">hResume</a> compatible format. A JSON feed can be generated by appending <code>?feed=json</code> to your resume page's URL and a plain-text alternative (useful for copying and pasting into applications and forms) is available by appending <code>?feed=text</code> to your resume page's URL.<br /><br />
 			</td>
 		</tr>
 	</table>
@@ -723,7 +804,7 @@ register_activation_hook( __FILE__, 'wp_resume_activate' );
 
 
 /**
- * Updates posts, taxonomies, and options from 1.1 to 1.2
+ * Updates posts, taxonomies, and options from 1.1 to 1.2 and pre 1.5 to 1.5
  * @since 1.2
  */
 function wp_resume_upgrade_db() {
@@ -763,6 +844,14 @@ function wp_resume_upgrade_db() {
 			  $post['post_content'] = '[wp_resume]';
 			  wp_update_post($post);
 		}
+	}
+	
+	//convert title to name for 1.5
+	if ( !empty ($options['title'] ) ) {
+	
+		$options['name'] = $options['title'];
+		$options['title'] = '';
+	
 	}
 	
 	//Convert our old timestamp sort system into menu order
@@ -844,8 +933,60 @@ add_action('wp_resume_section_add_form','wp_resume_section_helptext');
  * @since 1.3
  */
 function wp_resume_shortcode() {
-	include('resume.php');
+	wp_resume_include_template('resume.php');
 }
 
 add_shortcode('wp_resume','wp_resume_shortcode');
+
+
+/**
+ * Adds feed support to the resume 
+ * @since 1.5
+ */
+function wp_resume_add_feeds() {
+	global $post;
+	if (strpos( $post->post_content, '[wp_resume]' ) === FALSE) 
+		return;
+	add_feed('text', 'wp_resume_plain_text');
+	add_feed('json', 'wp_resume_json');
+	add_action('wp_head', 'wp_resume_add_schema');
+}
+
+add_action('template_redirect','wp_resume_add_feeds');
+
+function wp_resume_add_schema() { ?>
+		<link rel="profile" href="http://microformats.org/profile/hcard" />
+<?php }
+
+/**
+ * Includes the plain text template
+ * @since 1.5
+ */
+function wp_resume_plain_text() {
+	header('Content-Type: text/html');
+	wp_resume_include_template('resume-text.php');
+}
+
+/**
+ * Includes the json template
+ * @since 1.5
+ */
+function wp_resume_json() {
+	header('Content-type: application/json');
+	wp_resume_include_template('resume-json.php');
+}
+
+/**
+ * Includes a wp_resume template file
+ * First looks in current theme directory for file, otherwise includes defaults
+ * @since 1.5
+ */
+function wp_resume_include_template( $template ) {
+
+	if ( file_exists( get_theme_root() . '/' . get_template() . '/' . $template ) )
+		include ( get_theme_root() . '/' . get_template() . '/' . $template ) ;
+	else 
+		include ( $template );
+						
+}
 ?>
