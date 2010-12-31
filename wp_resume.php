@@ -173,7 +173,8 @@ function wp_resume_taxonomy_box( $post, $type ) {
 		echo '<input type="radio" name="'.$type.'" value="'.$term->term_id.'" id="'.$term->slug.'"';
 		
 		//if the post is already in this taxonomy, select it
-		checked( $term->term_id, $current[0]->term_id );
+		if ( isset( $current[0]->term_id ) )
+			checked( $term->term_id, $current[0]->term_id );
 		
 		//build the label
 		echo '> <label for="'.$term->slug.'">' . $term->name . '</label><br />'. "\r\n";
@@ -273,7 +274,7 @@ function wp_resume_date_box( $post ) {
 function wp_resume_save_wp_resume_position( $post_id ) {
 
 	//Verify our nonce, also varifies that we are on the edit page and not updating elsewhere
-  	if ( !wp_verify_nonce( $_POST['wp_resume_nonce'], 'wp_resume_taxonomy' , 'wp_resume_nonce' ) )
+  	if ( !isset( $_POST['wp_resume_nonce'] ) || !wp_verify_nonce( $_POST['wp_resume_nonce'], 'wp_resume_taxonomy' , 'wp_resume_nonce' ) )
   	  	return $post_id;
   	  	  	
   	//If we're autosaving we don't really care all that much about taxonomies and metadata
@@ -388,7 +389,7 @@ function wp_resume_get_sections( $hide_empty = true ) {
 	
 	//pull out the order array (form: term_id => order)
 	$section_order = $options[ 'order' ];
-	
+		
 	//Loop through each section
 	foreach( $sections as $ID => $section ) {
 		
@@ -455,8 +456,16 @@ function wp_resume_get_org( $postID ) {
  */
 function wp_resume_get_options() {
 	$options = get_option('wp_resume_options');
+	
+	if ( !is_array($options['contact_info']) )
+		$options['contact_info'] = array();
+		
+ 	foreach ( $options['contact_info'] as $field ) {
+		$field = stripslashes($field);
+	}
 	return $options;
 }
+
 
 /**
  * Adds custom CSS to WP's queue
@@ -487,7 +496,7 @@ add_action( 'admin_menu', 'wp_resume_menu' );
 /**
  * Tells WP that we're usign a custom setting
  */
-function wp_resume_options_int() {
+function wp_resume_options_init() {
     
     register_setting( 'wp_resume_options', 'wp_resume_options', 'wp_resume_options_validate' );
 	$options = wp_resume_get_options();
@@ -496,6 +505,9 @@ function wp_resume_options_int() {
 	//This is a work around b/c register_acivation hook is having issues recognizing the custom taxonmomy
 	if ( isset($options['just_activated']) && $options['just_activated'] ) {
 
+		//upgrade DB after init so we have our CPTs
+		$options = wp_resume_upgrade_db();
+		
 		//check to see if we have any sections
 		if ( sizeof( wp_resume_get_sections(false) ) == 0 ) {
 			//add the sections
@@ -503,11 +515,7 @@ function wp_resume_options_int() {
 			wp_insert_term( 'Experience', 'wp_resume_section' );
 			wp_insert_term( 'Awards', 'wp_resume_section' );
 		}
-		
-		//because we changed our function and taxonomy prefix in 1.2, check to see if we need to upgrade the database
-		//Also moves from slug to shortcode (1.3)
-		wp_resume_upgrade_db();
-		
+
 		//get rid of the flag
 		$options['just_activated'] = false;
 
@@ -536,7 +544,7 @@ function wp_resume_options_int() {
 	}
 }
 
-add_action( 'admin_init', 'wp_resume_options_int' );
+add_action( 'admin_init', 'wp_resume_options_init' );
 
 
 /**
@@ -546,6 +554,10 @@ add_action( 'admin_init', 'wp_resume_options_int' );
  * @returns array of validated data (without position order)
  */
 function wp_resume_options_validate($data) {
+
+	//make sure we're POSTing
+	if ( empty($_POST) )
+		return $data;
 	
 	//strip html from fields
 	$data['name'] = wp_filter_post_kses( $data['name'] );
@@ -654,7 +666,7 @@ $options = wp_resume_get_options();
 		<tr valign="top">
 			<th scope="row"><label for="wp_resume_options[name]">Name</label></th>
 			<td>
-				<input name="wp_resume_options[name]" type="text" id="wp_resume_options[name]" value="<?php echo $options['name']; ?>" class="regular-text" /><BR />
+				<input name="wp_resume_options[name]" type="text" id="wp_resume_options[name]" value="<?php if ( isset( $options['name'] ) ) echo $options['name']; ?>" class="regular-text" /><BR />
 				<span class="description">Your name -- displays on the top of your resume.</span>
 			</td>
 		</tr>
@@ -686,7 +698,7 @@ $options = wp_resume_get_options();
 			<th scope="row"><label for="wp_resume_options[summary]">Summary</label></th>
 			<td id="poststuff">
 			<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
-				<?php the_editor($options['summary'], 'wp_resume_options[summary]' ); ?>	
+				<?php the_editor( ( isset($options['summary'] ) ) ? $options['summary'] : '', 'wp_resume_options[summary]' ); ?>	
 			</div>
 			<span class="description">(optional) Plain-text summary of your resume, professional goals, etc. Will appear on your resume below your contact information before the body.</div>	
 			</td>
@@ -792,7 +804,7 @@ function wp_resume_activate() {
 	$options['just_activated'] = true;
 	
 	//set our new options
-	update_option( 'wp_resume_options', $options);
+	update_option('wp_resume_options', $options );
 	
 	//flush rewrite rules
 	global $wp_rewrite;
@@ -846,13 +858,15 @@ function wp_resume_upgrade_db() {
 		}
 	}
 	
-	//convert title to name for 1.5
-	if ( !empty ($options['title'] ) ) {
+	//set order array
+	if ( !isset( $options['order'] ) ) 
+		$options['order'] = array();
+		
+	//DB Versioning
+	$options['db_version'] = '1.5';
 	
-		$options['name'] = $options['title'];
-		$options['title'] = '';
-	
-	}
+	//store updated options
+	update_option( 'wp_resume_options', $options );
 	
 	//Convert our old timestamp sort system into menu order
 	
@@ -886,6 +900,9 @@ function wp_resume_upgrade_db() {
   		}
   	
   	}
+  	
+  	//pass the upgraded options back
+  	return $options;
 
 }
 
@@ -933,7 +950,11 @@ add_action('wp_resume_section_add_form','wp_resume_section_helptext');
  * @since 1.3
  */
 function wp_resume_shortcode() {
+	ob_start();
 	wp_resume_include_template('resume.php');
+	$resume = ob_get_contents();
+	ob_end_clean();
+	return $resume;
 }
 
 add_shortcode('wp_resume','wp_resume_shortcode');
