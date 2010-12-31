@@ -13,6 +13,7 @@
 $options = wp_resume_get_options();
 ?>
 		<div class="resume hresume">
+			<div id="bar"> </div>
 			<header class="vcard">
 				<h2 class="fn n url" id="name"><a href="<?php bloginfo('url'); ?>"><?php echo $options['name']; ?></a></h2>
 				<ul>
@@ -83,11 +84,17 @@ $options = wp_resume_get_options();
 					//End if new org
 					}  
 ?>
-					<section class="vcard">
+					<<?php echo ($organization) ? 'section' : 'article'; ?> class="vcard">
 						<a href="#name" class="include" title="<?php echo $options['title']; ?>"></a>
 						<a href="#<?php echo $organization->slug; ?>-name" class="include" title="<?php echo $organization->name; ?>"></a>
+						<?php if (!$organization) { ?>
+							<header>
+						<?php } ?>
 						<div class="title"><?php echo the_title(); ?></div>
 						<div class="date"><?php echo wp_resume_format_date( get_the_ID() ); ?></div>
+						<?php if (!$organization) { ?>
+							</header>
+						<?php } ?>
 						<details>
 						<?php the_content(); ?>
 <?php 			//If the current user can edit posts, output the link
@@ -95,7 +102,7 @@ $options = wp_resume_get_options();
 					edit_post_link('Edit'); 	
 ?>
 						</details><!-- .details -->
-					</section> <!-- .vcard -->
+					</<?php echo ($organization) ? 'section' : 'article'; ?>> <!-- .vcard -->
 <?php 		
 				//End loop
 				endwhile; endif;	
