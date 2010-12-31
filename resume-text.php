@@ -18,10 +18,10 @@ foreach ($options['contact_info'] as $field=>$value) {
 	//per hCard specs (http://microformats.org/profile/hcard) adr needs to be an array
 	if ( is_array( $value ) ) {
 		foreach ($value as $subfield => $subvalue) { 
-			 echo $subvalue . "\r\n"; 
+			 echo wp_filter_nohtml_kses( $subvalue ) . "\r\n"; 
 		} 
 	} else {
-		echo $value . "\r\n";
+		echo wp_filter_nohtml_kses( $value ) . "\r\n";
 	} 
 }
 
@@ -65,8 +65,8 @@ foreach ( wp_resume_get_sections() as $section) {
 		//end if new org.	
 		}
 		
-		echo the_title() . ' ( ' . wp_filter_kses( str_replace('&ndash;','-', wp_resume_format_date( get_the_ID() ) ) ) .")\r\n";
-		echo wp_filter_kses( str_replace("\t", "", str_replace('<li>', '* ', get_the_content() ) ) );
+		echo the_title() . ' (' . wp_filter_nohtml_kses( str_replace('&ndash;','-', wp_resume_format_date( get_the_ID() ) ) ) .")\r\n";
+		echo wp_filter_nohtml_kses( str_replace("\t", "", str_replace('<li>', '* ', get_the_content() ) ) );
 	
 	//loop		
 	endwhile; endif;
