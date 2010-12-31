@@ -1,7 +1,7 @@
 === Plugin Name ===
 Contributors: benbalter
 Donate link: http://ben.balter.com/
-Tags: resume, online reputation, personal branding, experience, education, awards, cv
+Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume
 Requires at least: 3.0
 Tested up to: 3.1
 Stable tag: 1.5
