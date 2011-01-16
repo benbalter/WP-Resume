@@ -27,7 +27,7 @@
 .resume .title {font-style: italic; float:left; clear:left;  font-size: 15px; }
 .resume .date {float:right; color: #aaa; clear:right; font-size: 14px;}
 .resume details {clear: both; text-align: justify; margin-bottom: 10px; }
-.resume details {font-size: 14px;}
+.resume details {font-size: 14px; display: block;}
 .resume .organization details, .resume organization .title {margin:0;}
 .resume .organization details { width: 100%;}
 .resume details .post-edit-link {float:right; display: none; padding-left: 10px; margin-top: -2em;}
