@@ -445,7 +445,7 @@ function wp_resume_query( $section ) {
 function wp_resume_get_org( $postID ) {
 
 	$organization = wp_get_object_terms( $postID, 'wp_resume_organization' );
-	if ( !is_array( $organization ) ) return false;
+	if ( empty( $organization[0] ) ) return false;
 	return $organization[0];
 	
 }

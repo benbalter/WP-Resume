@@ -100,6 +100,9 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 
 == Changelog ==
 
+= 1.53 =
+* Fixed E_NOTICE level warning for undefined index in the "Resume Order" section when no organization exists
+
 = 1.52 =
 * Added display:block to header and section to fix display issues in FireFox
 
