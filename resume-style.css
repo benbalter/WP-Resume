@@ -12,7 +12,7 @@
 .resume header h2 a {text-decoration: none; color: #000;}
 
 /* Summary */
-.resume summary { margin-bottom: 15px;}
+.resume summary { display: block; margin-bottom: 15px;}
 
 /* Sections */
 .resume section {margin-bottom:20px; display:block;}
