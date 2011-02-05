@@ -91,6 +91,8 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
  
 * Import from LinkedIn via API
 * AJAX Inline editing of resume content
+* Support for multiple resumes
+* Multilingual support
 
 == Screenshots ==
 
