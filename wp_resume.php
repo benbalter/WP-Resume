@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 1.5
+Version: 1.52
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -445,7 +445,7 @@ function wp_resume_query( $section ) {
 function wp_resume_get_org( $postID ) {
 
 	$organization = wp_get_object_terms( $postID, 'wp_resume_organization' );
-	if ( empty( $organization[0] ) ) return false;
+	if ( !is_array( $organization ) ) return false;
 	return $organization[0];
 	
 }
@@ -457,7 +457,7 @@ function wp_resume_get_org( $postID ) {
 function wp_resume_get_options() {
 	$options = get_option('wp_resume_options');
 	
-	if ( !is_array($options['contact_info']) )
+	if ( !isset($options['contact_info']) || !is_array($options['contact_info']) )
 		$options['contact_info'] = array();
 		
  	foreach ( $options['contact_info'] as $field ) {
