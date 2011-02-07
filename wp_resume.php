@@ -445,7 +445,7 @@ function wp_resume_query( $section ) {
 function wp_resume_get_org( $postID ) {
 
 	$organization = wp_get_object_terms( $postID, 'wp_resume_organization' );
-	if ( empty( $organization[0] ) ) return false; 
+	if ( !is_array( $organization ) ) return false;
 	return $organization[0];
 	
 }
@@ -457,7 +457,7 @@ function wp_resume_get_org( $postID ) {
 function wp_resume_get_options() {
 	$options = get_option('wp_resume_options');
 	
-	if ( !isset($options['contact_info']) || !is_array($options['contact_info']) )
+	if ( !is_array($options['contact_info']) )
 		$options['contact_info'] = array();
 		
  	foreach ( $options['contact_info'] as $field ) {
@@ -708,6 +708,7 @@ $options = wp_resume_get_options();
 			<td>
 			<ul id="sections">
 <?php foreach ( wp_resume_get_sections(false) as $section ) { ?>
+
 				<li class="section" id="<?php echo $section->term_id; ?>">
 <?php 				echo $section->name; ?>
 					<ul class="organizations">
@@ -718,8 +719,8 @@ $options = wp_resume_get_options();
 						if ($organization && $organization->term_id != $current_org) {
 							if ($current_org != '') { 
 ?>								
-									</li>
-								</ul>
+									</ul><!-- .positions -->
+								</li><!-- .organization -->
 <?php 						} 
 							$current_org = $organization->term_id; 
 ?>
@@ -729,14 +730,15 @@ $options = wp_resume_get_options();
 <?php						}  ?>
 								<li class="position" id="<?php the_ID(); ?>">
 									<?php echo the_title(); ?> <?php if ($date = wp_resume_format_date( get_the_ID() ) ) echo "($date)"; ?>
-								</li>
+								</li><!-- .position -->
 <?php 				endwhile; ?>
-								</ul>				
+								</ul><!-- .positions -->				
 <?php				endif;	 ?>
-					</ul>
-				</li>
+						</li><!-- .organization -->
+					</ul><!-- .organizations -->
+				</li><!-- .section -->
 				<?php } ?>
-			</ul>
+			</ul><!-- #sections -->
 			<span class="description">New positions are automatically displayed in reverse chronological order, but you can fine tune that order by rearranging the elements in the list above.</span>
 			</td>
 		</tr>
