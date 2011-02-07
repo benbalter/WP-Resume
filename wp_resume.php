@@ -986,7 +986,7 @@ function wp_resume_add_schema() { ?>
  * @since 1.5
  */
 function wp_resume_plain_text() {
-	header('Content-Type: text/html');
+	header('Content-Type: text/html; charset='. get_bloginfo('charset') );
 	wp_resume_include_template('resume-text.php');
 }
 
@@ -995,7 +995,7 @@ function wp_resume_plain_text() {
  * @since 1.5
  */
 function wp_resume_json() {
-	header('Content-type: application/json');
+	header('Content-type: application/json; charset='. get_bloginfo('charset') );
 	wp_resume_include_template('resume-json.php');
 }
 
