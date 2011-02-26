@@ -764,7 +764,7 @@ $options = wp_resume_get_options();
     	opacity: .5,
     	update: function(){},
 		placeholder: 'placeholder',
-		forcePlaceholderSize: 'true',
+		forcePlaceholderSize: 'true'
     });
     $("#sections").disableSelection();
 	$('.button-primary').click(function(){
