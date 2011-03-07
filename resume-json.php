@@ -9,12 +9,21 @@
 //Retrieve plugin options for later use
 $options = wp_resume_get_options();
 
+//determine user
+global $post;	
+if ( preg_match( '/\[wp_resume user=\"([^\"]*)"]/i', $post->post_content, $matches ) === FALSE) {
+	$user = get_userdata($post->post_author);
+	$author = $user->user_login; 
+} else {
+	$author = $matches[1];	
+}
+
 //output name and url
-$output['name'] = $options['name'];
-$output['url'] = get_bloginfo('url');
+$output['name'] = $options[$author]['name'];
+$output['url'] = get_permalink();
 
 //loop through contact info
-foreach ($options['contact_info'] as $field=>$value) { 
+foreach ($options[$author]['contact_info'] as $field=>$value) { 
 	//per hCard specs (http://microformats.org/profile/hcard) adr needs to be an array
 	if ( is_array( $value ) ) {
 		foreach ($value as $subfield => $subvalue) { 
@@ -26,18 +35,18 @@ foreach ($options['contact_info'] as $field=>$value) {
 }
 
 //echo summary, if one exists
-if (! empty( $options['summary'] ) ) 
-	$output['summary'] = $options['summary'];
+if (! empty( $options[$author]['summary'] ) ) 
+	$output['summary'] = $options[$author]['summary'];
 
 //Loop through each resume section
-foreach ( wp_resume_get_sections() as $section) {
+foreach ( wp_resume_get_sections(null, $author) as $section) {
 
 	//Initialize our org. variable and array 
 	$current_org=''; 
 	$org = array();
 	
 	//retrieve all posts in the current section using our custom loop query
-	$posts = wp_resume_query( $section->slug );
+	$posts = wp_resume_query( $section->slug, $author);
 	
 	//loop through all posts in the current section using the standard WP loop
 	if ( $posts->have_posts() ) : while ( $posts->have_posts() ) : $posts->the_post();
@@ -47,7 +56,7 @@ foreach ( wp_resume_get_sections() as $section) {
 		
 		//build pos. data into array
 		$pos['title'] = get_the_title();
-		$pos['dates'] = wp_resume_format_date( get_the_ID() );
+		$pos['dates'] = wp_filter_nohtml_kses( str_replace('&ndash;','-', wp_resume_format_date( get_the_ID() ) ) );
 		$pos['details'] = get_the_content();
 		
 		//push array into our org array
