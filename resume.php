@@ -13,6 +13,7 @@
 $options = wp_resume_get_options();
 global $wp_resume_author;
 $wp_resume_author = wp_resume_get_author();
+
 ?>
 		<div class="resume hresume">
 			<div id="bar"> </div>
@@ -20,6 +21,7 @@ $wp_resume_author = wp_resume_get_author();
 				<h2 class="fn n url" id="name"><a href="<?php get_permalink(); ?>"><?php echo $options[$wp_resume_author]['name']; ?></a></h2>
 				<ul>
 					<?php //loop through contact info fields
+					if ( isset($options[$wp_resume_author]['contact_info'] ) ) {
 						foreach ($options[$wp_resume_author]['contact_info'] as $field=>$value) { ?>
 						<?php 
 							//per hCard specs (http://microformats.org/profile/hcard) adr needs to be an array
@@ -35,6 +37,7 @@ $wp_resume_author = wp_resume_get_author();
 							<li class="<?php echo $field; ?>"><?php echo $value; ?></li>
 						<?php } ?>
 					<?php } ?>
+				<?php } ?>
 				</ul>
 			</header>
 			<?php if (! empty( $options[$wp_resume_author]['summary'] ) ) { ?>
@@ -110,7 +113,7 @@ $wp_resume_author = wp_resume_get_author();
 				//End loop
 				endwhile; endif;	
 ?>
-<?php 		if ( $organization ) { ?>
+<?php 		if ( isset($organization) && $organization ) { ?>
 				</article><!-- .organization -->
 <?php 		} ?>
 			</section><!-- .section -->
