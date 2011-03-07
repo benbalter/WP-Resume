@@ -9,12 +9,21 @@
 //Retrieve plugin options for later use
 $options = wp_resume_get_options();
 
+//determine user
+global $post;	
+if ( preg_match( '/\[wp_resume user=\"([^\"]*)"]/i', $post->post_content, $matches ) === FALSE) {
+	$user = get_userdata($post->post_author);
+	$author = $user->user_login; 
+} else {
+	$author = $matches[1];	
+}
+
 //output name and url
-echo $options['name'] . "\r\n";
-echo bloginfo('url') . "\r\n";
+echo $options[$author]['name'] . "\r\n";
+echo get_permalink() . "\r\n";
 
 //loop through contact info
-foreach ($options['contact_info'] as $field=>$value) { 
+foreach ($options[$author]['contact_info'] as $field=>$value) { 
 	//per hCard specs (http://microformats.org/profile/hcard) adr needs to be an array
 	if ( is_array( $value ) ) {
 		foreach ($value as $subfield => $subvalue) { 
@@ -29,23 +38,26 @@ foreach ($options['contact_info'] as $field=>$value) {
 echo "\r\n";
 
 //echo summary, if one exists
-if (! empty( $options['summary'] ) ) 
-	echo $options['summary'] . "\r\n";
+if (! empty( $options[$author]['summary'] ) ) 
+	echo $options[$author]['summary'] . "\r\n";
 
 //Loop through each resume section
-foreach ( wp_resume_get_sections() as $section) {
-
-	//Output section name, all uppercase
-	echo "\r\n" . strtoupper( $section->name ) . "\r\n\r\n";
+foreach ( wp_resume_get_sections(null, $author) as $section) {
 	
 	//Initialize our org. variable 
 	$current_org=''; 
 	
 	//retrieve all posts in the current section using our custom loop query
-	$posts = wp_resume_query( $section->slug );
+	$posts = wp_resume_query( $section->slug, $author);
 
 	//loop through all posts in the current section using the standard WP loop
-	if ( $posts->have_posts() ) : while ( $posts->have_posts() ) : $posts->the_post();
+	if ( $posts->have_posts() ) : 
+	
+	//Output section name, all uppercase
+	echo "\r\n" . strtoupper( $section->name ) . "\r\n\r\n";
+	
+	//loop positions
+	while ( $posts->have_posts() ) : $posts->the_post();
 
 		//Retrieve details on the current position's organization
 		$organization = wp_resume_get_org( get_the_ID() ); 
@@ -65,7 +77,11 @@ foreach ( wp_resume_get_sections() as $section) {
 		//end if new org.	
 		}
 		
-		echo the_title() . ' (' . wp_filter_nohtml_kses( str_replace('&ndash;','-', wp_resume_format_date( get_the_ID() ) ) ) .")\r\n";
+		the_title();
+		$date = wp_filter_nohtml_kses( str_replace('&ndash;','-', wp_resume_format_date( get_the_ID() ) ) );
+		if (strlen($date) > 1)
+			echo "($date)";
+		echo "\r\n";
 		echo wp_filter_nohtml_kses( str_replace("\t", "", str_replace('<li>', '* ', get_the_content() ) ) );
 	
 	//loop		

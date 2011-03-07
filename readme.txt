@@ -110,6 +110,7 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 * Fixed IE bug on section ordering due to trailing comma in list
 * Fixed display of headers for empty sections
 * Removed upgrade procedures from pre 1.5 versions
+* Fixed feed formatting
 
 = 1.52 =
 * Added display:block to header and section to fix display issues in FireFox
