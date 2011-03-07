@@ -11,11 +11,11 @@ $options = wp_resume_get_options();
 
 //determine user
 global $post;	
-if ( preg_match( '/\[wp_resume user=\"([^\"]*)"]/i', $post->post_content, $matches ) === FALSE) {
+if ( preg_match( '/\[wp_resume user=\"([^\"]*)"]/i', $post->post_content, $matches ) == 0) {
 	$user = get_userdata($post->post_author);
 	$author = $user->user_login; 
 } else {
-	$author = $matches[1];	
+	$author = $matches[1];
 }
 
 //output name and url

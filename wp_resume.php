@@ -430,7 +430,7 @@ function wp_resume_get_sections( $hide_empty = true, $author = '' ) {
  */
 function wp_resume_query( $section, $author = '' ) {
 	global $wp_resume_author;
-	
+		
 	//if the author isn't passed as a function arg, see if it has been set by the shortcode
 	if ( $author == '' && isset( $wp_resume_author ) )
  		$author = $wp_resume_author;
