@@ -48,7 +48,7 @@ function wp_resume_register_cpt_and_t() {
     'hierarchical' => false,
     'menu_position' => null,
     'register_meta_box_cb' => 'wp_resume_meta_callback',
-    'supports' => array( 'title', 'editor', 'revisions', 'custom-fields', 'page-attributes'),
+    'supports' => array( 'title', 'editor', 'revisions', 'custom-fields', 'page-attributes', 'author'),
     'taxonomies' => array('wp_resume_section', 'wp_resume_organization'),
   ); 
   
@@ -376,10 +376,16 @@ function wp_resume_format_date( $ID ) {
  * @returns array of term objects in user-specified order
  * @since 1.0a
  */
-function wp_resume_get_sections( $hide_empty = true ) {
+function wp_resume_get_sections( $hide_empty = true, $author = '' ) {
 
 	//init array
 	$output = array();
+	
+	//set default author
+	if ($author == '') {
+		$user = get_current_user();
+		$author = $user->user_login;
+	}
 
 	//get all sections ordered by term_id (order added)
 	$sections = get_terms( 'wp_resume_section', array('hide_empty' => $hide_empty ) );
@@ -388,7 +394,7 @@ function wp_resume_get_sections( $hide_empty = true ) {
 	$options = wp_resume_get_options();
 	
 	//pull out the order array (form: term_id => order)
-	$section_order = $options[ 'order' ];
+	$section_order = $options[$author][ 'order' ];
 		
 	//Loop through each section
 	foreach( $sections as $ID => $section ) {
@@ -422,8 +428,13 @@ function wp_resume_get_sections( $hide_empty = true ) {
  * @returns array array of post objects
  * @since 1.0a
  */
-function wp_resume_query( $section ) {
+function wp_resume_query( $section, $author = '' ) {
+	global $wp_resume_author;
 	
+	//if the author isn't passed as a function arg, see if it has been set by the shortcode
+	if ( $author == '' && isset( $wp_resume_author ) )
+ 		$author = $wp_resume_author;
+ 		 		
 	//build our query
 	$args = array(
 		'post_type' => 'wp_resume_position',
@@ -431,8 +442,9 @@ function wp_resume_query( $section ) {
 		'order' => 'ASC',
 		'nopaging' => true,
 		'wp_resume_section' => $section,
+		'author_name' => $author
 	);
-
+		
 	//query and return
 	$query = new wp_query($args);
 	return $query;
@@ -456,13 +468,6 @@ function wp_resume_get_org( $postID ) {
  */
 function wp_resume_get_options() {
 	$options = get_option('wp_resume_options');
-	
-	if ( !is_array($options['contact_info']) )
-		$options['contact_info'] = array();
-		
- 	foreach ( $options['contact_info'] as $field ) {
-		$field = stripslashes($field);
-	}
 	return $options;
 }
 
@@ -508,8 +513,11 @@ function wp_resume_options_init() {
 		//upgrade DB after init so we have our CPTs
 		$options = wp_resume_upgrade_db();
 		
+		//grab current user
+		$current_user = wp_get_current_user();
+		
 		//check to see if we have any sections
-		if ( sizeof( wp_resume_get_sections(false) ) == 0 ) {
+		if ( sizeof( wp_resume_get_sections(false, $current_user->user_login ) ) == 0 ) {
 			//add the sections
 			wp_insert_term( 'Education', 'wp_resume_section');
 			wp_insert_term( 'Experience', 'wp_resume_section' );
@@ -521,9 +529,9 @@ function wp_resume_options_init() {
 
 		//set default order if none exists
 		$i = 0;
-		foreach ( wp_resume_get_sections( false ) as $section) {
-			if ( empty ( $options['order'][$section->term_id] ) )
-				$options['order'][$section->term_id] = $i++;
+		foreach ( wp_resume_get_sections( false, $current_user->user_login ) as $section) {
+			if ( empty ( $options[$current_user->user_login]['order'][$section->term_id] ) )
+				$options[$current_user->user_login]['order'][$section->term_id] = $i++;
 		}
 		
 		//store the new options
@@ -554,7 +562,10 @@ add_action( 'admin_init', 'wp_resume_options_init' );
  * @returns array of validated data (without position order)
  */
 function wp_resume_options_validate($data) {
-
+	
+	//grab the existing options, we must hand WP back a complete option array, including other users
+	$output = wp_resume_get_options();
+	
 	//make sure we're POSTing
 	if ( empty($_POST) )
 		return $data;
@@ -573,16 +584,9 @@ function wp_resume_options_validate($data) {
 
 	}
 	
-	unset($data['contact_info_field']);
-	unset($data['contact_info_value']);
-	
 	//sanitize section order data
 	foreach ($data['order'] as &$section)
 		$section = intval( $section );
-
-	//if there is no position_order data (e.g., if this is activation) no need to store
-	if ( !isset($data['position_order'] ) ) 
-		return $data;
 		
 	//store position order data
 	foreach ($data['position_order'] as $positionID => $order) {
@@ -592,7 +596,37 @@ function wp_resume_options_validate($data) {
  	}
 	unset ( $data['position_order'] );
 	
-	return $data;
+	//move user-specific fields to user sub-array
+	$authors = explode(',', wp_list_authors( array('exclude_admin' => false, 'hide_empty' => false, 'echo' => false, 'html'=> false ) ) );
+	if ( sizeof($authors) == 1 ) {
+		$current_author = $authors[0];
+	} else if ( $_POST['old_user'] != $_POST['user'] ) {
+		//if this is an auto save as a result of the author dropdown changing, 
+		//save as old author, not author we're moving to
+		$current_author = $_POST['old_user'];
+		
+		//Because we post to options.php and then get redirected, 
+		//trick WP into appending the user as a parameter so we can update the dropdown
+		$_REQUEST['_wp_http_referer'] .= '&user=' . $_POST['user'];
+		
+	} else {
+		//if this is a normal submit, just grab the author from the dropdown
+		$current_author = $_POST['user'];
+	}
+	
+	//move user-specific fields to output array
+	$fields = array('name', 'summary', 'contact_info', 'order');
+	foreach ($fields as $field) {
+		$output[$current_author][$field] = $data[$field];
+	}
+	
+	//move site-wide fields to output array
+	$fields = array('fix_ie');
+	foreach ($fields as $field) {
+		$output[$field] = $data[$field];
+	}
+
+	return $output;
 }
 
 function wp_resume_contact_fields() {
@@ -648,6 +682,22 @@ settings_fields( 'wp_resume_options' );
 //Pull the existing options from the DB
 $options = wp_resume_get_options();
 
+//set up the current author
+$authors = explode(', ', wp_list_authors( array('exclude_admin' => false, 'hide_empty' => false, 'echo' => false, 'html'=> false ) ) );
+
+if ( sizeof($authors) == 1 ) {
+	//if there's only one author, that's our author
+	$current_author = $authors[0];
+} else if ( isset($_GET['user'] ) ) {
+	//if there's multiple authors, look for post data from author drop down
+	$current_author = $_GET['user'];
+} else {
+	//otherwise, assume the current user
+	$current_user = wp_get_current_user();
+	$current_author = $current_user->user_login;
+
+}
+
 ?>
 	<table class="form-table">
 		<tr valign="top">
@@ -660,13 +710,39 @@ $options = wp_resume_get_options();
 					<li>Create a new page as you would normally
 					<li>Add the text <code>[wp_resume]</code> to the page's body</li>
 					<li>Your resume will now display on that page.</li>
+				</ol><br />
+				<strong>Want to have multiple resumes on your site?</strong> <a href="#" id="toggleMultiple">Yes!</a><br />
+				<div id="multiple">
+				WP Resume associates each resume with a user. To create a second resume...
+				<ol>
+					<li style="font-size: 11px;">Simply <a href="user-new.php">add a new user</a> (or select an existing user in step two).</li>
+					<li style="font-size: 11px;"><a href="post-new.php?post_type=wp_resume_position">Add positions</a> as you would normally, being sure to select that user as the position's author. You may need to display the author box by enabling it in the "Screen Options" toggle in the top-right corner of the position page.</li>
+					<li style="font-size: 11px;">Select the author from the drop down below and fill in the name, contact info, and summary fields (optional).</li>
+					<li style="font-size: 11px;"><a href="post-new.php?post_type=page">Create a new page</a> and add the <code>[wp_resume]</code> shortcode, similar to above, but set the page author to the resume's author (the author from step two). Again, you may need to enable the author box.</li>
 				</ol>
+ 				 <em>Note:</em> To embed multiple resumes on the same page, you can alternatively use the syntax <code>[wp_resume user="user_login"]</code> where <code>user_login</code> is the username of the resume's author.
+ 				 </div>
 			</td>
 		</tr>
+		<?php 
+			if (sizeof($authors) > 1) {
+			?>
+		<tr valign="top">
+			<th scope="row">User</label></th>
+			<td>
+				<select name="user" id="user">
+					<?php foreach ($authors as $author) { ?>
+					<option <?php selected($author, $current_author); ?>><?php echo $author; ?></option>
+					<?php } ?>
+				</select>
+				<input type="hidden" name="old_user" value="<?php echo $current_author; ?>" />
+			</td>
+		</tr>
+		<?php } ?>
 		<tr valign="top">
 			<th scope="row"><label for="wp_resume_options[name]">Name</label></th>
 			<td>
-				<input name="wp_resume_options[name]" type="text" id="wp_resume_options[name]" value="<?php if ( isset( $options['name'] ) ) echo $options['name']; ?>" class="regular-text" /><BR />
+				<input name="wp_resume_options[name]" type="text" id="wp_resume_options[name]" value="<?php if ( isset( $options[$current_author]['name'] ) ) echo $options[$current_author]['name']; ?>" class="regular-text" /><BR />
 				<span class="description">Your name -- displays on the top of your resume.</span>
 			</td>
 		</tr>
@@ -677,7 +753,7 @@ $options = wp_resume_get_options();
 					<?php wp_resume_contact_info_row(); ?>
 				</ul>
 				<ul id="contact_info">
-					<?php array_walk_recursive($options['contact_info'], 'wp_resume_contact_info_row'); ?>
+					<?php array_walk_recursive($options[$current_author]['contact_info'], 'wp_resume_contact_info_row'); ?>
 				</ul>
 				<a href="#" id="add_contact_field">+ Add Field</a><br />
 				<script>
@@ -698,7 +774,7 @@ $options = wp_resume_get_options();
 			<th scope="row"><label for="wp_resume_options[summary]">Summary</label></th>
 			<td id="poststuff">
 			<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
-				<?php the_editor( ( isset($options['summary'] ) ) ? $options['summary'] : '', 'wp_resume_options[summary]' ); ?>	
+				<?php the_editor( ( isset($options[$current_author]['summary'] ) ) ? $options[$current_author]['summary'] : '', "wp_resume_options[summary]" ); ?>	
 			</div>
 			<span class="description">(optional) Plain-text summary of your resume, professional goals, etc. Will appear on your resume below your contact information before the body.</div>	
 			</td>
@@ -707,13 +783,13 @@ $options = wp_resume_get_options();
 			<th scope="row">Resume Order</th>
 			<td>
 			<ul id="sections">
-<?php foreach ( wp_resume_get_sections(false) as $section ) { ?>
+<?php foreach ( wp_resume_get_sections( false, $current_author ) as $section ) { ?>
 
 				<li class="section" id="<?php echo $section->term_id; ?>">
 <?php 				echo $section->name; ?>
 					<ul class="organizations">
 <?php				$current_org='';
-					$posts = wp_resume_query( $section->slug );
+					$posts = wp_resume_query( $section->slug, $current_author );
 					if ( $posts->have_posts() ) : while ( $posts->have_posts() ) : $posts->the_post();
 						$organization = wp_resume_get_org( get_the_ID() ); 
 						if ($organization && $organization->term_id != $current_org) {
@@ -755,9 +831,28 @@ $options = wp_resume_get_options();
 				WP Resume allows you to access your data in three machine-readable formats. By default, the resume outputs in an <a href="http://microformats.org/wiki/hresume">hResume</a> compatible format. A JSON feed can be generated by appending <code>?feed=json</code> to your resume page's URL and a plain-text alternative (useful for copying and pasting into applications and forms) is available by appending <code>?feed=text</code> to your resume page's URL.<br /><br />
 			</td>
 		</tr>
+		<tr valign="top">
+			<th scrope="row">Force IE HTML5 Support</th>
+			<td>
+				<input type="radio" name="wp_resume_options[fix_ie]" id="fix_ie_yes" value="1" <?php checked($options['fix_ie'], 1); ?>/> <label for="fix_ie_yes">Yes</label><br />
+				<input type="radio" name="wp_resume_options[fix_ie]" id="fix_ie_yes" value="0" <?php checked($options['fix_ie'], 0); ?>/> <label for="fix_ie_no">No</label><br />
+				<span class="description">If Internet Explorer breaks your resume's formatting, conditionally including a short Javascript file should force IE to recognize html5 semantic tags.</span>
+			</td>
+		</tr>
 	</table>
 	<script>
 	jQuery(document).ready(function($) {
+	
+	$('#multiple').hide();
+	$('#toggleMultiple').click(function() {
+		$('#multiple').toggle('fast');
+		if ($(this).text() == "Yes!")
+			$(this).text('No.');
+		else
+			$(this).text('Yes!');
+		return false;
+	});
+
     $("#sections, .positions, .organizations").sortable({
     	axis:'y', 
     	containment: 'parent',
@@ -778,7 +873,11 @@ $options = wp_resume_get_options();
 			$('#wp_resume_form').append('<input type="hidden" name="wp_resume_options[position_order]['+$(this).attr('id')+']" value="' + i + '">');
 			i = i +1;
 		});
+	});
+	$('#user').change(function(){
+		$('.button-primary').click();		
 	}); 
+	
 });
 	</script>
 	<p class="submit">
@@ -797,10 +896,6 @@ function wp_resume_activate() {
 			
 	//get current options incase this is a reactivate
 	$options = wp_resume_get_options();
-
-	//If they don't have a title set, set it to the blog name
-	if ( empty ($options['title'] ) ); 
-		$options['title'] = get_bloginfo('name');
 	
 	//Set the update flag
 	$options['just_activated'] = true;
@@ -826,82 +921,39 @@ function wp_resume_upgrade_db() {
 	//get the Database object
 	global $wpdb;
 
-	//update sections
-	$wpdb->query("UPDATE $wpdb->term_taxonomy SET `taxonomy` = 'wp_resume_section' WHERE `taxonomy` = 'wpr_section'");
-	
-	//update organizations
-	$wpdb->query("UPDATE $wpdb->term_taxonomy SET `taxonomy` = 'wp_resume_organization' WHERE `taxonomy` = 'wpr_organization'");
-	
-	//update positions
-	$wpdb->query("UPDATE $wpdb->posts SET `post_type` = 'wp_resume_position' WHERE `post_type` = 'resume_position'");
-	
-	//update options
-	$wpdb->query("UPDATE $wpdb->options SET `option_name` = 'wp_resume_options' WHERE `option_name` = 'wpr_options'");
-
-	//update postmeta
-	$wpdb->query("UPDATE $wpdb->postmeta SET `meta_key` = 'wp_resume_to' WHERE `meta_key` = 'wpr_to'");
-	$wpdb->query("UPDATE $wpdb->postmeta SET `meta_key` = 'wp_resume_from' WHERE `meta_key` = 'wpr_from'");
-	$wpdb->query("UPDATE $wpdb->postmeta SET `meta_key` = 'wp_resume_timestamp' WHERE `meta_key` = 'wpr_timestamp'");
-
 	//get our options
 	$options = wp_resume_get_options();
-
-	//Check to see if they have a slug from <1.2, if so, insert the shortcode into the page if it exists
-	if ( !empty( $options['slug'] ) ) {
-		
-		//lookup the postID bassed on the URL	
-		$postID = url_to_postid( get_bloginfo('home') . '/' .  $options['slug'] . '/' );
-		
-		//If we found a post, insert our shortcode
-		if ($postID) {
-			  $post['ID'] = $postID;
-			  $post['post_content'] = '[wp_resume]';
-			  wp_update_post($post);
-		}
-	}
 	
 	//set order array
 	if ( !isset( $options['order'] ) ) 
 		$options['order'] = array();
 		
+	//add fix ie flag to options array
+	if ($options['db_version'] < '1.53') 
+		$options['fix_ie'] = true;
+	
+	//add multi-user support
+	if ($options['db_version'] < '1.6') {
+		$current_user = wp_get_current_user();
+		
+		//abstract $options[field] to $options[user_login][field] and kill original
+		$fields = array('name', 'summary', 'contact_info', 'order');
+		foreach ($fields as $field) {
+			if ( isset( $options[$field] ) ) {
+				$options[$current_user->user_login][$field] = $options[$field];
+				unset($options[$field]);
+			}
+		}
+	
+
+	}
+	
+		
 	//DB Versioning
-	$options['db_version'] = '1.5';
+	$options['db_version'] = '1.53';
 	
 	//store updated options
 	update_option( 'wp_resume_options', $options );
-	
-	//Convert our old timestamp sort system into menu order
-	
-	//Loop through sections
-	foreach ( wp_resume_get_sections() as $section) {
-	
-		//Query DB for all posts w/i that section
-		$args = array(
-			'post_type' => 'wp_resume_position',
-			'orderby' => 'meta_value_num',
-			'order' => 'DESC',
-			'nopaging' => true,
-			'wp_resume_section' => $section->slug,
-			'meta_key'=> 'wp_resume_timestamp',
-		);
-		$posts = get_posts( $args );
-		
-		//set internal counter
-		$i = 1;
-		
-		//loop through each post within section by timestamp DESC and add a 1-indexed menu order value
-		foreach ($posts as $post) {
-			
-			//update row if necessary
-			if ( empty( $post->menu_order ) )
-				$wpdb->update($wpdb->posts,array('menu_order'=>$i),array('ID'=>$post->ID)); 
-			
-			//increment internal counter 	
-  			$i++;	
-  			
-  		}
-  	
-  	}
   	
   	//pass the upgraded options back
   	return $options;
@@ -951,11 +1003,12 @@ add_action('wp_resume_section_add_form','wp_resume_section_helptext');
  * Includes resume template on shortcode use 
  * @since 1.3
  */
-function wp_resume_shortcode() {
+function wp_resume_shortcode( $atts ) {
 	ob_start();
 	wp_resume_include_template('resume.php');
 	$resume = ob_get_contents();
 	ob_end_clean();
+	
 	return $resume;
 }
 
@@ -972,13 +1025,19 @@ function wp_resume_add_feeds() {
 		return;
 	add_feed('text', 'wp_resume_plain_text');
 	add_feed('json', 'wp_resume_json');
-	add_action('wp_head', 'wp_resume_add_schema');
+	add_action('wp_head', 'wp_resume_header');
 }
 
 add_action('template_redirect','wp_resume_add_feeds');
 
-function wp_resume_add_schema() { ?>
+function wp_resume_header() { 
+	$options = wp_resume_get_options(); ?>
 		<link rel="profile" href="http://microformats.org/profile/hcard" />
+		<?php if ($options['fix_ie']) { ?>
+		<!--[if lt IE 9]>
+			<script type="text/javascript" src="<?php echo plugins_url(  'html5.js', __FILE__ ); ?>"></script>
+		<![endif]-->
+		<?php } ?>
 <?php }
 
 /**
@@ -1011,5 +1070,26 @@ function wp_resume_include_template( $template ) {
 	else 
 		include ( $template );
 						
+}
+
+/**
+ * Fuzzy gets author for current resume page
+ * Looks at:
+ * 1) Attributes of shorcode (user="[username]")
+ * 2) Author of page that calls the shortcode
+ * 
+ * @param array $atts attributes passed from shortcode callback
+ * @since 1.6
+ */
+function wp_resume_get_author( $atts = array() ) {
+	
+	//if user is passed as an attribute, that's our author
+	if ( isset( $atts['user'] ) ) 
+		return $atts['user'];
+	
+	//otherwise grab the author from the post
+	global $post;
+	$user = get_userdata($post->post_author);
+	return $user->user_login;
 }
 ?>

@@ -3,7 +3,7 @@ Contributors: benbalter
 Donate link: http://ben.balter.com/
 Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume
 Requires at least: 3.0
-Tested up to: 3.1
+Tested up to: 3.2
 Stable tag: 1.52
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
@@ -38,7 +38,7 @@ The hardest part of getting your resume online should be doing the work listed o
 
 == Installation ==
 
-1. Upload `plugin-name.php` to the `/wp-content/plugins/` directory
+1. Upload the `wp-resume` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 = Use =
@@ -93,6 +93,7 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 * AJAX Inline editing of resume content
 * Support for multiple resumes
 * Multilingual support
+* Linking of organization names
 
 == Screenshots ==
 
@@ -102,8 +103,13 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 
 == Changelog ==
 
-= 1.53 =
+= 1.6 =
+* Added ability to publish multiple resumes on the same site
+* Added conditional HTML5shiv to force IE to support HTML5 Semantic tags and toggle on options page
 * Fixed E_NOTICE level warning for undefined index in the "Resume Order" section when no organization exists
+* Fixed IE bug on section ordering due to trailing comma in list
+* Fixed display of headers for empty sections
+* Removed upgrade procedures from pre 1.5 versions
 
 = 1.52 =
 * Added display:block to header and section to fix display issues in FireFox

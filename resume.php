@@ -11,14 +11,16 @@
 
 //Retrieve plugin options for later use
 $options = wp_resume_get_options();
+global $wp_resume_author;
+$wp_resume_author = wp_resume_get_author();
 ?>
 		<div class="resume hresume">
 			<div id="bar"> </div>
 			<header class="vcard">
-				<h2 class="fn n url" id="name"><a href="<?php bloginfo('url'); ?>"><?php echo $options['name']; ?></a></h2>
+				<h2 class="fn n url" id="name"><a href="<?php get_permalink(); ?>"><?php echo $options[$wp_resume_author]['name']; ?></a></h2>
 				<ul>
 					<?php //loop through contact info fields
-						foreach ($options['contact_info'] as $field=>$value) { ?>
+						foreach ($options[$wp_resume_author]['contact_info'] as $field=>$value) { ?>
 						<?php 
 							//per hCard specs (http://microformats.org/profile/hcard) adr needs to be an array
 							if ( is_array( $value ) ) { ?>
@@ -35,27 +37,28 @@ $options = wp_resume_get_options();
 					<?php } ?>
 				</ul>
 			</header>
-			<?php if (! empty( $options['summary'] ) ) { ?>
+			<?php if (! empty( $options[$wp_resume_author]['summary'] ) ) { ?>
 			<summary class="summary">
-				<?php echo $options['summary']; ?>
+				<?php echo $options[$wp_resume_author]['summary']; ?>
 			</summary>
 			<?php } ?>
 <?php 		
 			//Loop through each resume section
-			foreach ( wp_resume_get_sections() as $section) { 
+			foreach ( wp_resume_get_sections(null, $wp_resume_author) as $section) { 
 
 ?>
 			<section class="vcalendar" id="<?php echo $section->slug; ?>">
-				<header><?php echo $section->name; ?></header>
 <?php			
 				//Initialize our org. variable 
 				$current_org=''; 
 				
 				//retrieve all posts in the current section using our custom loop query
-				$posts = wp_resume_query( $section->slug );
+				$posts = wp_resume_query( $section->slug, $wp_resume_author );
 				
 				//loop through all posts in the current section using the standard WP loop
-				if ( $posts->have_posts() ) : while ( $posts->have_posts() ) : $posts->the_post();
+				if ( $posts->have_posts() ) :  ?>
+				<header><?php echo $section->name; ?></header>
+				<?php while ( $posts->have_posts() ) : $posts->the_post();
 				
 					//Retrieve details on the current position's organization
 					$organization = wp_resume_get_org( get_the_ID() ); 
