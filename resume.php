@@ -91,7 +91,7 @@ $wp_resume_author = wp_resume_get_author();
 					}  
 ?>
 					<<?php echo ($organization) ? 'section' : 'article'; ?> class="vcard">
-						<a href="#name" class="include" title="<?php echo $options['title']; ?>"></a>
+						<a href="#name" class="include" title="<?php echo $options[$wp_resume_author]['name']; ?>"></a>
 						<a href="#<?php echo $organization->slug; ?>-name" class="include" title="<?php echo $organization->name; ?>"></a>
 						<?php if (!$organization) { ?>
 							<header>
