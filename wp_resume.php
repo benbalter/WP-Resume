@@ -15,6 +15,14 @@ License: GPL2
  * @shoutout Andrew Norcross (http://andrewnorcross.com) for the drag-and-drop CSS
  */
 
+/** 
+ *
+ *
+ * CPT/CT Functions
+ *
+ *
+ */
+
 /**
  * Registers the "resume block" custom post type and the the section and organization custom taxonomy
  * @since 1.0a
@@ -350,6 +358,16 @@ function wp_resume_save_wp_resume_position( $post_id ) {
 }
 add_action( 'save_post', 'wp_resume_save_wp_resume_position' );
 
+
+/** 
+ *
+ *
+ * Display Functions
+ *
+ *
+ */
+
+
 /**
  * Function used to parse the date meta and move to human-readable format
  * @since 1.0a
@@ -393,8 +411,9 @@ function wp_resume_get_sections( $hide_empty = true, $author = '' ) {
 	//get the plugin options array to pulll the user-specified order
 	$options = wp_resume_get_options();
 	
-	//pull out the order array (form: term_id => order)
-	$section_order = $options[$author][ 'order' ];
+	//pull out the order array
+	$user_options = wp_resume_get_user_options($author);
+	$section_order = $user_options['order'];
 		
 	//Loop through each section
 	foreach( $sections as $ID => $section ) {
@@ -463,12 +482,29 @@ function wp_resume_get_org( $postID ) {
 }
 
 /**
- * Get's the options, filters HTML
+ * Get's the options
  * @since 1.2
  */
 function wp_resume_get_options() {
 	$options = get_option('wp_resume_options');
 	return $options;
+}
+
+/**
+ * Gets wp_resume usermeta field
+ * @param int|string $user username or ID to retrieve
+ * @since 1.6
+ */
+function wp_resume_get_user_options($user) {
+	
+	//get ID if we have a username
+	if ( (int) $user != $user ) {
+ 		$userdata =	get_userdatabylogin($user);
+		$user = $userdata->ID;
+	}
+	
+	return get_user_meta($user, 'wp_resume', true);
+	
 }
 
 
@@ -487,6 +523,15 @@ function wp_resume_enqueue() {
 
 add_action( 'wp_print_styles', 'wp_resume_enqueue' );
 
+
+/** 
+ *
+ *
+ * Admin Backend Functions
+ *
+ *
+ */
+
 /**
  * Adds an options submenu to the resume menu in the admin pannel
  * @since 1.0a
@@ -499,63 +544,6 @@ function wp_resume_menu() {
 add_action( 'admin_menu', 'wp_resume_menu' );
 
 /**
- * Tells WP that we're usign a custom setting
- */
-function wp_resume_options_init() {
-    
-    register_setting( 'wp_resume_options', 'wp_resume_options', 'wp_resume_options_validate' );
-	$options = wp_resume_get_options();
-
-	//If they just activated, make sure they have some sections
-	//This is a work around b/c register_acivation hook is having issues recognizing the custom taxonmomy
-	if ( isset($options['just_activated']) && $options['just_activated'] ) {
-
-		//upgrade DB after init so we have our CPTs
-		$options = wp_resume_upgrade_db();
-		
-		//grab current user
-		$current_user = wp_get_current_user();
-		
-		//check to see if we have any sections
-		if ( sizeof( wp_resume_get_sections(false, $current_user->user_login ) ) == 0 ) {
-			//add the sections
-			wp_insert_term( 'Education', 'wp_resume_section');
-			wp_insert_term( 'Experience', 'wp_resume_section' );
-			wp_insert_term( 'Awards', 'wp_resume_section' );
-		}
-
-		//get rid of the flag
-		$options['just_activated'] = false;
-
-		//set default order if none exists
-		$i = 0;
-		foreach ( wp_resume_get_sections( false, $current_user->user_login ) as $section) {
-			if ( empty ( $options[$current_user->user_login]['order'][$section->term_id] ) )
-				$options[$current_user->user_login]['order'][$section->term_id] = $i++;
-		}
-		
-		//store the new options
-		update_option('wp_resume_options',$options);
-		
-	
-	} 
-	
-	//If we are on the wp_resume_options page, enque the tinyMCE editor
-	if ( !empty ($_GET['page'] ) && $_GET['page'] == 'wp_resume_options' ) {
-		wp_enqueue_script('editor');
-		add_thickbox();
-		wp_enqueue_script('media-upload');
-		wp_enqueue_script('post');
-		add_action( 'admin_print_footer_scripts', 'wp_tiny_mce', 25 );
-		wp_enqueue_style('wp_resume_admin_stylesheet', plugins_url(  'admin-style.css', __FILE__ ) );
-		wp_enqueue_script( array("jquery", "jquery-ui-core", "interface", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable") );
-	}
-}
-
-add_action( 'admin_init', 'wp_resume_options_init' );
-
-
-/**
  * Valdidates options submission data and stores position order
  * @params array $data post data
  * @since 1.5
@@ -563,29 +551,58 @@ add_action( 'admin_init', 'wp_resume_options_init' );
  */
 function wp_resume_options_validate($data) {
 	
-	//grab the existing options, we must hand WP back a complete option array, including other users
-	$output = wp_resume_get_options();
-	
 	//make sure we're POSTing
 	if ( empty($_POST) )
 		return $data;
+		
+	//grab the existing options, we must hand WP back a complete option array
+	$options = wp_resume_get_options();
+	
+	//figure out what user we are acting on
+	$authors = 	$wpdb->get_col( $wpdb->prepare("SELECT $wpdb->users.nicename FROM $wpdb->users") );
+	if ( sizeof($authors) == 1 ) {
+	
+		//if there is only one user in the system, it's gotta be him
+		$current_author = $authors[0];
+	
+	} else if ( $_POST['old_user'] != $_POST['user'] ) {
+	
+		//if this is an auto save as a result of the author dropdown changing, 
+		//save as old author, not author we're moving to
+		$current_author = $_POST['old_user'];
+		
+		//Because we post to options.php and then get redirected, 
+		//trick WP into appending the user as a parameter so we can update the dropdown
+		//goes through wp_safe_redirect, so no need to escape, right?
+		$_REQUEST['_wp_http_referer'] .= '&user=' . $_POST['user'];
+		
+	} else {
+	
+		//if this is a normal submit, just grab the author from the dropdown
+		$current_author = $_POST['user'];
+	
+	}
+
+	$user_options = wp_resume_get_user_options($current_author);
 	
 	//strip html from fields
-	$data['name'] = wp_filter_post_kses( $data['name'] );
+	$user_options['name'] = wp_filter_nohtml_kses( $data['name'] );
+	$user_options['summary'] = wp_filter_post_kses( $data['summary'] );
 
 	foreach ($data['contact_info_field'] as $id=>$value) {
-		if ( !$value ) continue;
 		
+		if ( !$value ) continue;
 		$field = explode('|',$data['contact_info_field'][$id]);
+		
 		if ( sizeof($field) == 1)
-		    $data['contact_info'][$field[0]] = wp_filter_post_kses( $data['contact_info_value'][$id] );
+		    $user_options['contact_info'][$field[0]] = wp_filter_post_kses( $data['contact_info_value'][$id] );
 		else
-		    $data['contact_info'][$field[0]][$field[1]] = wp_filter_post_kses( $data['contact_info_value'][$id] );
+		    $user_options['contact_info'][$field[0]][$field[1]] = wp_filter_post_kses( $data['contact_info_value'][$id] );
 
 	}
 	
 	//sanitize section order data
-	foreach ($data['order'] as &$section)
+	foreach ($user_options['order'] as &$section)
 		$section = intval( $section );
 		
 	//store position order data
@@ -594,37 +611,20 @@ function wp_resume_options_validate($data) {
 		$post['menu_order'] = intval( $order );
 		wp_update_post( $post );
  	}
-	unset ( $data['position_order'] );
-	
-	//move user-specific fields to user sub-array
-	$authors = explode(',', wp_list_authors( array('exclude_admin' => false, 'hide_empty' => false, 'echo' => false, 'html'=> false ) ) );
-	if ( sizeof($authors) == 1 ) {
-		$current_author = $authors[0];
-	} else if ( $_POST['old_user'] != $_POST['user'] ) {
-		//if this is an auto save as a result of the author dropdown changing, 
-		//save as old author, not author we're moving to
-		$current_author = $_POST['old_user'];
-		
-		//Because we post to options.php and then get redirected, 
-		//trick WP into appending the user as a parameter so we can update the dropdown
-		$_REQUEST['_wp_http_referer'] .= '&user=' . $_POST['user'];
-		
-	} else {
-		//if this is a normal submit, just grab the author from the dropdown
-		$current_author = $_POST['user'];
-	}
-	
-	//move user-specific fields to output array
-	$fields = array('name', 'summary', 'contact_info', 'order');
-	foreach ($fields as $field) {
-		$output[$current_author][$field] = $data[$field];
-	}
-	
+			
 	//move site-wide fields to output array
-	$fields = array('fix_ie');
+	$fields = array('fix_ie', 'rewrite');
 	foreach ($fields as $field) {
-		$output[$field] = $data[$field];
+		$options[$field] = $data[$field];
 	}
+	
+	//store usermeta
+	$user = get_userdatabylogin($current_author);
+	update_user_meta($user->ID, 'wp_resume', $user_options);
+
+	//flush in case they toggled rewrite
+	global $wp_rewrite;
+	$wp_rewrite->flush_rules();
 
 	return $output;
 }
@@ -695,8 +695,9 @@ if ( sizeof($authors) == 1 ) {
 	//otherwise, assume the current user
 	$current_user = wp_get_current_user();
 	$current_author = $current_user->user_login;
-
 }
+
+$user_options = wp_resume_get_user_options($current_author);
 
 ?>
 	<table class="form-table">
@@ -742,7 +743,7 @@ if ( sizeof($authors) == 1 ) {
 		<tr valign="top">
 			<th scope="row"><label for="wp_resume_options[name]">Name</label></th>
 			<td>
-				<input name="wp_resume_options[name]" type="text" id="wp_resume_options[name]" value="<?php if ( isset( $options[$current_author]['name'] ) ) echo $options[$current_author]['name']; ?>" class="regular-text" /><BR />
+				<input name="wp_resume_options[name]" type="text" id="wp_resume_options[name]" value="<?php if ( isset( $user_options['name'] ) ) echo $user_options['name']; ?>" class="regular-text" /><BR />
 				<span class="description">Your name -- displays on the top of your resume.</span>
 			</td>
 		</tr>
@@ -753,7 +754,7 @@ if ( sizeof($authors) == 1 ) {
 					<?php wp_resume_contact_info_row(); ?>
 				</ul>
 				<ul id="contact_info">
-					<?php array_walk_recursive($options[$current_author]['contact_info'], 'wp_resume_contact_info_row'); ?>
+					<?php array_walk_recursive($user_options['contact_info'], 'wp_resume_contact_info_row'); ?>
 				</ul>
 				<a href="#" id="add_contact_field">+ Add Field</a><br />
 				<script>
@@ -774,7 +775,7 @@ if ( sizeof($authors) == 1 ) {
 			<th scope="row"><label for="wp_resume_options[summary]">Summary</label></th>
 			<td id="poststuff">
 			<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
-				<?php the_editor( ( isset($options[$current_author]['summary'] ) ) ? $options[$current_author]['summary'] : '', "wp_resume_options[summary]" ); ?>	
+				<?php the_editor( ( isset($user_options['summary'] ) ) ? $user_options['summary'] : '', "wp_resume_options[summary]" ); ?>	
 			</div>
 			<span class="description">(optional) Plain-text summary of your resume, professional goals, etc. Will appear on your resume below your contact information before the body.</div>	
 			</td>
@@ -819,6 +820,30 @@ if ( sizeof($authors) == 1 ) {
 			</td>
 		</tr>
 		<tr valign="top">
+			<th scope="row">
+				&nbsp;
+			</th>
+			<td>
+				<a href="#" id="toggleHood">Show Advanced Options</a>
+			</td>
+		</tr>
+		<tr valign="top" class="underHood">
+			<th scrope="row">Force IE HTML5 Support</th>
+			<td>
+				<input type="radio" name="wp_resume_options[fix_ie]" id="fix_ie_yes" value="1" <?php checked($options['fix_ie'], 1); ?>/> <label for="fix_ie_yes">Yes</label><br />
+				<input type="radio" name="wp_resume_options[fix_ie]" id="fix_ie_no" value="0" <?php checked($options['fix_ie'], 0); ?>/> <label for="fix_ie_no">No</label><br />
+				<span class="description">If Internet Explorer breaks your resume's formatting, conditionally including a short Javascript file should force IE to recognize html5 semantic tags.</span>
+			</td>
+		</tr>
+		<tr valign="top" class="underHood">
+			<th scrope="row">Enable URL Rewriting</th>
+			<td>
+				<input type="radio" name="wp_resume_options[rewrite]" id="rewrite_yes" value="1" <?php checked($options['rewrite'], 1); ?>/> <label for="rewrite_yes">Yes</label><br />
+				<input type="radio" name="wp_resume_options[rewrite]" id="rewrite_no" value="0" <?php checked($options['rewrite'], 0); ?>/> <label for="rewrite_no">No</label><br />
+				<span class="description">Creates individual pages for each position, and index pages for each section and organization.</span>
+			</td>
+		</tr>
+		<tr valign="top" class="underHood">
 			<th scrope="row">Customizing WP Resume</th>
 			<td>
 				<Strong>Style Sheets</strong><br />
@@ -830,15 +855,7 @@ if ( sizeof($authors) == 1 ) {
 				<strong>Feeds</strong> <br />
 				WP Resume allows you to access your data in three machine-readable formats. By default, the resume outputs in an <a href="http://microformats.org/wiki/hresume">hResume</a> compatible format. A JSON feed can be generated by appending <code>?feed=json</code> to your resume page's URL and a plain-text alternative (useful for copying and pasting into applications and forms) is available by appending <code>?feed=text</code> to your resume page's URL.<br /><br />
 			</td>
-		</tr>
-		<tr valign="top">
-			<th scrope="row">Force IE HTML5 Support</th>
-			<td>
-				<input type="radio" name="wp_resume_options[fix_ie]" id="fix_ie_yes" value="1" <?php checked($options['fix_ie'], 1); ?>/> <label for="fix_ie_yes">Yes</label><br />
-				<input type="radio" name="wp_resume_options[fix_ie]" id="fix_ie_yes" value="0" <?php checked($options['fix_ie'], 0); ?>/> <label for="fix_ie_no">No</label><br />
-				<span class="description">If Internet Explorer breaks your resume's formatting, conditionally including a short Javascript file should force IE to recognize html5 semantic tags.</span>
-			</td>
-		</tr>
+		</tr>				
 	</table>
 	<script>
 	jQuery(document).ready(function($) {
@@ -850,6 +867,16 @@ if ( sizeof($authors) == 1 ) {
 			$(this).text('No.');
 		else
 			$(this).text('Yes!');
+		return false;
+	});
+	
+	$('.underHood').hide();
+	$('#toggleHood').click(function() {
+		$('.underHood').toggle('fast');
+		if ($(this).text() == "Hide Advanced Options")
+			$(this).text('Show Advanced Options');
+		else
+			$(this).text('Hide Advanced Options');
 		return false;
 	});
 
@@ -889,74 +916,116 @@ if ( sizeof($authors) == 1 ) {
 }
 
 /**
- * Initializes plugin on activation (sets default values, flushes rewrite rules)
- * @since 1.0a
+ * Checks DB version on admin init and upgrades if necessary
+ * Used b/c 1) no CPTs on activation hook, 2) no activation hook on multi-update
+ * @since 1.6
  */
-function wp_resume_activate() {
-			
-	//get current options incase this is a reactivate
+function wp_resume_admin_init() {
+	global $wp_resume_version;
+	$wp_resume_version = '1.6';
+	
 	$options = wp_resume_get_options();
 	
-	//Set the update flag
-	$options['just_activated'] = true;
-	
-	//set our new options
-	update_option('wp_resume_options', $options );
-	
-	//flush rewrite rules
-	global $wp_rewrite;
-   	$wp_rewrite->flush_rules();
+	if ( !isset($options['db_version']) || $options['db_version'] < $wp_resume_version )
+		$options = wp_resume_upgrade_db();
 
-} 
-   
-register_activation_hook( __FILE__, 'wp_resume_activate' );
+	register_setting( 'wp_resume_options', 'wp_resume_options', 'wp_resume_options_validate' );
+	
+	//If we are on the wp_resume_options page, enque the tinyMCE editor
+	if ( !empty ($_GET['page'] ) && $_GET['page'] == 'wp_resume_options' ) {
+		wp_enqueue_script('editor');
+		add_thickbox();
+		wp_enqueue_script('media-upload');
+		wp_enqueue_script('post');
+		add_action( 'admin_print_footer_scripts', 'wp_tiny_mce', 25 );
+		wp_enqueue_style('wp_resume_admin_stylesheet', plugins_url(  'admin-style.css', __FILE__ ) );
+		wp_enqueue_script( array("jquery", "jquery-ui-core", "interface", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable") );
+	}
 
+
+}
+
+add_action('admin_init', 'wp_resume_admin_init');
 
 /**
- * Updates posts, taxonomies, and options from 1.1 to 1.2 and pre 1.5 to 1.5
+ * Moves information around the database, supports back to 1.5
  * @since 1.2
  */
 function wp_resume_upgrade_db() {
-		
-	//get the Database object
-	global $wpdb;
+	global $wp_resume_version;
+	
+	//default fields and values
+	$fields['global'] = array('fix_ie' => true, 'rewrite' => false);
+	$fields['user'] = array('name'=>'', 'summary' => '', 'contact_info'=>'');
+	$i = 0;	foreach ( wp_resume_get_sections( false ) as $section)
+			$fields['user']['order'][$section->term_id] = $i++;
 
 	//get our options
 	$options = wp_resume_get_options();
 	
-	//set order array
-	if ( !isset( $options['order'] ) ) 
-		$options['order'] = array();
+	//check to see if we have any sections
+	if ( sizeof( wp_resume_get_sections(false) ) == 0 ) {
+		//add the sections
+		wp_insert_term( 'Education', 'wp_resume_section');
+		wp_insert_term( 'Experience', 'wp_resume_section' );
+		wp_insert_term( 'Awards', 'wp_resume_section' );
+	}
 		
-	//add fix ie flag to options array
-	if ($options['db_version'] < '1.53') 
-		$options['fix_ie'] = true;
-	
-	//add multi-user support
+	//add multi-user support (v. 1.6)
 	if ($options['db_version'] < '1.6') {
 		$current_user = wp_get_current_user();
 		
-		//abstract $options[field] to $options[user_login][field] and kill original
-		$fields = array('name', 'summary', 'contact_info', 'order');
-		foreach ($fields as $field) {
+		//migrate $options[field] to (usermeta) [wp_resume][field] and kill original
+		foreach ($fields['user'] as $field) {
 			if ( isset( $options[$field] ) ) {
-				$options[$current_user->user_login][$field] = $options[$field];
+				$usermeta[$field] = $options[$field];
 				unset($options[$field]);
-			}
+			} 
 		}
-	
+		
+		//store usermeta to current user
+		//(assumption: user upgrading is author of resume)
+		add_user_meta($current_user->ID, 'wp_resume', $usermeta);
 
 	}
 	
+	//if global fields are null, set to default
+	foreach ($fields['global'] as $key=>$value) {
+		if ( !isset( $options[$key] ) )
+			$options[$key] = $value;
+	}
+	
+	//if user fields are null for any user, set to default
+	$users = $wpdb->get_col( $wpdb->prepare("SELECT $wpdb->users.ID FROM $wpdb->users") );
+	foreach ($users as $user) {
+	
+		//get current options
+		$user_options = get_user_meta($user, 'wp_resume', true);
+		
+		//loop default fields
+		foreach ($fields['user'] as $key=>$value) {
+		
+			//check they exist, if not set
+			if ( !isset( $user_options[$key] ) )
+				$user_options[$key] = $value;
+				
+			//update
+			update_user_meta($user,'wp_resume', $user_options);
+		}	
+		
+	}
 		
 	//DB Versioning
-	$options['db_version'] = '1.53';
+	$options['db_version'] = $wp_resume_version;
 	
 	//store updated options
 	update_option( 'wp_resume_options', $options );
   	
-  	//pass the upgraded options back
-  	return $options;
+  	//flush rewrite rules just in case
+	global $wp_rewrite;
+   	$wp_rewrite->flush_rules();
+   	
+   	return $options;
 
 }
 
@@ -1092,4 +1161,49 @@ function wp_resume_get_author( $atts = array() ) {
 	$user = get_userdata($post->post_author);
 	return $user->user_login;
 }
+
+function wp_resume_rewrite_rules() {
+	$options = wp_resume_get_options();
+	
+	if (!isset($options['rewrite']) || !$options['rewrite'] )
+		return;
+
+	global $wp_rewrite;
+    $rw_structure = 'resume/%wp_resume_section%/%wp_resume_organization%/%wp_resume_position%/';
+    add_rewrite_tag("%wp_resume_section%", '([^/]+)', "wp_resume_section=");
+    add_rewrite_tag("%wp_resume_organization%", '([^/]+)', "wp_resume_organization=");
+    add_rewrite_tag("%wp_resume_position%", '([^/]+)', "wp_resume_position=");
+    $wp_rewrite->add_permastruct('wp_resume_position', $rw_structure);  
+
+}
+
+add_action('init', 'wp_resume_rewrite_rules');
+
+function wp_resume_permalink($link, $post, $leavename, $sample) {
+
+	$options = wp_resume_get_options();
+	
+	if ( $post->post_type != 'wp_resume_position' && isset($options['rewrite']) && $options['rewrite'] )
+		return $link;
+		
+	$section = wp_get_post_terms($post->ID, 'wp_resume_section');
+	$org = wp_get_post_terms($post->ID, 'wp_resume_organization');
+	
+	$rewritecode = array(
+		  '%wp_resume_section%',
+		  '%wp_resume_organization%',
+	);
+	
+	$replace = array(
+		$section[0]->slug,
+		$org[0]->slug
+	);	
+	
+	$link = str_replace($rewritecode, $replace, $link);
+
+	return $link;
+}
+
+add_action( 'post_type_link', 'wp_resume_permalink', 10, 4 );
+
 ?>
