@@ -6,24 +6,19 @@
  * @since 1.5
  */
 
+//determine author
+$wp_resume_author = wp_resume_feed_get_author();
+
 //Retrieve plugin options for later use
 $options = wp_resume_get_options();
-
-//determine user
-global $post;	
-if ( preg_match( '/\[wp_resume user=\"([^\"]*)"]/i', $post->post_content, $matches ) == 0) {
-	$user = get_userdata($post->post_author);
-	$author = $user->user_login; 
-} else {
-	$author = $matches[1];
-}
+$author_options = wp_resume_get_user_options($wp_resume_author);
 
 //output name and url
-$output['name'] = $options[$author]['name'];
+$output['name'] = $author_options['name'];
 $output['url'] = get_permalink();
 
 //loop through contact info
-foreach ($options[$author]['contact_info'] as $field=>$value) { 
+foreach ($author_options['contact_info'] as $field=>$value) { 
 	//per hCard specs (http://microformats.org/profile/hcard) adr needs to be an array
 	if ( is_array( $value ) ) {
 		foreach ($value as $subfield => $subvalue) { 
@@ -35,18 +30,18 @@ foreach ($options[$author]['contact_info'] as $field=>$value) {
 }
 
 //echo summary, if one exists
-if (! empty( $options[$author]['summary'] ) ) 
-	$output['summary'] = $options[$author]['summary'];
+if (! empty( $author_options['summary'] ) ) 
+	$output['summary'] = $author_options['summary'];
 
 //Loop through each resume section
-foreach ( wp_resume_get_sections(null, $author) as $section) {
+foreach ( wp_resume_get_sections(null, $wp_resume_author) as $section) {
 
 	//Initialize our org. variable and array 
 	$current_org=''; 
 	$org = array();
 	
 	//retrieve all posts in the current section using our custom loop query
-	$posts = wp_resume_query( $section->slug, $author);
+	$posts = wp_resume_query( $section->slug, $wp_resume_author);
 	
 	//loop through all posts in the current section using the standard WP loop
 	if ( $posts->have_posts() ) : while ( $posts->have_posts() ) : $posts->the_post();

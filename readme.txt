@@ -108,6 +108,7 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 * Moved resume options to usermeta table to improve scalability
 * Added conditional HTML5shiv to force IE to support HTML5 Semantic tags and added toggle to options page
 * Added option for individual position pages and organization/section indexes (URL rewriting)
+* Added WPML support
 * Fixed E_NOTICE level warning for undefined index in the "Resume Order" section when no organization exists
 * Fixed IE bug on section ordering due to trailing comma in list
 * Fixed display of headers for empty sections

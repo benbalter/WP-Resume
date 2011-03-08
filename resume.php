@@ -11,18 +11,23 @@
 
 //Retrieve plugin options for later use
 $options = wp_resume_get_options();
+
+//check if we have an author, if not, find one
 global $wp_resume_author;
-$wp_resume_author = wp_resume_get_author();
+if (!$wp_resume_author) 
+	$wp_resume_author = wp_resume_get_author( $atts );
+
+$author_options = wp_resume_get_user_options($wp_resume_author);
 
 ?>
 		<div class="resume hresume">
 			<div id="bar"> </div>
 			<header class="vcard">
-				<h2 class="fn n url" id="name"><a href="<?php get_permalink(); ?>"><?php echo $options[$wp_resume_author]['name']; ?></a></h2>
+				<h2 class="fn n url" id="name"><a href="<?php get_permalink(); ?>"><?php echo $author_options['name']; ?></a></h2>
 				<ul>
 					<?php //loop through contact info fields
-					if ( isset($options[$wp_resume_author]['contact_info'] ) ) {
-						foreach ($options[$wp_resume_author]['contact_info'] as $field=>$value) { ?>
+					if ( isset($author_options['contact_info'] ) ) {
+						foreach ($author_options['contact_info'] as $field=>$value) { ?>
 						<?php 
 							//per hCard specs (http://microformats.org/profile/hcard) adr needs to be an array
 							if ( is_array( $value ) ) { ?>
@@ -40,9 +45,9 @@ $wp_resume_author = wp_resume_get_author();
 				<?php } ?>
 				</ul>
 			</header>
-			<?php if (! empty( $options[$wp_resume_author]['summary'] ) ) { ?>
+			<?php if (! empty( $$author_options['summary'] ) ) { ?>
 			<summary class="summary">
-				<?php echo $options[$wp_resume_author]['summary']; ?>
+				<?php echo $author_options['summary']; ?>
 			</summary>
 			<?php } ?>
 <?php 		
@@ -91,7 +96,7 @@ $wp_resume_author = wp_resume_get_author();
 					}  
 ?>
 					<<?php echo ($organization) ? 'section' : 'article'; ?> class="vcard">
-						<a href="#name" class="include" title="<?php echo $options[$wp_resume_author]['name']; ?>"></a>
+						<a href="#name" class="include" title="<?php echo $author_options['name']; ?>"></a>
 						<a href="#<?php echo $organization->slug; ?>-name" class="include" title="<?php echo $organization->name; ?>"></a>
 						<?php if (!$organization) { ?>
 							<header>

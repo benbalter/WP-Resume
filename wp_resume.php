@@ -13,6 +13,7 @@ License: GPL2
  * @author Benjamin J. Balter
  * @shoutout Andrew Nacin (http://andrewnacin.com) for help with CPTs
  * @shoutout Andrew Norcross (http://andrewnorcross.com) for the drag-and-drop CSS
+ * @shoutout Rvencu for help with WPML and multi-user prototyping
  */
 
 /** 
@@ -498,11 +499,11 @@ function wp_resume_get_options() {
 function wp_resume_get_user_options($user) {
 	
 	//get ID if we have a username
-	if ( (int) $user != $user ) {
+	if ( !is_int($user) ) {
  		$userdata =	get_userdatabylogin($user);
 		$user = $userdata->ID;
 	}
-	
+		
 	return get_user_meta($user, 'wp_resume', true);
 	
 }
@@ -559,7 +560,8 @@ function wp_resume_options_validate($data) {
 	$options = wp_resume_get_options();
 	
 	//figure out what user we are acting on
-	$authors = 	$wpdb->get_col( $wpdb->prepare("SELECT $wpdb->users.nicename FROM $wpdb->users") );
+	global $wpdb;
+	$authors = 	$wpdb->get_col( $wpdb->prepare("SELECT $wpdb->users.user_login FROM $wpdb->users") );
 	if ( sizeof($authors) == 1 ) {
 	
 		//if there is only one user in the system, it's gotta be him
@@ -602,9 +604,9 @@ function wp_resume_options_validate($data) {
 	}
 	
 	//sanitize section order data
-	foreach ($user_options['order'] as &$section)
-		$section = intval( $section );
-		
+	foreach ($data['order'] as $key=>$value)
+		$user_options['order'][$key] = intval( $value );
+	
 	//store position order data
 	foreach ($data['position_order'] as $positionID => $order) {
 		$post['ID'] = intval( $positionID );
@@ -996,6 +998,7 @@ function wp_resume_upgrade_db() {
 	}
 	
 	//if user fields are null for any user, set to default
+	global $wpdb;
 	$users = $wpdb->get_col( $wpdb->prepare("SELECT $wpdb->users.ID FROM $wpdb->users") );
 	foreach ($users as $user) {
 	
@@ -1073,6 +1076,11 @@ add_action('wp_resume_section_add_form','wp_resume_section_helptext');
  * @since 1.3
  */
 function wp_resume_shortcode( $atts ) {
+	
+	//determine author and set as global so templates can read
+	global $wp_resume_author;
+	$wp_resume_author = wp_resume_get_author( $atts );
+
 	ob_start();
 	wp_resume_include_template('resume.php');
 	$resume = ob_get_contents();
@@ -1205,5 +1213,44 @@ function wp_resume_permalink($link, $post, $leavename, $sample) {
 }
 
 add_action( 'post_type_link', 'wp_resume_permalink', 10, 4 );
+
+/**
+ * Adds WPML support to wp resume sections
+ * @since 1.6
+ * @h/t rvencu 
+ */
+function wp_resume_exclude_the_terms($exclusions) {
+	
+	//check for WPML, if not, kick
+	if ( !class_exists('SitePress') )
+		return $exclusions;
+		
+	//if WPML exists,  change the $exclusions
+   	global $sitepress;
+   	$exclusions .= $sitepress->exclude_other_terms( '', array( 'taxonomy' => 'wp_resume_section' ) );
+
+    return $exclusions;
+}
+
+add_filter( 'list_terms_exclusions', 'wp_resume_exclude_the_terms' );
+
+function wp_resume_feed_get_author(){
+	global $post;
+	global $wp_resume_author;	
+	
+	if ( preg_match( '/\[wp_resume user=\"([^\"]*)"]/i', $post->post_content, $matches ) == 0) {
+		
+		$user = get_userdata($post->post_author);
+		$wp_resume_author = $user->user_login; 
+		
+	} else {
+	
+		$wp_resume_author = $matches[1];
+	
+	}
+	
+	return $wp_resume_author;
+	
+}
 
 ?>
