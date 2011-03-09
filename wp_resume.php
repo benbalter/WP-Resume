@@ -974,17 +974,18 @@ function wp_resume_upgrade_db() {
 	}
 		
 	//add multi-user support (v. 1.6)
-	if ($options['db_version'] < '1.6') {
+	if ( !isset($options['db_version']) || $options['db_version'] < '1.6' ) {
+	
 		$current_user = wp_get_current_user();
 		
 		//migrate $options[field] to (usermeta) [wp_resume][field] and kill original
-		foreach ($fields['user'] as $field) {
+		foreach ($fields['user'] as $field=>$value) {
 			if ( isset( $options[$field] ) ) {
 				$usermeta[$field] = $options[$field];
 				unset($options[$field]);
 			} 
 		}
-		
+
 		//store usermeta to current user
 		//(assumption: user upgrading is author of resume)
 		add_user_meta($current_user->ID, 'wp_resume', $usermeta);
