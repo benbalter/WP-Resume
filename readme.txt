@@ -17,6 +17,7 @@ You can [see it in action](http://ben.balter.com/resume/) or for information and
 Features include:
 
 * Support for sections (e.g., education, experience), organizations (e.g., somewhere state university, Cogs, Inc.), positions (e.g., bachelor of arts, chief widget specialist), and details (e.g., grew bottom line by 15%, president of the sustainability club)
+* Supports multiple resumes, on the same page, or on their own
 * Follows best practices in resume layout and design
 * One click install, just start adding content
 * Drag and drop ordering of resume elements
@@ -90,10 +91,6 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 == Planned Features ==
  
 * Import from LinkedIn via API
-* AJAX Inline editing of resume content
-* Support for multiple resumes
-* Multilingual support
-* Linking of organization names
 
 == Screenshots ==
 
@@ -105,10 +102,10 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 
 = 1.6 =
 * Added ability to publish multiple resumes on the same site
-* Moved resume options to usermeta table to improve scalability
 * Added conditional HTML5shiv to force IE to support HTML5 Semantic tags and added toggle to options page
 * Added option for individual position pages and organization/section indexes (URL rewriting)
-* Added WPML support
+* Added internationalization and WPML support
+* Moved resume options to usermeta table to improve scalability
 * Fixed E_NOTICE level warning for undefined index in the "Resume Order" section when no organization exists
 * Fixed IE bug on section ordering due to trailing comma in list
 * Fixed display of headers for empty sections
