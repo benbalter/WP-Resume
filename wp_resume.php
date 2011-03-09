@@ -608,10 +608,12 @@ function wp_resume_options_validate($data) {
 		$user_options['order'][$key] = intval( $value );
 	
 	//store position order data
-	foreach ($data['position_order'] as $positionID => $order) {
-		$post['ID'] = intval( $positionID );
-		$post['menu_order'] = intval( $order );
-		wp_update_post( $post );
+	if ( is_array($data['position_order'] ) ) { 
+		foreach ($data['position_order'] as $positionID => $order) {
+			$post['ID'] = intval( $positionID );
+			$post['menu_order'] = intval( $order );
+			wp_update_post( $post );
+ 		}
  	}
 			
 	//move site-wide fields to output array
