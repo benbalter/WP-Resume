@@ -32,17 +32,18 @@ function wp_resume_register_cpt_and_t() {
 	
 	//Custom post type labels array
 	$labels = array(
-    'name' => 'Resume',
-    'singular_name' => 'Resume',
-    'add_new' => _x('Add New Position', 'wp_resume_position'),
-    'add_new_item' => 'Add Position',
-    'edit_item' => 'Edit Position',
-    'new_item' => 'New Position',
-    'view_item' => 'View Position',
-    'search_items' => 'Search Positions',
-    'not_found' =>  'No Positions Found',
-    'not_found_in_trash' => 'No Positions Found in Trash',
-    'parent_item_colon' => ''
+    'name' => _x('Positions', 'post type general name'),
+    'singular_name' => _x('Resume Position', 'post type singular name'),
+    'add_new' => __('Add New Position'),
+    'add_new_item' => __('Add New Position'),
+    'edit_item' => __('Edit Position'),
+    'new_item' => __('New Position'),
+    'view_item' => __('View Position'),
+    'search_items' => __('Search Positions'),
+    'not_found' =>  __('No Positions Found'),
+    'not_found_in_trash' => __('No Positions Found in Trash'),
+    'parent_item_colon' => '',
+    'menu_name' => 'Resume',
   );
   
   //Custom post type settings array
@@ -127,14 +128,14 @@ function wp_resume_meta_callback() {
 
 function wp_resume_order_box($post) {
 ?>
-	<p><strong>Order</strong></p>
+	<p><strong><?php _e('Order', 'wp_resume'); ?></strong></p>
 	<p>	
 		<div style="float:right; width: 200px; padding-right:10px; margin-top: -1em; display: inline;">
-			<i>Hint:</i> Your resume will be sorted based on this number (ascending). <a href="#" id="wp_resume_help_toggle">More</a><br /> <br />
+			<i><?php _e('Hint', 'wp_resume'); ?>:</i> <?php _e('Your resume will be sorted based on this number (ascending)', 'wp_resume'); ?>. <a href="#" id="wp_resume_help_toggle"><?php _e('More', 'wp_resume'); ?></a><br /> <br />
 
-			<div id="wp_resume_help">When you add a new position, feel free to leave this number at "0" and a best guess will be made based on the position's end date (reverse chronological order). <br /><br />Of Course, you can always <a href="edit.php?post_type=wp_resume_position&page=wp_resume_options#sections">fine tune your resume order</a> on the options page.</div>
+			<div id="wp_resume_help"><?php _e('When you add a new position, feel free to leave this number at "0" and a best guess will be made based on the position\'s end date (reverse chronological order)', 'wp_resume'); ?>. <br /><br /><?php _e('Of Course, you can always <a href="edit.php?post_type=wp_resume_position&page=wp_resume_options#sections">fine tune your resume order</a> on the options page', 'wp_resume');?>.</div>
 		</div>
-		<label class="screen-reader-text" for="menu_order">Order</label>
+		<label class="screen-reader-text" for="menu_order"><?php _e('Order', 'wp_resume'); ?></label>
 		<input type="text" name="menu_order" size="4" id="menu_order" value="<?php echo $post->menu_order; ?>">
 	</p>
 	<p style="clear: both; height: 5px;" id="wp_resume_clearfix"> </p>
@@ -197,7 +198,7 @@ function wp_resume_taxonomy_box( $post, $type ) {
 			<label for="new_<?php echo $type ?>"><?php echo $taxonomy->labels->singular_name; ?>:</label> 
 			<input type="text" name="new_<?php echo $type ?>" id="new_<?php echo $type ?>" /><br />
 <?php if ($type == 'wp_resume_organization') { ?>
-			<label for="new_<?php echo $type ?>_location" style="padding-right:24px;">Location:</label> 
+			<label for="new_<?php echo $type ?>_location" style="padding-right:24px;"><?php _e('Location', 'wp_resume'); ?>:</label> 
 			<input type="text" name="new_<?php echo $type ?>_location" id="new_<?php echo $type ?>_location" /><br />
 <?php } ?>
 			<input type="button" value="Add New" id="add_<?php echo $type ?>_button" />
@@ -673,7 +674,7 @@ function wp_resume_contact_info_row( $value = '', $field_id = '' ) { ?>
 function wp_resume_options() { 	
 ?>
 <div class="wrap">
-	<h2>Resume Options</h2>
+	<h2><?php _e('Resume Options', 'wp_resume'); ?></h2>
 	<form method="post" action='options.php' id="wp_resume_form">
 <?php 
 		
@@ -706,26 +707,26 @@ $user_options = wp_resume_get_user_options($current_author);
 ?>
 	<table class="form-table">
 		<tr valign="top">
-			<th scope="row">Usage</label></th>
+			<th scope="row"><?php _e('Usage', 'wp_resume'); ?></label></th>
 			<td>
-				<strong>To use WP Resume...</strong>
+				<strong><?php _e('To use WP Resume...', 'wp_resume'); ?></strong>
 				<ol>
-					<li>Add content to your resume through the menus on the left</li>
-					<li>If you wish, add your name, contact information, summary, and order your resume below</li>
-					<li>Create a new page as you would normally
-					<li>Add the text <code>[wp_resume]</code> to the page's body</li>
-					<li>Your resume will now display on that page.</li>
+					<li><?php _e('Add content to your resume through the menus on the left', 'wp_resume'); ?></li>
+					<li><?php _e('If you wish, add your name, contact information, summary, and order your resume below', 'wp_resume'); ?></li>
+					<li><?php _e('Create a new page as you would normally', 'wp_resume'); ?>
+					<li><?php _e('Add the text <code>[wp_resume]</code> to the page\'s body', 'wp_resume'); ?></li>
+					<li><?php _e('Your resume will now display on that page', 'wp_resume'); ?>.</li>
 				</ol><br />
-				<strong>Want to have multiple resumes on your site?</strong> <a href="#" id="toggleMultiple">Yes!</a><br />
+				<strong><?php _e('Want to have multiple resumes on your site?', 'wp_resume'); ?></strong> <a href="#" id="toggleMultiple"><?php _e('Yes!', 'wp_resume'); ?></a><br />
 				<div id="multiple">
-				WP Resume associates each resume with a user. To create a second resume...
+				<?php _e('WP Resume associates each resume with a user. To create a second resume...', 'wp_resume'); ?>
 				<ol>
-					<li style="font-size: 11px;">Simply <a href="user-new.php">add a new user</a> (or select an existing user in step two).</li>
-					<li style="font-size: 11px;"><a href="post-new.php?post_type=wp_resume_position">Add positions</a> as you would normally, being sure to select that user as the position's author. You may need to display the author box by enabling it in the "Screen Options" toggle in the top-right corner of the position page.</li>
-					<li style="font-size: 11px;">Select the author from the drop down below and fill in the name, contact info, and summary fields (optional).</li>
-					<li style="font-size: 11px;"><a href="post-new.php?post_type=page">Create a new page</a> and add the <code>[wp_resume]</code> shortcode, similar to above, but set the page author to the resume's author (the author from step two). Again, you may need to enable the author box.</li>
+					<li style="font-size: 11px;"<?php _e('Simply <a href="user-new.php">add a new user</a> (or select an existing user in step two)', 'wp_resume'); ?>.</li>
+					<li style="font-size: 11px;"><a href="post-new.php?post_type=wp_resume_position"><?php _e('Add positions</a> as you would normally, being sure to select that user as the position\'s author. You may need to display the author box by enabling it in the "Screen Options" toggle in the top-right corner of the position page', 'wp_resume'); ?>.</li>
+					<li style="font-size: 11px;"><?php _e('Select the author from the drop down below and fill in the name, contact info, and summary fields (optional)', 'wp_resume'); ?>.</li>
+					<li style="font-size: 11px;"><a href="post-new.php?post_type=page"><?php _e('Create a new page</a> and add the <code>[wp_resume]</code> shortcode, similar to above, but set the page author to the resume\'s author (the author from step two). Again, you may need to enable the author box', 'wp_resume'); ?>.</li>
 				</ol>
- 				 <em>Note:</em> To embed multiple resumes on the same page, you can alternatively use the syntax <code>[wp_resume user="user_login"]</code> where <code>user_login</code> is the username of the resume's author.
+ 				 <em><?php _e('Note', 'wp_resume'); ?>:</em> <?php _e('To embed multiple resumes on the same page, you can alternatively use the syntax <code>[wp_resume user="user_login"]</code> where <code>user_login</code> is the username of the resume\'s author', 'wp_resume'); ?>.
  				 </div>
 			</td>
 		</tr>
@@ -733,7 +734,7 @@ $user_options = wp_resume_get_user_options($current_author);
 			if (sizeof($authors) > 1) {
 			?>
 		<tr valign="top">
-			<th scope="row">User</label></th>
+			<th scope="row"><?php _e('User', 'wp_resume'); ?></label></th>
 			<td>
 				<select name="user" id="user">
 					<?php foreach ($authors as $author) { ?>
@@ -745,14 +746,14 @@ $user_options = wp_resume_get_user_options($current_author);
 		</tr>
 		<?php } ?>
 		<tr valign="top">
-			<th scope="row"><label for="wp_resume_options[name]">Name</label></th>
+			<th scope="row"><label for="wp_resume_options[name]"><?php _e('Name', 'wp_resume') ;?></label></th>
 			<td>
 				<input name="wp_resume_options[name]" type="text" id="wp_resume_options[name]" value="<?php if ( isset( $user_options['name'] ) ) echo $user_options['name']; ?>" class="regular-text" /><BR />
-				<span class="description">Your name -- displays on the top of your resume.</span>
+				<span class="description"><?php _e('Your name -- displays on the top of your resume', 'wp_resume'); ?>.</span>
 			</td>
 		</tr>
 		<tr valign="top">
-			<th scope="row">Contact Information</th>
+			<th scope="row"><?php _e('Contact Information', 'wp_resume'); ?></th>
 			<td>
 				<ul class="contact_info_blank" style="display:none;">
 					<?php wp_resume_contact_info_row(); ?>
@@ -760,7 +761,7 @@ $user_options = wp_resume_get_user_options($current_author);
 				<ul id="contact_info">
 					<?php array_walk_recursive($user_options['contact_info'], 'wp_resume_contact_info_row'); ?>
 				</ul>
-				<a href="#" id="add_contact_field">+ Add Field</a><br />
+				<a href="#" id="add_contact_field">+ <?php _e('Add Field', 'wp_resume'); ?></a><br />
 				<script>
 					jQuery(document).ready(function($){
 						$('#contact_info').append( $('.contact_info_blank').html() );
@@ -772,20 +773,20 @@ $user_options = wp_resume_get_user_options($current_author);
 						});
 					});
 				</script>
-				<span class="description">(optional) Add any contact info you would like included in your resume.</span>
+				<span class="description"><?php _e('(optional) Add any contact info you would like included in your resume', 'wp_resume'); ?>.</span>
 			</td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="wp_resume_options[summary]">Summary</label></th>
+			<th scope="row"><label for="wp_resume_options[summary]"><?php _e('Summary', 'wp_resume'); ?></label></th>
 			<td id="poststuff">
 			<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
 				<?php the_editor( ( isset($user_options['summary'] ) ) ? $user_options['summary'] : '', "wp_resume_options[summary]" ); ?>	
 			</div>
-			<span class="description">(optional) Plain-text summary of your resume, professional goals, etc. Will appear on your resume below your contact information before the body.</div>	
+			<span class="description"><?php _e('(optional) Plain-text summary of your resume, professional goals, etc. Will appear on your resume below your contact information before the body', 'wp_resume'); ?>.</div>	
 			</td>
 		</tr>
 		<tr valign="top">
-			<th scope="row">Resume Order</th>
+			<th scope="row"><?php _e('Resume Order', 'wp_resume'); ?></th>
 			<td>
 			<ul id="sections">
 <?php foreach ( wp_resume_get_sections( false, $current_author ) as $section ) { ?>
@@ -820,7 +821,7 @@ $user_options = wp_resume_get_user_options($current_author);
 				</li><!-- .section -->
 				<?php } ?>
 			</ul><!-- #sections -->
-			<span class="description">New positions are automatically displayed in reverse chronological order, but you can fine tune that order by rearranging the elements in the list above.</span>
+			<span class="description"><?php _e('New positions are automatically displayed in reverse chronological order, but you can fine tune that order by rearranging the elements in the list above', 'wp_resume'); ?>.</span>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -828,36 +829,36 @@ $user_options = wp_resume_get_user_options($current_author);
 				&nbsp;
 			</th>
 			<td>
-				<a href="#" id="toggleHood">Show Advanced Options</a>
+				<a href="#" id="toggleHood"><?php _e('Show Advanced Options', 'wp_resume'); ?></a>
 			</td>
 		</tr>
 		<tr valign="top" class="underHood">
-			<th scrope="row">Force IE HTML5 Support</th>
+			<th scrope="row"><?php _e('Force IE HTML5 Support', 'wp_resume'); ?></th>
 			<td>
-				<input type="radio" name="wp_resume_options[fix_ie]" id="fix_ie_yes" value="1" <?php checked($options['fix_ie'], 1); ?>/> <label for="fix_ie_yes">Yes</label><br />
-				<input type="radio" name="wp_resume_options[fix_ie]" id="fix_ie_no" value="0" <?php checked($options['fix_ie'], 0); ?>/> <label for="fix_ie_no">No</label><br />
-				<span class="description">If Internet Explorer breaks your resume's formatting, conditionally including a short Javascript file should force IE to recognize html5 semantic tags.</span>
+				<input type="radio" name="wp_resume_options[fix_ie]" id="fix_ie_yes" value="1" <?php checked($options['fix_ie'], 1); ?>/> <label for="fix_ie_yes"><?php _e('Yes', 'wp_resume'); ?></label><br />
+				<input type="radio" name="wp_resume_options[fix_ie]" id="fix_ie_no" value="0" <?php checked($options['fix_ie'], 0); ?>/> <label for="fix_ie_no"><?php _e('No', 'wp_resume'); ?></label><br />
+				<span class="description"><?php _e('If Internet Explorer breaks your resume\'s formatting, conditionally including a short Javascript file should force IE to recognize html5 semantic tags', 'wp_resume'); ?>.</span>
 			</td>
 		</tr>
 		<tr valign="top" class="underHood">
-			<th scrope="row">Enable URL Rewriting</th>
+			<th scrope="row"><?php _e('Enable URL Rewriting', 'wp_resume'); ?></th>
 			<td>
-				<input type="radio" name="wp_resume_options[rewrite]" id="rewrite_yes" value="1" <?php checked($options['rewrite'], 1); ?>/> <label for="rewrite_yes">Yes</label><br />
-				<input type="radio" name="wp_resume_options[rewrite]" id="rewrite_no" value="0" <?php checked($options['rewrite'], 0); ?>/> <label for="rewrite_no">No</label><br />
-				<span class="description">Creates individual pages for each position, and index pages for each section and organization.</span>
+				<input type="radio" name="wp_resume_options[rewrite]" id="rewrite_yes" value="1" <?php checked($options['rewrite'], 1); ?>/> <label for="rewrite_yes"><?php _e('Yes', 'wp_resume'); ?></label><br />
+				<input type="radio" name="wp_resume_options[rewrite]" id="rewrite_no" value="0" <?php checked($options['rewrite'], 0); ?>/> <label for="rewrite_no"><?php _e('No', 'wp_resume'); ?></label><br />
+				<span class="description"><?php _e('Creates individual pages for each position, and index pages for each section and organization', 'wp_resume'); ?>.</span>
 			</td>
 		</tr>
 		<tr valign="top" class="underHood">
-			<th scrope="row">Customizing WP Resume</th>
+			<th scrope="row"><?php _e('Customizing WP Resume', 'wp_resume'); ?></th>
 			<td>
-				<Strong>Style Sheets</strong><br />
-				Although some styling is included by default, you can customize the layout by modifying <a href='theme-editor.php'>your theme's stylesheet</a>.<br /><br />
+				<Strong><?php _e('Style Sheets', 'wp_resume'); ?></strong><br />
+				<?php _e('Although some styling is included by default, you can customize the layout by modifying <a href="theme-editor.php">your theme\'s stylesheet</a>', 'wp_resume'); ?>.<br /><br />
 				
-				<strong>Templates</strong> <br />
-				Any WP Resume template file (resume.php, resume-style.css, resume-text.php, etc.) found in your theme's directory will override the plugin's included template. Feel free to copy the file from the plugin directory into your theme's template directory and modify the file to meet your needs.<br /><br />
+				<strong><?php _e('Templates', 'wp_resume'); ?></strong> <br />
+				<?php _e("Any WP Resume template file (resume.php, resume-style.css, resume-text.php, etc.) found in your theme's directory will override the plugin's included template. Feel free to copy the file from the plugin directory into your theme's template directory and modify the file to meet your needs", 'wp_resume'); ?>.<br /><br />
 				
-				<strong>Feeds</strong> <br />
-				WP Resume allows you to access your data in three machine-readable formats. By default, the resume outputs in an <a href="http://microformats.org/wiki/hresume">hResume</a> compatible format. A JSON feed can be generated by appending <code>?feed=json</code> to your resume page's URL and a plain-text alternative (useful for copying and pasting into applications and forms) is available by appending <code>?feed=text</code> to your resume page's URL.<br /><br />
+				<strong><?php _e('Feeds', 'wp_resume'); ?></strong> <br />
+				<?php _e('WP Resume allows you to access your data in three machine-readable formats. By default, the resume outputs in an <a href="http://microformats.org/wiki/hresume">hResume</a> compatible format. A JSON feed can be generated by appending <code>?feed=json</code> to your resume page\'s URL and a plain-text alternative (useful for copying and pasting into applications and forms) is available by appending <code>?feed=text</code> to your resume page\'s URL', 'wp_resume'); ?>.<br /><br />
 			</td>
 		</tr>				
 	</table>
@@ -930,10 +931,15 @@ function wp_resume_admin_init() {
 	
 	$options = wp_resume_get_options();
 	
+	//check for upgrade and upgrade, works as an activation hook, more or less.
 	if ( !isset($options['db_version']) || $options['db_version'] < $wp_resume_version )
 		$options = wp_resume_upgrade_db();
 
 	register_setting( 'wp_resume_options', 'wp_resume_options', 'wp_resume_options_validate' );
+	
+	//make the plugin translation friendly
+	if(!load_plugin_textdomain('wp_resume','/wp-content/languages/'))
+		load_plugin_textdomain('wp_resume','/wp-content/plugins/wp-resume/languages/');
 	
 	//If we are on the wp_resume_options page, enque the tinyMCE editor
 	if ( !empty ($_GET['page'] ) && $_GET['page'] == 'wp_resume_options' ) {
@@ -960,7 +966,7 @@ function wp_resume_upgrade_db() {
 	
 	//default fields and values
 	$fields['global'] = array('fix_ie' => true, 'rewrite' => false);
-	$fields['user'] = array('name'=>'', 'summary' => '', 'contact_info'=>'');
+	$fields['user'] = array('name'=>'', 'summary' => '', 'contact_info'=> array() );
 	$i = 0;	foreach ( wp_resume_get_sections( false ) as $section)
 			$fields['user']['order'][$section->term_id] = $i++;
 
@@ -1050,10 +1056,10 @@ function wp_resume_org_helptext() { ?>
 		});
 	</script>
 	<noscript>
-		<h4>Help</h4>
-		<p><strong>Name</strong>: The name of the organization</p>
-		<p><strong>Parent</strong>: Do not add a parent</p>
-		<p><strong>Description</strong>: You can put the location of the organization here (optional)</p>
+		<h4><?php _e('Help', 'wp_resume'); ?></h4>
+		<p><strong><?php _e('Name', 'wp_resume'); ?></strong>: <?php _e('The name of the organization', 'wp_resume'); ?></p>
+		<p><strong><?php _e('Parent', 'wp_resume'); ?></strong>: <?php _e('Do not add a parent', 'wp_resume'); ?></p>
+		<p><strong><?php _e('Description', 'wp_resume'); ?></strong>: <?php _e('You can put the location of the organization here (optional)', 'wp_resume'); ?></p>
 	</noscript>
 <?php }
 
