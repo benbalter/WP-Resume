@@ -26,7 +26,7 @@ $author_options = wp_resume_get_user_options($wp_resume_author);
 				<h2 class="fn n url" id="name"><a href="<?php get_permalink(); ?>"><?php echo $author_options['name']; ?></a></h2>
 				<ul>
 					<?php //loop through contact info fields
-					if ( isset($author_options['contact_info'] ) ) {
+					if ( isset( $author_options['contact_info']) && is_array($author_options['contact_info'] ) ) {
 						foreach ($author_options['contact_info'] as $field=>$value) { ?>
 						<?php 
 							//per hCard specs (http://microformats.org/profile/hcard) adr needs to be an array
