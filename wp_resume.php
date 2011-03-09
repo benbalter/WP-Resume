@@ -938,7 +938,7 @@ function wp_resume_admin_init() {
 	register_setting( 'wp_resume_options', 'wp_resume_options', 'wp_resume_options_validate' );
 	
 	//make the plugin translation friendly
-	load_plugin_textdomain( 'wp_resume', null, dirname( plugin_basename( __FILE__ ) ) .'/i18n/' );	
+	load_plugin_textdomain( 'wp_resume', null, dirname( plugin_basename( __FILE__ ) ) .'/languages/' );	
 	
 	//If we are on the wp_resume_options page, enque the tinyMCE editor
 	if ( !empty ($_GET['page'] ) && $_GET['page'] == 'wp_resume_options' ) {
