@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 1.6
+Version: 1.6.1
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -437,6 +437,8 @@ function wp_resume_get_sections( $hide_empty = true, $author = '' ) {
 	
 	//sort by key
 	ksort($output);
+	
+	$output = apply_filters('wp_resume_sections', $output);
 				
 	//return the new array keyed to order
 	return $output;
@@ -465,6 +467,8 @@ function wp_resume_query( $section, $author = '' ) {
 		'wp_resume_section' => $section,
 		'author_name' => $author
 	);
+	
+	$args = apply_filters('wp_resume_query_args', $args);
 		
 	//query and return
 	$query = new wp_query($args);
@@ -609,7 +613,7 @@ function wp_resume_options_validate($data) {
 		$user_options['order'][$key] = intval( $value );
 	
 	//store position order data
-	if ( is_array($data['position_order'] ) ) { 
+	if ( isset($data['position_order'] )  && is_array($data['position_order'] ) ) { 
 		foreach ($data['position_order'] as $positionID => $order) {
 			$post['ID'] = intval( $positionID );
 			$post['menu_order'] = intval( $order );
@@ -630,8 +634,10 @@ function wp_resume_options_validate($data) {
 	//flush in case they toggled rewrite
 	global $wp_rewrite;
 	$wp_rewrite->flush_rules();
+	
+	$options = apply_filters('wp_resume_options', $options);
 
-	return $output;
+	return $options;
 }
 
 function wp_resume_contact_fields() {
@@ -643,6 +649,9 @@ function wp_resume_contact_fields() {
 	$fields['adr']['region'] = 'State/Region';
 	$fields['adr']['postal-code'] = 'Zip/Postal Code';
 	$fields['adr']['country-name'] = 'Country';
+	
+	$fields = apply_filters('wp_resume_contact_fields', $fields);
+	
 	return $fields;
 }
 
@@ -654,12 +663,12 @@ function wp_resume_contact_info_row( $value = '', $field_id = '' ) { ?>
 	    <?php 	foreach (wp_resume_contact_fields() as $id => $field) { ?>
 				<?php 	if ( is_array($field) ) {
 							foreach ($field as $subid => $subfield) { ?>
-								<option value="<?php echo $id . '|' . $subid; ?>" <?php if ($field_id == $subid) echo "SELECTED"; ?>>
+								<option value="<?php echo $id . '|' . $subid; ?>" <?php selected($field_id, $subid);?>>
 									<?php echo $subfield; ?>
 								</option>				
 							<?php }
 						} else { ?>
-							<option value="<?php echo $id; ?>" <?php if ($field_id == $id) echo "SELECTED"; ?>><?php echo $field; ?></option>	
+							<option value="<?php echo $id; ?>" <?php selected($field_id, $id);?>><?php echo $field; ?></option>	
 						<?php } ?>
 	    <?php } ?>
 	    </select>
@@ -844,7 +853,7 @@ $user_options = wp_resume_get_user_options($current_author);
 			<th scrope="row"><?php _e('Enable URL Rewriting', 'wp_resume'); ?></th>
 			<td>
 				<input type="radio" name="wp_resume_options[rewrite]" id="rewrite_yes" value="1" <?php checked($options['rewrite'], 1); ?>/> <label for="rewrite_yes"><?php _e('Yes', 'wp_resume'); ?></label><br />
-				<input type="radio" name="wp_resume_options[rewrite]" id="rewrite_no" value="0" <?php checked($options['rewrite'], 0); ?>/> <label for="rewrite_no"><?php _e('No', 'wp_resume'); ?></label><br />
+				<input type="radio" name="wp_resume_options[rewrite]" id="rewrite_no" value="0" <?php checked($options['rewrite'], 0); ?> <?php checked($options['rewrite'], null); ?>/> <label for="rewrite_no"><?php _e('No', 'wp_resume'); ?></label><br />
 				<span class="description"><?php _e('Creates individual pages for each position, and index pages for each section and organization', 'wp_resume'); ?>.</span>
 			</td>
 		</tr>
@@ -981,7 +990,7 @@ function wp_resume_upgrade_db() {
 	}
 		
 	//add multi-user support (v. 1.6)
-	if ( !isset($options['db_version']) || $options['db_version'] < '1.6' ) {
+	if ( !isset($options['db_version']) || substr( $options['db_version'], 0, 2 ) < '1.6' ) {
 	
 		$current_user = wp_get_current_user();
 		
@@ -1036,6 +1045,8 @@ function wp_resume_upgrade_db() {
 	global $wp_rewrite;
    	$wp_rewrite->flush_rules();
    	
+  	do_action('wp_resume_upgrade', $options['db_version'] );
+  
    	return $options;
 
 }
@@ -1090,10 +1101,14 @@ function wp_resume_shortcode( $atts ) {
 	$wp_resume_author = wp_resume_get_author( $atts );
 
 	ob_start();
+	do_action('wp_resume_shortcode_pre');
 	wp_resume_include_template('resume.php');
 	$resume = ob_get_contents();
+	do_action('wp_resume_shortcode_post');
 	ob_end_clean();
 	
+	apply_filters('wp_resume_shortcode', $resume);
+
 	return $resume;
 }
 
@@ -1132,6 +1147,7 @@ function wp_resume_header() {
 function wp_resume_plain_text() {
 	header('Content-Type: text/html; charset='. get_bloginfo('charset') );
 	wp_resume_include_template('resume-text.php');
+	do_action('wp_resume_plain_text');
 }
 
 /**
@@ -1141,6 +1157,7 @@ function wp_resume_plain_text() {
 function wp_resume_json() {
 	header('Content-type: application/json; charset='. get_bloginfo('charset') );
 	wp_resume_include_template('resume-json.php');
+	do_action('wp_resume_json');
 }
 
 /**
@@ -1211,11 +1228,13 @@ function wp_resume_permalink($link, $post, $leavename, $sample) {
 	);
 	
 	$replace = array(
-		$section[0]->slug,
-		$org[0]->slug
+		( isset( $section[0]->slug) ) ? $section[0]->slug : null,
+		( isset( $org[0]->slug) ) ? $org[0]->slug : null,
 	);	
 	
 	$link = str_replace($rewritecode, $replace, $link);
+	
+	$link = apply_filters('wp_resume_permalink', $link);
 
 	return $link;
 }
@@ -1256,6 +1275,8 @@ function wp_resume_feed_get_author(){
 		$wp_resume_author = $matches[1];
 	
 	}
+	
+	$wp_resume_author = apply_filters('wp_resume_author', $wp_resume_author);
 	
 	return $wp_resume_author;
 	
