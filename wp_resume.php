@@ -730,7 +730,7 @@ $user_options = wp_resume_get_user_options($current_author);
 				<div id="multiple">
 				<?php _e('WP Resume associates each resume with a user. To create a second resume...', 'wp_resume'); ?>
 				<ol>
-					<li style="font-size: 11px;"<?php _e('Simply <a href="user-new.php">add a new user</a> (or select an existing user in step two)', 'wp_resume'); ?>.</li>
+					<li style="font-size: 11px;"><?php _e('Simply <a href="user-new.php">add a new user</a> (or select an existing user in step two)', 'wp_resume'); ?>.</li>
 					<li style="font-size: 11px;"><a href="post-new.php?post_type=wp_resume_position"><?php _e('Add positions</a> as you would normally, being sure to select that user as the position\'s author. You may need to display the author box by enabling it in the "Screen Options" toggle in the top-right corner of the position page', 'wp_resume'); ?>.</li>
 					<li style="font-size: 11px;"><?php _e('Select the author from the drop down below and fill in the name, contact info, and summary fields (optional)', 'wp_resume'); ?>.</li>
 					<li style="font-size: 11px;"><a href="post-new.php?post_type=page"><?php _e('Create a new page</a> and add the <code>[wp_resume]</code> shortcode, similar to above, but set the page author to the resume\'s author (the author from step two). Again, you may need to enable the author box', 'wp_resume'); ?>.</li>
@@ -792,7 +792,7 @@ $user_options = wp_resume_get_user_options($current_author);
 			<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
 				<?php the_editor( ( isset($user_options['summary'] ) ) ? $user_options['summary'] : '', "wp_resume_options[summary]" ); ?>	
 			</div>
-			<span class="description"><?php _e('(optional) Plain-text summary of your resume, professional goals, etc. Will appear on your resume below your contact information before the body', 'wp_resume'); ?>.</div>	
+			<span class="description"><?php _e('(optional) Plain-text summary of your resume, professional goals, etc. Will appear on your resume below your contact information before the body', 'wp_resume'); ?>.</span>	
 			</td>
 		</tr>
 		<tr valign="top">
