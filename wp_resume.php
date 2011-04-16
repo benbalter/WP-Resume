@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 1.6.1
+Version: 1.6.2
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -768,7 +768,8 @@ $user_options = wp_resume_get_user_options($current_author);
 					<?php wp_resume_contact_info_row(); ?>
 				</ul>
 				<ul id="contact_info">
-					<?php array_walk_recursive($user_options['contact_info'], 'wp_resume_contact_info_row'); ?>
+					<?php if ( isset($user_options['contact_info'] ) && is_array( $user_options['contact_info'] ) ) 
+						array_walk_recursive($user_options['contact_info'], 'wp_resume_contact_info_row'); ?>
 				</ul>
 				<a href="#" id="add_contact_field">+ <?php _e('Add Field', 'wp_resume'); ?></a><br />
 				<script>
