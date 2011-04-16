@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 1.6.2
+Version: 1.6.3
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -566,7 +566,7 @@ function wp_resume_options_validate($data) {
 	
 	//figure out what user we are acting on
 	global $wpdb;
-	$authors = 	$wpdb->get_col( $wpdb->prepare("SELECT $wpdb->users.user_login FROM $wpdb->users") );
+	$authors = 	$wpdb->get_col( $wpdb->prepare("SELECT $wpdb->users.user_nicename FROM $wpdb->users") );
 	if ( sizeof($authors) == 1 ) {
 	
 		//if there is only one user in the system, it's gotta be him
@@ -681,6 +681,7 @@ function wp_resume_contact_info_row( $value = '', $field_id = '' ) { ?>
  * @since 1.0a
  */
 function wp_resume_options() { 	
+	global $wpdb;
 ?>
 <div class="wrap">
 	<h2><?php _e('Resume Options', 'wp_resume'); ?></h2>
@@ -697,7 +698,7 @@ settings_fields( 'wp_resume_options' );
 $options = wp_resume_get_options();
 
 //set up the current author
-$authors = explode(', ', wp_list_authors( array('exclude_admin' => false, 'hide_empty' => false, 'echo' => false, 'html'=> false ) ) );
+$authors = $wpdb->get_results("SELECT display_name, user_nicename from $wpdb->users ORDER BY display_name");
 
 if ( sizeof($authors) == 1 ) {
 	//if there's only one author, that's our author
@@ -747,7 +748,7 @@ $user_options = wp_resume_get_user_options($current_author);
 			<td>
 				<select name="user" id="user">
 					<?php foreach ($authors as $author) { ?>
-					<option <?php selected($author, $current_author); ?>><?php echo $author; ?></option>
+					<option value="<?php echo $author->user_nicename; ?>" <?php selected($author->user_nicename, $current_author); ?>><?php echo $author->display_name; ?></option>
 					<?php } ?>
 				</select>
 				<input type="hidden" name="old_user" value="<?php echo $current_author; ?>" />
