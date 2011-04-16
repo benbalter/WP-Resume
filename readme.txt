@@ -4,7 +4,7 @@ Donate link: http://ben.balter.com/
 Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume
 Requires at least: 3.0
 Tested up to: 3.2
-Stable tag: 1.6
+Stable tag: 1.6.1
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
 
@@ -34,6 +34,7 @@ Under the hood:
 * Built on existing WordPress code, utilizing a single custom post type and two custom taxonomies
 * JSON API so you can use the data anywhere
 * Support for custom templates and CSS files (like a child theme, just place them in your theme directory)
+* Plugin API hooks for developers to build on
 
 The hardest part of getting your resume online should be doing the work listed on it, not wrestling the publishing platform. Simply put, WP Resume steps aside and lets your experience shine.
 
@@ -99,6 +100,12 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 3. Resume menu in wp-admin sidebar
 
 == Changelog ==
+
+= 1.6.1 = 
+* Bugfix on options page
+* Bugfix on upgrade procedure
+* Permalink bugfix
+* Added Plugin API Hooks for customization
 
 = 1.6 =
 * Added ability to publish multiple resumes on the same site
