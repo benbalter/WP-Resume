@@ -101,6 +101,19 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 
 == Changelog ==
 
+= 1.6.5 =
+* Fix bug with summary display on resume
+
+= 1.6.4 = 
+* Fixed error message on options page for single user blogs
+
+= 1.6.3 =
+* HTML fixes on options page
+* Fixed issue with options not appearing after save in some cases
+
+= 1.6.2 = 
+* Fixed E_NOTICE level warning on options page
+
 = 1.6.1 = 
 * Bugfix on options page
 * Bugfix on upgrade procedure
