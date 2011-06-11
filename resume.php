@@ -45,7 +45,7 @@ $author_options = wp_resume_get_user_options($wp_resume_author);
 				<?php } ?>
 				</ul>
 			</header>
-			<?php if (! empty( $author_options['summary'] ) ) { ?>
+			<?php if (! empty( $$author_options['summary'] ) ) { ?>
 			<summary class="summary">
 				<?php echo $author_options['summary']; ?>
 			</summary>
@@ -106,13 +106,13 @@ $author_options = wp_resume_get_user_options($wp_resume_author);
 						<?php if (!$organization) { ?>
 							</header>
 						<?php } ?>
-						<details>
+						<div class="details">
 						<?php the_content(); ?>
 <?php 			//If the current user can edit posts, output the link
 				if ( current_user_can( 'edit_posts' ) ) 
 					edit_post_link('Edit'); 	
 ?>
-						</details><!-- .details -->
+						</div><!-- .details -->
 					</<?php echo ($organization) ? 'section' : 'article'; ?>> <!-- .vcard -->
 <?php 		
 				//End loop
