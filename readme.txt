@@ -102,6 +102,7 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 == Changelog ==
 
 = 1.6.5 =
+* Removed improperly used HTML5 details tag which forced position details into toggle in some browsers
 * Fix bug with summary display on resume
 
 = 1.6.4 = 
