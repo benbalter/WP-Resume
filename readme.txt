@@ -4,7 +4,7 @@ Donate link: http://ben.balter.com/
 Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume
 Requires at least: 3.0
 Tested up to: 3.2
-Stable tag: 1.6.5
+Stable tag: 1.6.6
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
 
@@ -101,6 +101,9 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 
 == Changelog ==
 
+= 1.6.6 =
+* Fixed handling of custom stylesheets and template files with child themes in versions greater than 3.1
+
 = 1.6.5 =
 * Removed improperly used HTML5 details tag which forced position details into toggle in some browsers
 * Fix bug with summary display on resume
@@ -194,3 +197,8 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 
 = 1.0 (alpha) =
 * Initial Alpha Release
+
+== Upgrade Notice ==
+
+= 1.6.6 =
+Fixes handling of custom stylesheets and template files with child themes in versions of WordPress greater than 3.1

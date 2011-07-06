@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 1.6.5
+Version: 1.6.6
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -521,8 +521,8 @@ function wp_resume_get_user_options($user) {
  */
 function wp_resume_enqueue() {
 
-    if ( file_exists ( get_theme_root() . '/' . get_template() . '/resume-style.css' ) )
-    	wp_enqueue_style('wp-resume-custom-stylesheet', get_bloginfo('template_directory') . '/resume-style.css' );
+    if ( file_exists ( get_stylesheet_directory() . '/resume-style.css' ) )
+    	wp_enqueue_style('wp-resume-custom-stylesheet', get_stylesheet_directory_uri() . '/resume-style.css' );
 	else 
 		wp_enqueue_style('wp-resume-default-stylesheet', plugins_url(  'resume-style.css', __FILE__ ) );
 }
@@ -1169,8 +1169,8 @@ function wp_resume_json() {
  */
 function wp_resume_include_template( $template ) {
 
-	if ( file_exists( get_theme_root() . '/' . get_template() . '/' . $template ) )
-		include ( get_theme_root() . '/' . get_template() . '/' . $template ) ;
+	if ( file_exists( get_stylesheet_directory() . '/' . $template ) )
+		include ( get_stylesheet_directory() . '/' . $template ) ;
 	else 
 		include ( $template );
 						
