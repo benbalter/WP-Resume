@@ -8,12 +8,9 @@
 
 $wp_resume = WP_Resume::$instance;
 
-//determine author
-$wp_resume_author = $wp_resume->feed_get_author();
-
 //Retrieve plugin options for later use
 $options = $wp_resume->get_options();
-$author_options = $wp_resume->get_user_options( $wp_resume_author );
+$author_options = $wp_resume->get_user_options( $wp_resume->author );
 
 //output name and url
 echo $author_options['name'] . "\r\n";
@@ -39,13 +36,13 @@ if (! empty( $author_options['summary'] ) )
 	echo $author_options['summary'] . "\r\n";
 
 //Loop through each resume section
-foreach ( $wp_resume->get_sections(null, $wp_resume_author) as $section) {
+foreach ( $wp_resume->get_sections(null, $wp_resume->author) as $section) {
 	
 	//Initialize our org. variable 
 	$current_org=''; 
 	
 	//retrieve all posts in the current section using our custom loop query
-	$posts = $wp_resume->query( $section->slug, $wp_resume_author);
+	$posts = $wp_resume->query( $section->slug, $wp_resume->author);
 
 	//loop through all posts in the current section using the standard WP loop
 	if ( $posts->have_posts() ) : 

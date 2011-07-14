@@ -20,6 +20,7 @@ class WP_Resume {
 
 	static $instance;
 	public $version = '2.0';
+	public $author = '';
 
 	function __construct() {
 		
@@ -1110,10 +1111,9 @@ class WP_Resume {
 	 * @since 1.3
 	 */
 	function shortcode( $atts ) {
-		
+
 		//determine author and set as global so templates can read
-		global $wp_resume_author;
-		$wp_resume_author = $this->get_author( $atts );
+		$this->author = $this->get_author( $atts );
 
 		ob_start();
 		do_action('wp_resume_shortcode_pre');
@@ -1134,9 +1134,14 @@ class WP_Resume {
 	function add_feeds() {
 	
 		global $post;
+		
+		//feed 404
+		if ( !$post )
+			return false;
+		
 		if ( preg_match( '/\[wp_resume([^\]]*)]/i', $post->post_content ) === FALSE) 
 			return;
-			
+
 		add_feed('text', array( &$this, 'plain_text' ) );
 		add_feed('json', array( &$this, 'json' ) );
 		
@@ -1158,7 +1163,8 @@ class WP_Resume {
 	 * @since 1.5
 	 */
 	function plain_text() {
-		header('Content-Type: text/html; charset='. get_bloginfo('charset') );
+		$this->feed_get_author();
+		header('Content-Type: text/plain; charset='. get_bloginfo('charset') );
 		$this->include_template('resume-text.php');
 		do_action('wp_resume_plain_text');
 	}
@@ -1168,6 +1174,7 @@ class WP_Resume {
 	 * @since 1.5
 	 */
 	function json() {
+		$this->feed_get_author();
 		header('Content-type: application/json; charset='. get_bloginfo('charset') );
 		$this->include_template('resume-json.php');
 		do_action('wp_resume_json');
@@ -1274,24 +1281,26 @@ class WP_Resume {
 		return $exclusions;
 	}
 
+	/**
+	 * Parses current author for feeds from shortcode
+	 */
 	function feed_get_author(){
 		global $post;
-		global $wp_resume_author;	
 		
 		if ( preg_match( '/\[wp_resume user=\"([^\"]*)"]/i', $post->post_content, $matches ) == 0) {
 			
 			$user = get_userdata($post->post_author);
-			$wp_resume_author = $user->user_login; 
+			$this->author = $user->user_login; 
 			
 		} else {
 		
-			$wp_resume_author = $matches[1];
+			$this->author = $matches[1];
 		
 		}
 		
-		$wp_resume_author = apply_filters('wp_resume_author', $wp_resume_author);
+		$this->author = apply_filters( 'wp_resume_author', $this->author );
 		
-		return $wp_resume_author;
+		return $this->author;
 		
 	}
 	

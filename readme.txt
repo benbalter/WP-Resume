@@ -105,6 +105,7 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 * Complete code overhaul; performance and stability improvments
 * Fix bug where some users were not able to edit settings on the options page
 * Fix but wheere in some cases page with shortcode would appear blank
+* Spanish and Portuguese translations
 
 = 1.6.6 =
 * Fixed handling of custom stylesheets and template files with child themes in versions greater than 3.1
