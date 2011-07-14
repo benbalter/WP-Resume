@@ -13,13 +13,7 @@ $wp_resume = WP_Resume::$instance;
  
 //Retrieve plugin options for later use
 $options = $wp_resume->get_options();
-
-//check if we have an author, if not, find one
-global $wp_resume_author;
-if (!$wp_resume_author) 
-	$wp_resume_author = $wp_resume->get_author( $atts );
-
-$author_options = $wp_resume->get_user_options($wp_resume_author);
+$author_options = $wp_resume->get_user_options( $wp_resume->author );
 ?>
 		<div class="resume hresume">
 			<div id="bar"> </div>
@@ -53,7 +47,7 @@ $author_options = $wp_resume->get_user_options($wp_resume_author);
 			<?php } ?>
 <?php 		
 			//Loop through each resume section
-			foreach ( $wp_resume->get_sections(null, $wp_resume_author) as $section) { 
+			foreach ( $wp_resume->get_sections(null, $wp_resume->author) as $section) { 
 
 ?>
 			<section class="vcalendar" id="<?php echo $section->slug; ?>">
@@ -62,7 +56,7 @@ $author_options = $wp_resume->get_user_options($wp_resume_author);
 				$current_org=''; 
 				
 				//retrieve all posts in the current section using our custom loop query
-				$posts = $wp_resume->query( $section->slug, $wp_resume_author );
+				$posts = $wp_resume->query( $section->slug, $wp_resume->author );
 				
 				//loop through all posts in the current section using the standard WP loop
 				if ( $posts->have_posts() ) :  ?>
