@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-resume\n"
-"POT-Creation-Date: 2011-07-14 20:49:29+00:00\n"
+"POT-Creation-Date: 2011-07-14 21:12:16+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -188,6 +188,14 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
+#: wp_resume.php:557 wp_resume.php:709
+msgid "Resume Options"
+msgstr ""
+
+#: wp_resume.php:557
+msgid "Options"
+msgstr ""
+
 #: wp_resume.php:658
 msgid "E-Mail"
 msgstr ""
@@ -218,10 +226,6 @@ msgstr ""
 
 #: wp_resume.php:666
 msgid "Country"
-msgstr ""
-
-#: wp_resume.php:709
-msgid "Resume Options"
 msgstr ""
 
 #: wp_resume.php:742
