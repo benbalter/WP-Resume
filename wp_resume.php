@@ -554,7 +554,7 @@ class WP_Resume {
 	 */
 	function menu() {
 		
-		add_submenu_page( 'edit.php?post_type=wp_resume_position', 'Resume Options', 'Options', 'manage_options', 'wp_resume_options', array( &$this, 'options' ) );
+		add_submenu_page( 'edit.php?post_type=wp_resume_position', __('Resume Options', 'wp-resume'), __('Options', 'wp-resume'), 'manage_options', 'wp_resume_options', array( &$this, 'options' ) );
 
 	}
 
