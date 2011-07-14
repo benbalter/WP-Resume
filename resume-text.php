@@ -5,14 +5,15 @@
  * @author Benjamin J. Balter
  * @since 1.5
  */
- 
+
+$wp_resume = WP_Resume::$instance;
 
 //determine author
-$wp_resume_author = wp_resume_feed_get_author();
+$wp_resume_author = $wp_resume->feed_get_author();
 
 //Retrieve plugin options for later use
-$options = wp_resume_get_options();
-$author_options = wp_resume_get_user_options($wp_resume_author);
+$options = $wp_resume->get_options();
+$author_options = $wp_resume->get_user_options( $wp_resume_author );
 
 //output name and url
 echo $author_options['name'] . "\r\n";
@@ -38,13 +39,13 @@ if (! empty( $author_options['summary'] ) )
 	echo $author_options['summary'] . "\r\n";
 
 //Loop through each resume section
-foreach ( wp_resume_get_sections(null, $wp_resume_author) as $section) {
+foreach ( $wp_resume->get_sections(null, $wp_resume_author) as $section) {
 	
 	//Initialize our org. variable 
 	$current_org=''; 
 	
 	//retrieve all posts in the current section using our custom loop query
-	$posts = wp_resume_query( $section->slug, $wp_resume_author);
+	$posts = $wp_resume->query( $section->slug, $wp_resume_author);
 
 	//loop through all posts in the current section using the standard WP loop
 	if ( $posts->have_posts() ) : 
@@ -56,7 +57,7 @@ foreach ( wp_resume_get_sections(null, $wp_resume_author) as $section) {
 	while ( $posts->have_posts() ) : $posts->the_post();
 
 		//Retrieve details on the current position's organization
-		$organization = wp_resume_get_org( get_the_ID() ); 
+		$organization = $wp_resume->get_org( get_the_ID() ); 
 				
 		//If this is the first organization, or if this org. is different from the previous, format output acordingly
 		if ($organization && $organization->term_id != $current_org) {
@@ -74,7 +75,7 @@ foreach ( wp_resume_get_sections(null, $wp_resume_author) as $section) {
 		}
 		
 		the_title();
-		$date = wp_filter_nohtml_kses( str_replace('&ndash;','-', wp_resume_format_date( get_the_ID() ) ) );
+		$date = wp_filter_nohtml_kses( str_replace('&ndash;','-', $wp_resume->format_date( get_the_ID() ) ) );
 		if (strlen($date) > 1)
 			echo "($date)";
 		echo "\r\n";
