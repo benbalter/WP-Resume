@@ -9,16 +9,17 @@
  * @since 1.0a
  */
 
+$wp_resume = WP_Resume::$instance;
+ 
 //Retrieve plugin options for later use
-$options = wp_resume_get_options();
+$options = $wp_resume->get_options();
 
 //check if we have an author, if not, find one
 global $wp_resume_author;
 if (!$wp_resume_author) 
-	$wp_resume_author = wp_resume_get_author( $atts );
+	$wp_resume_author = $wp_resume->get_author( $atts );
 
-$author_options = wp_resume_get_user_options($wp_resume_author);
-
+$author_options = $wp_resume->get_user_options($wp_resume_author);
 ?>
 		<div class="resume hresume">
 			<div id="bar"> </div>
@@ -52,7 +53,7 @@ $author_options = wp_resume_get_user_options($wp_resume_author);
 			<?php } ?>
 <?php 		
 			//Loop through each resume section
-			foreach ( wp_resume_get_sections(null, $wp_resume_author) as $section) { 
+			foreach ( $wp_resume->get_sections(null, $wp_resume_author) as $section) { 
 
 ?>
 			<section class="vcalendar" id="<?php echo $section->slug; ?>">
@@ -61,7 +62,7 @@ $author_options = wp_resume_get_user_options($wp_resume_author);
 				$current_org=''; 
 				
 				//retrieve all posts in the current section using our custom loop query
-				$posts = wp_resume_query( $section->slug, $wp_resume_author );
+				$posts = $wp_resume->query( $section->slug, $wp_resume_author );
 				
 				//loop through all posts in the current section using the standard WP loop
 				if ( $posts->have_posts() ) :  ?>
@@ -69,7 +70,7 @@ $author_options = wp_resume_get_user_options($wp_resume_author);
 				<?php while ( $posts->have_posts() ) : $posts->the_post();
 				
 					//Retrieve details on the current position's organization
-					$organization = wp_resume_get_org( get_the_ID() ); 
+					$organization = $wp_resume->get_org( get_the_ID() ); 
 				
 					//If this is the first organization, or if this org. is different from the previous, format output acordingly
 					if ($organization && $organization->term_id != $current_org) {
@@ -102,7 +103,7 @@ $author_options = wp_resume_get_user_options($wp_resume_author);
 							<header>
 						<?php } ?>
 						<div class="title"><?php echo the_title(); ?></div>
-						<div class="date"><?php echo wp_resume_format_date( get_the_ID() ); ?></div>
+						<div class="date"><?php echo $wp_resume->format_date( get_the_ID() ); ?></div>
 						<?php if (!$organization) { ?>
 							</header>
 						<?php } ?>
