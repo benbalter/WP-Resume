@@ -275,7 +275,8 @@ class WP_Resume {
 			die('-1');
 
 		//insert term
-		$term = wp_insert_term( $_POST['new_'. $type], $type, array('description' => $_POST['new_'. $type . '_location']) );
+		$desc = ( isset( $_POST['new_'. $type . '_location'] ) ) ? $_POST['new_'. $type . '_location'] : '';
+		$term = wp_insert_term( $_POST['new_'. $type], $type, array('description' => $desc ) );
 		
 		//associate position with new term
 		wp_set_object_terms( $_POST['post_ID'], $term['term_id'], 'wp_resume_section' );
@@ -552,7 +553,7 @@ class WP_Resume {
 	 */
 	function menu() {
 		
-		add_submenu_page( 'edit.php?post_type=wp_resume_position', 'Resume Options', 'Options', 'manage_options', 'wp_resume_options', 'wp_resume_options' );
+		add_submenu_page( 'edit.php?post_type=wp_resume_position', 'Resume Options', 'Options', 'manage_options', 'wp_resume_options', array( &$this, 'options' ) );
 
 	}
 
@@ -732,7 +733,7 @@ class WP_Resume {
 		$current_author = $current_user->user_login;
 	}
 
-	$user_options = wp_resume_get_user_options($current_author);
+	$user_options = $this->get_user_options($current_author);
 
 	?>
 		<table class="form-table">
@@ -786,7 +787,7 @@ class WP_Resume {
 				<th scope="row"><?php _e('Contact Information', 'wp-resume'); ?></th>
 				<td>
 					<ul class="contact_info_blank" style="display:none;">
-						<?php wp_resume_contact_info_row(); ?>
+						<?php $this->contact_info_row(); ?>
 					</ul>
 					<ul id="contact_info">
 						<?php if ( isset($user_options['contact_info'] ) && is_array( $user_options['contact_info'] ) ) 
