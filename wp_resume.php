@@ -160,10 +160,10 @@ class WP_Resume {
 
 	function order_box($post) {
 	?>
-		<p><strong><?php _e('Order', 'wp_resume'); ?></strong></p>
+		<p><strong><?php _e('Order', 'wp-resume'); ?></strong></p>
 		<p>	
 			<div style="float:right; width: 200px; padding-right:10px; margin-top: -1em; display: inline;">
-				<i><?php _e('Hint', 'wp_resume'); ?>:</i> <?php _e('Your resume will be sorted based on this number (ascending)', 'wp-resume'); ?>. <a href="#" id="wp_resume_help_toggle"><?php _e('More', 'wp_resume'); ?></a><br /> <br />
+				<i><?php _e('Hint', 'wp-resume'); ?>:</i> <?php _e('Your resume will be sorted based on this number (ascending)', 'wp-resume'); ?>. <a href="#" id="wp_resume_help_toggle"><?php _e('More', 'wp-resume'); ?></a><br /> <br />
 
 				<div id="wp_resume_help"><?php _e('When you add a new position, feel free to leave this number at "0" and a best guess will be made based on the position\'s end date (reverse chronological order)', 'wp-resume'); ?>. <br /><br /><?php _e('Of Course, you can always <a href="edit.php?post_type=wp_resume_position&page=wp_resume_options#sections">fine tune your resume order</a> on the options page', 'wp-resume');?>.</div>
 			</div>
