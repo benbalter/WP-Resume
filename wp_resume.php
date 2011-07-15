@@ -690,7 +690,7 @@ class WP_Resume {
 									</option>				
 								<?php }
 							} else { ?>
-								<option value="<?php echo $id; ?>" <?php selected($field_id, $id);?>><?php echo $field; ?></option>	
+								<option value="<?php echo $id; ?>" <?php selected($field_id, $id);?>><?php echo esc_attr( $field ); ?></option>	
 							<?php } ?>
 			<?php } ?>
 			</select>
