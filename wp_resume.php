@@ -522,7 +522,7 @@ class WP_Resume {
 	 * Checks to see if file 'resume-style.css' exists in the current template directory, otherwise includes default
 	 * @since 1.0a
 	 */
-	function enqueue_style() {
+	function enqueue_styles() {
 
 		if ( file_exists ( get_stylesheet_directory() . '/resume-style.css' ) )
 			wp_enqueue_style('wp-resume-custom-stylesheet', get_stylesheet_directory_uri() . '/resume-style.css' );
