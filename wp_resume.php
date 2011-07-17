@@ -211,7 +211,7 @@ class WP_Resume {
 		}
 			echo '<input type="radio" name="'.$type.'" value="" id="none" ';
 			checked( empty($current[0]->term_id) );
-			echo '/> <label for="none">None</label><br />'. "\r\n"; ?>
+			echo '/> <label for="none">' . __('None', 'wp-resume') .'</label><br />'. "\r\n"; ?>
 			
 			<a href="#" id="add_<?php echo $type ?>_toggle">+ <?php echo $taxonomy->labels->add_new_item; ?></a>
 			<div id="add_<?php echo $type ?>_div" style="display:none">
