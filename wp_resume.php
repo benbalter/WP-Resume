@@ -37,16 +37,16 @@ class WP_Resume {
 		add_action( 'save_post', array( &$this, 'save_wp_resume_position' ) );
 
 		//frontend printstyles
-		add_action( 'wp_print_styles', array( &$this, 'enqueue' ) );
+		add_action( 'wp_print_styles', array( &$this, 'enqueue_styles' ) );
 
 		//shortcode
 		add_shortcode('wp_resume', array( &$this, 'shortcode' ) );
 		
 		//admin UI
 		add_action( 'admin_menu', array( &$this, 'menu' ) );
-		add_action('admin_init', array( &$this, 'admin_init' ) );
-		add_action('wp_resume_organization_add_form', array( &$this, 'org_helptext' ) );
-		add_action('wp_resume_section_add_form', array( &$this, 'section_helptext' ) );
+		add_action( 'admin_init', array( &$this, 'admin_init' ) );
+		add_action( 'wp_resume_organization_add_form', array( &$this, 'org_helptext' ) );
+		add_action( 'admin_init', array( &$this, 'enqueue_scripts' ) );
 		
 		//rewrites and redirects
 		add_action('template_redirect',array( &$this, 'add_feeds' ) );
@@ -172,19 +172,6 @@ class WP_Resume {
 			<input type="text" name="menu_order" size="4" id="menu_order" value="<?php echo $post->menu_order; ?>">
 		</p>
 		<p style="clear: both; height: 5px;" id="wp_resume_clearfix"> </p>
-		<script>
-			jQuery(document).ready(function($){
-				$('#wp_resume_help, #wp_resume_clearfix').hide();
-				$('#wp_resume_help_toggle').click(function(){
-					$('#wp_resume_help, #wp_resume_clearfix').toggle('fast');
-					if ($(this).text() == "More")
-						$(this).text('Less');
-					else
-						$(this).text('More');
-					return false;
-				});
-			});
-		</script>
 	<?php
 	}
 
@@ -237,19 +224,6 @@ class WP_Resume {
 				<input type="button" value="Add New" id="add_<?php echo $type ?>_button" />
 				<img src="<?php echo esc_url( admin_url( 'images/wpspin_light.gif' ) ); ?>" id="<?php echo $type ?>-ajax-loading" style="display:none;" alt="" />
 			</div>
-			<script>
-				jQuery(document).ready(function($){
-					$('#add_<?php echo $type ?>_toggle').click(function(){
-						$('#add_<?php echo $type ?>_div').toggle();
-					});
-					$('#add_<?php echo $type ?>_button').click(function() {
-						$('#<?php echo $type ?>-ajax-loading').show();
-						$.post('admin-ajax.php?action=add_<?php echo $type; ?>', $('#new_<?php echo $type; ?>, #new_<?php echo $type; ?>_location, #_ajax_nonce-add-<?php echo $type; ?>, #post_ID').serialize(), function(data) { 
-							$('#<?php echo $type; ?>div .inside').html(data); 
-							});
-					});
-				});
-			</script>
 	<?php
 		//nonce is a funny word
 		wp_nonce_field( 'add_'.$type, '_ajax_nonce-add-'.$type );
@@ -278,6 +252,12 @@ class WP_Resume {
 		//insert term
 		$desc = ( isset( $_POST['new_'. $type . '_location'] ) ) ? $_POST['new_'. $type . '_location'] : '';
 		$term = wp_insert_term( $_POST['new_'. $type], $type, array('description' => $desc ) );
+		
+		//catch errors
+		if ( is_wp_error( $term ) ) {
+			$this->taxonomy_box( $post, $type );
+			exit();
+		}
 		
 		//associate position with new term
 		wp_set_object_terms( $_POST['post_ID'], $term['term_id'], 'wp_resume_section' );
@@ -314,6 +294,8 @@ class WP_Resume {
 	 * @params int $post_id the ID of the current post as passed by WP
 	 */
 	function save_wp_resume_position( $post_id ) {
+	
+	//print_r( $_POST ); die();
 
 		//Verify our nonce, also varifies that we are on the edit page and not updating elsewhere
 		if ( !isset( $_POST['wp_resume_nonce'] ) || !wp_verify_nonce( $_POST['wp_resume_nonce'], 'wp_resume_taxonomy' , 'wp_resume_nonce' ) )
@@ -540,7 +522,7 @@ class WP_Resume {
 	 * Checks to see if file 'resume-style.css' exists in the current template directory, otherwise includes default
 	 * @since 1.0a
 	 */
-	function enqueue() {
+	function enqueue_style() {
 
 		if ( file_exists ( get_stylesheet_directory() . '/resume-style.css' ) )
 			wp_enqueue_style('wp-resume-custom-stylesheet', get_stylesheet_directory_uri() . '/resume-style.css' );
@@ -795,17 +777,6 @@ class WP_Resume {
 							array_walk_recursive($user_options['contact_info'], array( &$this, 'contact_info_row' ) ); ?>
 					</ul>
 					<a href="#" id="add_contact_field">+ <?php _e('Add Field', 'wp-resume'); ?></a><br />
-					<script>
-						jQuery(document).ready(function($){
-							$('#contact_info').append( $('.contact_info_blank').html() );
-							$('.contact_info_row:last').show();
-							$('#add_contact_field').click(function(){
-								$('#contact_info').append( $('.contact_info_blank').html() );
-								$('.contact_info_row:last').fadeIn();						
-								return false;
-							});
-						});
-					</script>
 					<span class="description"><?php _e('(optional) Add any contact info you would like included in your resume', 'wp-resume'); ?>.</span>
 				</td>
 			</tr>
@@ -898,50 +869,7 @@ class WP_Resume {
 		<script>
 		jQuery(document).ready(function($) {
 		
-		$('#multiple').hide();
-		$('#toggleMultiple').click(function() {
-			$('#multiple').toggle('fast');
-			if ($(this).text() == "Yes!")
-				$(this).text('No.');
-			else
-				$(this).text('Yes!');
-			return false;
-		});
 		
-		$('.underHood').hide();
-		$('#toggleHood').click(function() {
-			$('.underHood').toggle('fast');
-			if ($(this).text() == "Hide Advanced Options")
-				$(this).text('Show Advanced Options');
-			else
-				$(this).text('Hide Advanced Options');
-			return false;
-		});
-
-		$("#sections, .positions, .organizations").sortable({
-			axis:'y', 
-			containment: 'parent',
-			opacity: .5,
-			update: function(){},
-			placeholder: 'placeholder',
-			forcePlaceholderSize: 'true'
-		});
-		$("#sections").disableSelection();
-		$('.button-primary').click(function(){
-			var i = 0;
-			$('.section').each(function(){
-				$('#wp_resume_form').append('<input type="hidden" name="wp_resume_options[order]['+$(this).attr('id')+']" value="' + i + '">');
-				i = i +1;
-			});
-			var i = 1;
-			$('.position').each(function(){
-				$('#wp_resume_form').append('<input type="hidden" name="wp_resume_options[position_order]['+$(this).attr('id')+']" value="' + i + '">');
-				i = i +1;
-			});
-		});
-		$('#user').change(function(){
-			$('.button-primary').click();		
-		}); 
 		
 	});
 		</script>
@@ -978,11 +906,45 @@ class WP_Resume {
 			wp_enqueue_script('media-upload');
 			wp_enqueue_script('post');
 			add_action( 'admin_print_footer_scripts', 'wp_tiny_mce', 25 );
-			wp_enqueue_style('wp_resume_admin_stylesheet', plugins_url(  'admin-style.css', __FILE__ ) );
-			wp_enqueue_script( array("jquery", "jquery-ui-core", "interface", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable") );
+			
+			//add css
+			wp_enqueue_style('wp_resume_admin_stylesheet', plugins_url(  'admin-style.css', __FILE__ ) );	
 		}
+		
+		
+	}
+	
+	function enqueue_scripts() {
+	
+		$suffix = ( WP_DEBUG ) ? 'dev.' : '';
+	
+		$post = false;
+		if ( !empty( $_GET['post'] ) )
+			$post = get_post( $_GET['post'] );
+	
+		//load javascript with libraries on options page
+		if ( !empty ( $_GET['page'] ) && $_GET['page'] == 'wp_resume_options' ) { 
+			wp_enqueue_script( 'wp_resume', plugins_url('/wp_resume.' . $suffix . 'js', __FILE__), array("jquery", "jquery-ui-core", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable"), $this->version );		
+		//if on the org, section, or edit page, load the script without all the libraries
+		} else if ( ( !empty( $_GET['post_type'] ) && $_GET['post_type'] == 'wp_resume_position' ) ||
+			 ( !empty( $_GET['post'] ) && $post && $post->post_type == 'wp_resume_position' ) ) { 
+			wp_enqueue_script( 'wp_resume', plugins_url('/wp_resume.' . $suffix . 'js', __FILE__), array("jquery"), $this->version );		
+		}
+		
+		$data = array( 
+			'more' => __('More', 'wp-resume'),
+			'less' => __('less', 'wp-resume'),
+			'yes' => __('Yes!', 'wp-resume'),
+			'no' => __('No.', 'wp-resume'),
+			'hideAdv' => __('Hide Advanced Options', 'wp-resume'),
+			'showAdv' => __('Show Advanced Options', 'wp-resume'),
+			'orgName' => __('The name of the organization as you want it to appear', 'wp-resume'),
+			'orgLoc' => __('Traditionally the location of the organization (optional)', 'wp-resume'),
 
-
+		
+		);
+		wp_localize_script( 'wp_resume', 'wp_resume', $data );
+	
 	}
 
 	/**
@@ -1078,13 +1040,6 @@ class WP_Resume {
 	 * @disclaimer it's not pretty, but it get's the job done.
 	 */
 	function org_helptext() { ?>
-		<script>
-			jQuery(document).ready(function($){
-				$('#parent, #tag-slug').parent().hide();
-				$('#tag-name').siblings('p').text('The name of the organization as you want it to appear');
-				$('#tag-description').attr('rows','1').siblings('label').text('Location').siblings('p').text('Traditionally the location of the organization (optional)');
-			});
-		</script>
 		<noscript>
 			<h4><?php _e('Help', 'wp-resume'); ?></h4>
 			<p><strong><?php _e('Name', 'wp-resume'); ?></strong>: <?php _e('The name of the organization', 'wp-resume'); ?></p>
@@ -1093,18 +1048,6 @@ class WP_Resume {
 		</noscript>
 	<?php }
 
-	/**
-	 * Removes extra fields from add section form
-	 * @since 1.2
-	 */
-	function section_helptext() { ?>
-		<script>
-			jQuery(document).ready(function($){
-				$('#parent').parent().hide();
-				$('#tag-description, #tag-slug').parent().hide();
-			});
-		</script>
-	<?php }
 
 	/**
 	 * Includes resume template on shortcode use 
