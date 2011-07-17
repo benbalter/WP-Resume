@@ -89,6 +89,10 @@ Yes.  It probably would be.  [Leave a comment on the plugin page](http://ben.bal
 
 No.  WP Resume includes a default stylesheet that can easily be overridden by your theme's defaults or other CSS you may drop in.
 
+= I'm having trouble organizing some of the positions on the options screen; they're not sortable. What gives? =
+
+Make sure all your positions are associated with both organizations and sections.
+
 == Planned Features ==
  
 * Import from LinkedIn via API
