@@ -2,7 +2,7 @@
 Contributors: benbalter
 Donate link: http://ben.balter.com/
 Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume
-Requires at least: 3.0
+Requires at least: 3.2
 Tested up to: 3.2
 Stable tag: 1.6.6
 
@@ -102,9 +102,9 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 == Changelog ==
 
 = 2.0 =
-* Complete code overhaul; performance and stability improvments
+* Complete code overhaul; rewritten from the ground up with performance and stability improvements
 * Fix bug where some users were not able to edit settings on the options page
-* Fix but wheere in some cases page with shortcode would appear blank
+* Fix but where in some cases page with shortcode would appear blank
 * Spanish and Portuguese translations
 
 = 1.6.6 =
@@ -183,7 +183,7 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 * Resume template now uses a sub-loop so as not to interfere with the page itself
 * Lost the beta tag
 
-= 1.2 (beta) = 
+= 1.2 = 
 * Adding WYSIWG editor for contact information
 * Followed standard "loop" format for template
 * Position title and content now call WordPress filters and action hooks
@@ -198,13 +198,16 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 * AJAX adding of custom terms on add position page
 * Added procedure to update database to new field prefix on activation
 
-= 1.1 (alpha) =
+= 1.1 =
 * Fixed problem with resume expecting content and erring out when none existed
 
-= 1.0 (alpha) =
+= 1.0 =
 * Initial Alpha Release
 
 == Upgrade Notice ==
+
+= 2.0 = 
+Complete code overhaul; rewritten from the ground up with performance and stability improvements, bug fixes
 
 = 1.6.6 =
 Fixes handling of custom stylesheets and template files with child themes in versions of WordPress greater than 3.1
