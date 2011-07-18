@@ -4,7 +4,7 @@ Donate link: http://ben.balter.com/
 Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume
 Requires at least: 3.2
 Tested up to: 3.2
-Stable tag: 1.6.6
+Stable tag: 2.0
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
 
@@ -110,7 +110,7 @@ Make sure all your positions are associated with both organizations and sections
 * Complete code overhaul; rewritten from the ground up with performance and stability improvements
 * Fix bug where some users were not able to edit settings on the options page
 * Fix but where in some cases page with shortcode would appear blank
-* Spanish and Portuguese translations
+* Added Spanish and Portuguese internationalization support (special thanks to [Rodolfo Buaiz](http://rodbuaiz.com/) for the translation help )
 
 = 1.6.6 =
 * Fixed handling of custom stylesheets and template files with child themes in versions greater than 3.1
@@ -212,7 +212,7 @@ Make sure all your positions are associated with both organizations and sections
 == Upgrade Notice ==
 
 = 2.0 = 
-Complete code overhaul; rewritten from the ground up with performance and stability improvements, bug fixes
+Complete code overhaul; rewritten from the ground up with performance and stability improvements, bug fixes; Spanish and Portuguese internationalization.
 
 = 1.6.6 =
 Fixes handling of custom stylesheets and template files with child themes in versions of WordPress greater than 3.1
