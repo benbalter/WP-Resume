@@ -14,6 +14,7 @@ License: GPL2
  * @shoutout Andrew Nacin (http://andrewnacin.com) for help with CPTs
  * @shoutout Andrew Norcross (http://andrewnorcross.com) for the drag-and-drop CSS
  * @shoutout Rvencu for help with WPML and multi-user prototyping
+ * @shoutout Rodolfo Buaiz (http://www.brasofilo.com) for the translation help
  */
 
 class WP_Resume {

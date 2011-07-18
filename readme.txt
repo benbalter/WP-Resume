@@ -26,6 +26,7 @@ Features include:
 * Automatically saves revisions of every change you make
 * The WYSIWYG editing experience you know and love
 * Integrates with your theme like they were made for each other (via a shortcode)
+* Spanish and Portuguese (BR) Translation Support
 * Does not use pretentious accents on the word "resume"
 * Extremely original title
 
