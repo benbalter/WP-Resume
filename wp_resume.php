@@ -26,6 +26,9 @@ class WP_Resume {
 		
 		self::$instance = $this;
 		
+		//i18n
+		add_action( 'init', array( &$this, 'i18n' ) );
+		
 		//cpt and CT
 		add_action( 'init', array( &$this, 'register_cpt_and_t' ) );
 		
@@ -101,7 +104,7 @@ class WP_Resume {
 	  
 		//Section labels array
 		 $labels = array(
-		   'name' => _x( 'Sections', 'taxonomy general name' ),
+		   'name' => _x( 'Sections', 'taxonomy general name', 'wp-resume' ),
 		   'singular_name' => _x( 'Section', 'taxonomy singular name', 'wp-resume' ),
 		   'search_items' =>  __( 'Search Sections', 'wp-resume' ),
 		   'all_items' => __( 'All Sections', 'wp-resume' ),
@@ -880,6 +883,15 @@ class WP_Resume {
 	</div>
 	<?php
 	}
+	
+	/**
+	 * makes the plugin translation friendly	
+	 * @since 2.0
+	 */
+	function i18n() {
+		load_plugin_textdomain( 'wp-resume', null, dirname( plugin_basename( __FILE__ ) ) .'/languages/' );	
+		
+	}
 
 	/**
 	 * Checks DB version on admin init and upgrades if necessary
@@ -895,9 +907,6 @@ class WP_Resume {
 			$options = $this->upgrade_db();
 
 		register_setting( 'wp_resume_options', 'wp_resume_options', array( &$this, 'options_validate' ) );
-		
-		//make the plugin translation friendly
-		load_plugin_textdomain( 'wp-resume', null, dirname( plugin_basename( __FILE__ ) ) .'/languages/' );	
 		
 		//If we are on the wp_resume_options page, enque the tinyMCE editor
 		if ( !empty ($_GET['page'] ) && $_GET['page'] == 'wp_resume_options' ) {
