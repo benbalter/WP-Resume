@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the  package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP-Resume Spanish 0.2\n"
+"Project-Id-Version: WP-Resume Spanish 1.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-resume\n"
-"POT-Creation-Date: 2011-07-14 21:12:16+00:00\n"
-"PO-Revision-Date: 2011-07-15 23:01+0100\n"
+"POT-Creation-Date: 2011-07-17 16:11:26+00:00\n"
+"PO-Revision-Date: 2011-07-18 15:15+0100\n"
 "Last-Translator: \n"
 "Language-Team: brasofilo <brasofilo@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Trabajos"
 #: wp_resume.php:70
 msgctxt "post type singular name"
 msgid "Resume Position"
-msgstr "Trabajo"
+msgstr "Trabajo en el Currículum"
 
 #: wp_resume.php:71
 #: wp_resume.php:72
@@ -155,9 +155,9 @@ msgid "Date"
 msgstr "Fecha"
 
 #: wp_resume.php:159
-#: wp_resume.php:822
+#: wp_resume.php:793
 msgid "Resume Order"
-msgstr "Ordem del Currículo"
+msgstr "Orden del Currículo"
 
 #: wp_resume.php:164
 #: wp_resume.php:171
@@ -170,9 +170,10 @@ msgstr "Consejo"
 
 #: wp_resume.php:167
 msgid "Your resume will be sorted based on this number (ascending)"
-msgstr "Tu curriculum será organizado basado en este número (ascendente)"
+msgstr "Tu currículum será organizado basado en este número (ascendente)"
 
 #: wp_resume.php:167
+#: wp_resume.php:935
 msgid "More"
 msgstr "Más"
 
@@ -184,235 +185,261 @@ msgstr "Cuando añadas un nuevo trabajo, puedes dejar este número como \"0\" y 
 msgid "Of Course, you can always <a href=\"edit.php?post_type=wp_resume_position&page=wp_resume_options#sections\">fine tune your resume order</a> on the options page"
 msgstr "Por supuesto, siempre puedes <a href=\"edit.php?post_type=wp-resume_position&page=wp-resume_options#sections\">hacer ajustes finos en el orden</a> en la página de opciones"
 
-#: wp_resume.php:234
+#: wp_resume.php:214
+msgid "None"
+msgstr "Ninguno"
+
+#: wp_resume.php:221
 msgid "Location"
 msgstr "Sitio"
 
-#: wp_resume.php:557
-#: wp_resume.php:709
+#: wp_resume.php:539
+#: wp_resume.php:691
 msgid "Resume Options"
 msgstr "Opciones del Currículo"
 
-#: wp_resume.php:557
+#: wp_resume.php:539
 msgid "Options"
 msgstr "Opciones"
 
-#: wp_resume.php:658
+#: wp_resume.php:640
 msgid "E-Mail"
 msgstr "E-Mail"
 
-#: wp_resume.php:659
+#: wp_resume.php:641
 msgid "Phone"
-msgstr "Telefono"
+msgstr "Teléfono"
 
-#: wp_resume.php:660
+#: wp_resume.php:642
 msgid "Other"
 msgstr "Otros"
 
-#: wp_resume.php:662
+#: wp_resume.php:644
 msgid "Street Address"
 msgstr "Dirección"
 
-#: wp_resume.php:663
+#: wp_resume.php:645
 msgid "City/Locality"
 msgstr "Ciudad"
 
-#: wp_resume.php:664
+#: wp_resume.php:646
 msgid "State/Region"
 msgstr "Estado/Región"
 
-#: wp_resume.php:665
+#: wp_resume.php:647
 msgid "Zip/Postal Code"
 msgstr "Código Postal"
 
-#: wp_resume.php:666
+#: wp_resume.php:648
 msgid "Country"
-msgstr "Pais"
+msgstr "País"
 
-#: wp_resume.php:742
+#: wp_resume.php:724
 msgid "Usage"
 msgstr "Uso"
 
-#: wp_resume.php:744
+#: wp_resume.php:726
 msgid "To use WP Resume..."
 msgstr "Para usar WP Resume..."
 
-#: wp_resume.php:746
+#: wp_resume.php:728
 msgid "Add content to your resume through the menus on the left"
 msgstr "Añade contenido a tu currículo usando los menús a la izquierda"
 
-#: wp_resume.php:747
+#: wp_resume.php:729
 msgid "If you wish, add your name, contact information, summary, and order your resume below"
-msgstr "Si lo deseas, añade tu nombre, información de contacto, sumário, y también ordenar tu currículo abajo"
+msgstr "Si lo deseas, añade tu nombre, información de contacto, sumario, y ordena tu currículo abajo"
 
-#: wp_resume.php:748
+#: wp_resume.php:730
 msgid "Create a new page as you would normally"
 msgstr "Crea una nueva página como lo harías normalmente"
 
-#: wp_resume.php:749
+#: wp_resume.php:731
 msgid "Add the text <code>[wp_resume]</code> to the page's body"
 msgstr "Añade el código <code>[wp-resume]</code> al contenido de la página"
 
-#: wp_resume.php:750
+#: wp_resume.php:732
 msgid "Your resume will now display on that page"
 msgstr "Tu currículo será mostrado en esa página"
 
-#: wp_resume.php:752
+#: wp_resume.php:734
 msgid "Want to have multiple resumes on your site?"
 msgstr "¿Quieres tener más de un currículo en tu página web?"
 
-#: wp_resume.php:752
+#: wp_resume.php:734
+#: wp_resume.php:937
 msgid "Yes!"
 msgstr "¡Si!"
 
-#: wp_resume.php:754
+#: wp_resume.php:736
 msgid "WP Resume associates each resume with a user. To create a second resume..."
-msgstr "WP Resume asocia cada currículo con un usuário. Para crear un segundo currículo..."
+msgstr "WP Resume asocia cada currículo con un usuario. Para crear un segundo currículo..."
 
-#: wp_resume.php:756
+#: wp_resume.php:738
 msgid "Simply <a href=\"user-new.php\">add a new user</a> (or select an existing user in step two)"
-msgstr "Simplesmente <a href=\"user-new.php\">añade un nuevo usuário</a> (o selecciona uno existente en el paso 2)"
+msgstr "Simplemente <a href=\"user-new.php\">añade un nuevo usuario</a> (o selecciona uno existente en el paso 2)"
 
-#: wp_resume.php:757
+#: wp_resume.php:739
 msgid "Add positions</a> as you would normally, being sure to select that user as the position's author. You may need to display the author box by enabling it in the \"Screen Options\" toggle in the top-right corner of the position page"
-msgstr "Añade trabajos como lo harías normalmente, estando seguro de seleccionar el usuário deseado como autor del trabajo. Puede que necesites habilitar el <em>box</em> de autores en la pestaña \"Opciones de Pantalla\" que aparece arriba a la derecha en la ventana de edición de trabajos."
+msgstr "Añade trabajos</a> como lo harías normalmente, estando seguro de seleccionar el usuario deseado como autor del trabajo. Puede que necesites habilitar el <em>box</em> de autores en la pestaña \"Opciones de Pantalla\" que aparece arriba a la derecha en la ventana de edición de trabajos."
 
-#: wp_resume.php:758
+#: wp_resume.php:740
 msgid "Select the author from the drop down below and fill in the name, contact info, and summary fields (optional)"
 msgstr "Elije el autor en el menú desplegable de abajo y rellena los campos de nombre, información de contacto y sumario (opcional)"
 
-#: wp_resume.php:759
+#: wp_resume.php:741
 msgid "Create a new page</a> and add the <code>[wp_resume]</code> shortcode, similar to above, but set the page author to the resume's author (the author from step two). Again, you may need to enable the author box"
-msgstr "Crea una nueva página y añade el <em>shortcode</em> <code>[wp-resume]</code>, de la misma manera que arriba, pero marca el autor de la página como el autor del currículo (el autor del paso 2). De nuevo, puede que necesites habilitar el visionado del <em>box</em> de autor"
+msgstr "Crea una nueva página</a> y añade el <em>shortcode</em> <code>[wp-resume]</code>, de la misma manera que arriba, pero marca el autor de la página como el autor del currículo (el autor del paso 2). De nuevo, puede que necesites habilitar el visionado del <em>box</em> de autor"
 
-#: wp_resume.php:761
+#: wp_resume.php:743
 msgid "Note"
 msgstr "Nota"
 
-#: wp_resume.php:761
+#: wp_resume.php:743
 msgid "To embed multiple resumes on the same page, you can alternatively use the syntax <code>[wp_resume user=\"user_login\"]</code> where <code>user_login</code> is the username of the resume's author"
-msgstr "Para mostrar múltiples curriculums en una misma página, puede usar la sintaxis <code>[wp-resume user=\"user_login\"]</code> donde <code>user_login</code> es el nombre de usuário de autor del currículo"
+msgstr "Para mostrar múltiples currículums en una misma página, puede usar la sintaxis <code>[wp-resume user=\"user_login\"]</code> donde <code>user_login</code> es el nombre de usuario de autor del currículo"
 
-#: wp_resume.php:769
+#: wp_resume.php:751
 msgid "User"
-msgstr "Usuário"
+msgstr "Usuario"
 
-#: wp_resume.php:781
-#: wp_resume.php:1090
+#: wp_resume.php:763
+#: wp_resume.php:1045
 msgid "Name"
 msgstr "Nombre"
 
-#: wp_resume.php:784
+#: wp_resume.php:766
 msgid "Your name -- displays on the top of your resume"
 msgstr "Tu nombre -- aparece al inicio de tu currículo"
 
-#: wp_resume.php:788
+#: wp_resume.php:770
 msgid "Contact Information"
 msgstr "Información de Contacto"
 
-#: wp_resume.php:797
+#: wp_resume.php:779
 msgid "Add Field"
 msgstr "Añadir Campo"
 
-#: wp_resume.php:809
+#: wp_resume.php:780
 msgid "(optional) Add any contact info you would like included in your resume"
-msgstr "(opcional) Añade otras informarciones de contacto que quieres que aparezcan en tu currículo"
+msgstr "(opcional) Añade otras informaciones de contacto que quieres que aparezcan en tu currículo"
 
-#: wp_resume.php:813
+#: wp_resume.php:784
 msgid "Summary"
 msgstr "Sumario"
 
-#: wp_resume.php:818
+#: wp_resume.php:789
 msgid "(optional) Plain-text summary of your resume, professional goals, etc. Will appear on your resume below your contact information before the body"
-msgstr "(opcional) Sumario de texto-plano de tu curriculum, aspiraciones profesionales, etc. Aparecerá en tu curriculum abajo de tu información de contacto y antes del cuerpo del texto"
+msgstr "(opcional) Sumario de texto-plano de tu currículum, aspiraciones profesionales, etc. Aparecerá en tu currículum abajo de tu información de contacto y antes del cuerpo del texto"
 
-#: wp_resume.php:857
+#: wp_resume.php:828
 msgid "New positions are automatically displayed in reverse chronological order, but you can fine tune that order by rearranging the elements in the list above"
 msgstr "Nuevos trabajos son mostrados automaticamente en orden cronológica reversa, pero puedes hacer ajustes finos en el orden reagrupando los elementos en el listado de arriba"
 
-#: wp_resume.php:865
+#: wp_resume.php:836
+#: wp_resume.php:940
 msgid "Show Advanced Options"
 msgstr "Mostrar Opciones Avanzadas"
 
-#: wp_resume.php:869
+#: wp_resume.php:840
 msgid "Force IE HTML5 Support"
 msgstr "Forzar Soporte HTML5 de Internet Explorer"
 
-#: wp_resume.php:871
-#: wp_resume.php:879
+#: wp_resume.php:842
+#: wp_resume.php:850
 msgid "Yes"
 msgstr "Si"
 
-#: wp_resume.php:872
-#: wp_resume.php:880
+#: wp_resume.php:843
+#: wp_resume.php:851
 msgid "No"
 msgstr "No"
 
-#: wp_resume.php:873
+#: wp_resume.php:844
 msgid "If Internet Explorer breaks your resume's formatting, conditionally including a short Javascript file should force IE to recognize html5 semantic tags"
-msgstr "Sí el Internet Explorer estropea la formatación de tu curriculum, tienes la opción de añadir un pequeño archivo Javascript para forzar el IE a reconocer la semántica de tags Html5 "
+msgstr "Sí el Internet Explorer estropea la formatación de tu currículum, tienes la opción de añadir un pequeño archivo Javascript para forzar el IE a reconocer la semántica de tags Html5 "
 
-#: wp_resume.php:877
+#: wp_resume.php:848
 msgid "Enable URL Rewriting"
 msgstr "Habilitar URL Rewriting"
 
-#: wp_resume.php:881
+#: wp_resume.php:852
 msgid "Creates individual pages for each position, and index pages for each section and organization"
 msgstr "Crea páginas individuales para cada trabajo, y páginas índice para cada sección y empresa"
 
-#: wp_resume.php:885
+#: wp_resume.php:856
 msgid "Customizing WP Resume"
 msgstr "Personalizar WP Resume"
 
-#: wp_resume.php:887
+#: wp_resume.php:858
 msgid "Style Sheets"
 msgstr "Hojas de Estilo"
 
-#: wp_resume.php:888
+#: wp_resume.php:859
 msgid "Although some styling is included by default, you can customize the layout by modifying <a href=\"theme-editor.php\">your theme's stylesheet</a>"
-msgstr "Aunque un poco de estilo sea incluido por defecto, puedes personalizar el diseño modificando <a href=\"theme-editor.php\">la <em>stylesheet</em> de tu tema</a>"
+msgstr "Aunque un poco de estilo sea incluido por defecto, puedes personalizar el diseño cambiando <a href=\"theme-editor.php\">la <em>stylesheet</em> de tu tema</a>"
 
-#: wp_resume.php:890
+#: wp_resume.php:861
 msgid "Templates"
 msgstr "Templates"
 
-#: wp_resume.php:891
+#: wp_resume.php:862
 msgid "Any WP Resume template file (resume.php, resume-style.css, resume-text.php, etc.) found in your theme's directory will override the plugin's included template. Feel free to copy the file from the plugin directory into your theme's template directory and modify the file to meet your needs"
-msgstr "Cualquier plantilla de archivo de WP Resume (resume.php, resume-style.css, resume-text.php, etc.) encontrada en la carpeta de tu tema sobrescribirá las plantillas del plugin. Eres libre para copiar los archivos de la carpeta del plugin dentro de la carpeta de tu tema y hacer las modificaciones que necesites "
+msgstr "Cualquier plantilla de archivo de WP Resume (resume.php, resume-style.css, resume-text.php, etc.) encontrada en la carpeta de tu tema sobrescribirá las plantillas del plugin. Eres libre para copiar los archivos de la carpeta del plugin dentro de la carpeta de tu tema y hacer los cambios que necesites "
 
-#: wp_resume.php:893
+#: wp_resume.php:864
 msgid "Feeds"
 msgstr "Feeds"
 
-#: wp_resume.php:894
+#: wp_resume.php:865
 msgid "WP Resume allows you to access your data in three machine-readable formats. By default, the resume outputs in an <a href=\"http://microformats.org/wiki/hresume\">hResume</a> compatible format. A JSON feed can be generated by appending <code>?feed=json</code> to your resume page's URL and a plain-text alternative (useful for copying and pasting into applications and forms) is available by appending <code>?feed=text</code> to your resume page's URL"
-msgstr "WP Resume permite que accedas a tus datos en tres formatos electrónicos. Por defecto, el curriculum es generado en un formato compatible con <a href=\"http://microformats.org/wiki/hresume\">hResume</a>. Un feed JSON puede ser generado añadiendo <code>?feed=json</code> a la URL de la página de tu curriculum. Y, finalmente, una alternativa en texto-plano (util para copiar y pegar en otras aplicaciones) esta disponible añadiendo <code>?feed=text</code> a la URL del curriculum"
+msgstr "WP Resume permite que accedas a tus datos en tres formatos electrónicos. Por defecto, el currículum es generado en un formato compatible con <a href=\"http://microformats.org/wiki/hresume\">hResume</a>. Un feed JSON puede ser generado añadiendo <code>?feed=json</code> a la URL de la página de tu currículum. Y, finalmente, una alternativa en texto-plano (útil para copiar y pegar en otras aplicaciones) esta disponible añadiendo <code>?feed=text</code> a la URL del currículum"
 
-#: wp_resume.php:949
+#: wp_resume.php:877
 msgid "Save Changes"
 msgstr "Guardar Cambios"
 
-#: wp_resume.php:1089
+#: wp_resume.php:936
+msgid "less"
+msgstr "menos"
+
+#: wp_resume.php:938
+msgid "No."
+msgstr "No."
+
+#: wp_resume.php:939
+msgid "Hide Advanced Options"
+msgstr "Esconder Opciones Avanzadas"
+
+#: wp_resume.php:941
+msgid "The name of the organization as you want it to appear"
+msgstr "Nombre de la empresa tal como quieres que aparezca"
+
+#: wp_resume.php:942
+msgid "Traditionally the location of the organization (optional)"
+msgstr "Puedes rellenar aquí la dirección de la empresa (opcional)"
+
+#: wp_resume.php:1044
 msgid "Help"
 msgstr "Ayuda"
 
-#: wp_resume.php:1090
+#: wp_resume.php:1045
 msgid "The name of the organization"
 msgstr "Nombre de la empresa"
 
-#: wp_resume.php:1091
+#: wp_resume.php:1046
 msgid "Parent"
 msgstr "Superior"
 
-#: wp_resume.php:1091
+#: wp_resume.php:1046
 msgid "Do not add a parent"
 msgstr "No añadir superior"
 
-#: wp_resume.php:1092
+#: wp_resume.php:1047
 msgid "Description"
 msgstr "Descripción"
 
-#: wp_resume.php:1092
+#: wp_resume.php:1047
 msgid "You can put the location of the organization here (optional)"
-msgstr "Puedes rellenar aqui la dirección de la empresa (opcional)"
+msgstr "Puedes rellenar aquí la dirección de la empresa (opcional)"
 
