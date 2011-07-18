@@ -298,8 +298,6 @@ class WP_Resume {
 	 */
 	function save_wp_resume_position( $post_id ) {
 	
-	//print_r( $_POST ); die();
-
 		//Verify our nonce, also varifies that we are on the edit page and not updating elsewhere
 		if ( !isset( $_POST['wp_resume_nonce'] ) || !wp_verify_nonce( $_POST['wp_resume_nonce'], 'wp_resume_taxonomy' , 'wp_resume_nonce' ) )
 			return $post_id;
