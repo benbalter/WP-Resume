@@ -106,6 +106,9 @@ Make sure all your positions are associated with both organizations and sections
 
 == Changelog ==
 
+= 2.0.1 =
+* Fixed bug where summary would not display on resume in certain circumstances
+
 = 2.0 =
 * Complete code overhaul; rewritten from the ground up with performance and stability improvements
 * Fix bug where some users were not able to edit settings on the options page
