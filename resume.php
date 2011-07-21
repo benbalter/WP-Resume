@@ -40,7 +40,7 @@ $author_options = $wp_resume->get_user_options( $wp_resume->author );
 				<?php } ?>
 				</ul>
 			</header>
-			<?php if (! empty( $$author_options['summary'] ) ) { ?>
+			<?php if (! empty( $author_options['summary'] ) ) { ?>
 			<summary class="summary">
 				<?php echo $author_options['summary']; ?>
 			</summary>
