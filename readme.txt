@@ -106,6 +106,10 @@ Make sure all your positions are associated with both organizations and sections
 
 == Changelog ==
 
+= 2.0.2 =
+* Fixes bug where options would not save and positions/summary would not display if user_nicename differed from user_login -- Special thanks to [Paul Maisonneuve](http://aboutpaul.com)
+* Options page is now accessible to non-administrators and performs proper capability checks (based off edit_posts, edit_others_posts, and manage_options)
+
 = 2.0.1 =
 * Fixed bug where summary would not display on resume in certain circumstances
 
@@ -213,6 +217,9 @@ Make sure all your positions are associated with both organizations and sections
 * Initial Alpha Release
 
 == Upgrade Notice ==
+
+= 2.0.2 = 
+Fixes bug where options would not save and positions/summary would not display if user_nicename differed from user_login
 
 = 2.0 = 
 Complete code overhaul; rewritten from the ground up with performance and stability improvements, bug fixes; Spanish and Portuguese internationalization.
