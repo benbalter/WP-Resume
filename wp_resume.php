@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 2.0.1
+Version: 2.0.2
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -51,6 +51,7 @@ class WP_Resume {
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
 		add_action( 'wp_resume_organization_add_form', array( &$this, 'org_helptext' ) );
 		add_action( 'admin_init', array( &$this, 'enqueue_scripts' ) );
+		add_filter( 'option_page_capability_wp_resume_options', array( &$this, 'cap_filter' ), 10, 1 );
 		
 		//rewrites and redirects
 		add_action('template_redirect',array( &$this, 'add_feeds' ) );
@@ -409,7 +410,7 @@ class WP_Resume {
 		//set default author
 		if ($author == '') {
 			$user = wp_get_current_user();
-			$author = $user->user_login;
+			$author = $user->user_nicename;
 		}
 
 		//get all sections ordered by term_id (order added)
@@ -457,13 +458,11 @@ class WP_Resume {
 	 * @since 1.0a
 	 */
 	function query( $section, $author = '' ) {
-	
-		global $wp_resume_author;
-			
+		
 		//if the author isn't passed as a function arg, see if it has been set by the shortcode
-		if ( $author == '' && isset( $wp_resume_author ) )
-			$author = $wp_resume_author;
-					
+		if ( $author == '' && isset( $this->author ) )
+			$author = $this->author;
+								
 		//build our query
 		$args = array(
 			'post_type' => 'wp_resume_position',
@@ -511,7 +510,7 @@ class WP_Resume {
 		
 		//get ID if we have a username
 		if ( !is_int($user) ) {
-			$userdata =	get_userdatabylogin($user);
+			$userdata =	get_user_by('slug', $user);
 			$user = $userdata->ID;
 		}
 			
@@ -538,7 +537,7 @@ class WP_Resume {
 	 */
 	function menu() {
 		
-		add_submenu_page( 'edit.php?post_type=wp_resume_position', __('Resume Options', 'wp-resume'), __('Options', 'wp-resume'), 'manage_options', 'wp_resume_options', array( &$this, 'options' ) );
+		add_submenu_page( 'edit.php?post_type=wp_resume_position', __('Resume Options', 'wp-resume'), __('Options', 'wp-resume'), 'edit_posts', 'wp_resume_options', array( &$this, 'options' ) );
 
 	}
 
@@ -549,7 +548,7 @@ class WP_Resume {
 	 * @returns array of validated data (without position order)
 	 */
 	function options_validate($data) {
-		
+
 		//make sure we're POSTing
 		if ( empty($_POST) )
 			return $data;
@@ -560,7 +559,12 @@ class WP_Resume {
 		//figure out what user we are acting on
 		global $wpdb;
 		$authors = 	$wpdb->get_col( $wpdb->prepare("SELECT $wpdb->users.user_nicename FROM $wpdb->users") );
-		if ( sizeof($authors) == 1 ) {
+		if ( !current_user_can('edit_others_posts') ) {
+			
+			$user = wp_get_current_user();
+			$current_author = $user->user_nicename;
+			
+		} else if ( sizeof($authors) == 1 ) {
 		
 			//if there is only one user in the system, it's gotta be him
 			$current_author = $authors[0];
@@ -613,15 +617,17 @@ class WP_Resume {
 				wp_update_post( $post );
 			}
 		}
-				
-		//move site-wide fields to output array
-		$fields = array('fix_ie', 'rewrite');
-		foreach ($fields as $field) {
-			$options[$field] = $data[$field];
-		}
 		
+		if ( current_user_can( 'manage_options' ) ) {		
+			//move site-wide fields to output array
+			$fields = array('fix_ie', 'rewrite');
+			foreach ($fields as $field) {
+				$options[$field] = $data[$field];
+			}
+		}
+			
 		//store usermeta
-		$user = get_userdatabylogin($current_author);
+		$user = get_user_by('slug', $current_author);
 		update_user_meta($user->ID, 'wp_resume', $user_options);
 
 		//flush in case they toggled rewrite
@@ -706,7 +712,10 @@ class WP_Resume {
 	//set up the current author
 	$authors = $wpdb->get_results("SELECT display_name, user_nicename from $wpdb->users ORDER BY display_name");
 
-	if ( sizeof($authors) == 1 ) {
+	if ( !current_user_can('edit_others_posts') ) {
+		$user = wp_get_current_user();
+		$current_author = $user->user_nicename;	
+	} else if ( sizeof($authors) == 1 ) {
 		//if there's only one author, that's our author
 		$current_author = $authors[0]->user_nicename;
 	} else if ( isset($_GET['user'] ) ) {
@@ -715,7 +724,7 @@ class WP_Resume {
 	} else {
 		//otherwise, assume the current user
 		$current_user = wp_get_current_user();
-		$current_author = $current_user->user_login;
+		$current_author = $current_user->user_nicename;
 	}
 
 	$user_options = $this->get_user_options($current_author);
@@ -732,7 +741,9 @@ class WP_Resume {
 						<li><?php _e('Create a new page as you would normally', 'wp-resume'); ?>
 						<li><?php _e('Add the text <code>[wp_resume]</code> to the page\'s body', 'wp-resume'); ?></li>
 						<li><?php _e('Your resume will now display on that page', 'wp-resume'); ?>.</li>
-					</ol><br />
+					</ol>
+					<?php if ( current_user_can( 'edit_others_posts' ) ) { ?>
+					<br />
 					<strong><?php _e('Want to have multiple resumes on your site?', 'wp-resume'); ?></strong> <a href="#" id="toggleMultiple"><?php _e('Yes!', 'wp-resume'); ?></a><br />
 					<div id="multiple">
 					<?php _e('WP Resume associates each resume with a user. To create a second resume...', 'wp-resume'); ?>
@@ -742,12 +753,13 @@ class WP_Resume {
 						<li style="font-size: 11px;"><?php _e('Select the author from the drop down below and fill in the name, contact info, and summary fields (optional)', 'wp-resume'); ?>.</li>
 						<li style="font-size: 11px;"><a href="post-new.php?post_type=page"><?php _e('Create a new page</a> and add the <code>[wp_resume]</code> shortcode, similar to above, but set the page author to the resume\'s author (the author from step two). Again, you may need to enable the author box', 'wp-resume'); ?>.</li>
 					</ol>
-					 <em><?php _e('Note', 'wp_resume'); ?>:</em> <?php _e('To embed multiple resumes on the same page, you can alternatively use the syntax <code>[wp_resume user="user_login"]</code> where <code>user_login</code> is the username of the resume\'s author', 'wp-resume'); ?>.
+					 <em><?php _e('Note', 'wp_resume'); ?>:</em> <?php _e('To embed multiple resumes on the same page, you can alternatively use the syntax <code>[wp_resume user="user_nicename"]</code> where <code>user_nicename</code> is the username of the resume\'s author', 'wp-resume'); ?>.
+					 <?php } ?>
 					 </div>
 				</td>
 			</tr>
 			<?php 
-				if (sizeof($authors) > 1) {
+				if ( sizeof($authors) > 1 && current_user_can( 'edit_others_posts' ) ) {
 				?>
 			<tr valign="top">
 				<th scope="row"><?php _e('User', 'wp_resume'); ?></label></th>
@@ -830,6 +842,7 @@ class WP_Resume {
 				<span class="description"><?php _e('New positions are automatically displayed in reverse chronological order, but you can fine tune that order by rearranging the elements in the list above', 'wp-resume'); ?>.</span>
 				</td>
 			</tr>
+			<?php if ( current_user_can( 'manage_options' ) ) { ?>
 			<tr valign="top">
 				<th scope="row">
 					&nbsp;
@@ -866,7 +879,8 @@ class WP_Resume {
 					<strong><?php _e('Feeds', 'wp-resume'); ?></strong> <br />
 					<?php _e('WP Resume allows you to access your data in three machine-readable formats. By default, the resume outputs in an <a href="http://microformats.org/wiki/hresume">hResume</a> compatible format. A JSON feed can be generated by appending <code>?feed=json</code> to your resume page\'s URL and a plain-text alternative (useful for copying and pasting into applications and forms) is available by appending <code>?feed=text</code> to your resume page\'s URL', 'wp-resume'); ?>.<br /><br />
 				</td>
-			</tr>				
+			</tr>
+			<?php } ?>				
 		</table>
 		<script>
 		jQuery(document).ready(function($) {
@@ -963,7 +977,7 @@ class WP_Resume {
 		
 		//default fields and values
 		$fields['global'] = array('fix_ie' => true, 'rewrite' => false);
-		$fields['user'] = array('name'=>'', 'summary' => '', 'contact_info'=> array() );
+		$fields['user'] = array('name'=>'', 'summary' => '', 'contact_info'=> array(), 'order'=>array() );
 		$i = 0;	foreach ( $this->get_sections( false ) as $section)
 				$fields['user']['order'][$section->term_id] = $i++;
 
@@ -1163,7 +1177,7 @@ class WP_Resume {
 		//otherwise grab the author from the post
 		global $post;
 		$user = get_userdata($post->post_author);
-		return $user->user_login;
+		return $user->user_nicename;
 	}
 
 	/**
@@ -1241,7 +1255,7 @@ class WP_Resume {
 		if ( preg_match( '/\[wp_resume user=\"([^\"]*)"]/i', $post->post_content, $matches ) == 0) {
 			
 			$user = get_userdata($post->post_author);
-			$this->author = $user->user_login; 
+			$this->author = $user->user_nicename; 
 			
 		} else {
 		
@@ -1253,6 +1267,16 @@ class WP_Resume {
 		
 		return $this->author;
 		
+	}
+	
+	/**
+	 * Allows non-admins to edit their own resume options
+	 * @since 2.0.2
+	 * @param string $cap the cap to check
+	 * @return string edit_post casts
+	 */
+	function cap_filter( $cap ) {
+		return 'edit_posts';
 	}
 	
 }
