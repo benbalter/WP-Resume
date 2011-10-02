@@ -107,6 +107,8 @@ Make sure all your positions are associated with both organizations and sections
 == Changelog ==
 
 = 2.0.3 =
+* Added Edit Resume button to the admin bar for logged in users
+* Stylesheet and Javascript only loaded on pages with resumes
 * Checks that positions have sections and organizations before saving
 * Better caching support
 * Better organization of Javascript and stylesheet files

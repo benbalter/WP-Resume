@@ -43,6 +43,9 @@ class WP_Resume {
 
 		//frontend printstyles
 		add_action( 'wp_print_styles', array( &$this, 'enqueue_styles' ) );
+		
+		//admin bar
+		add_action( 'admin_bar_menu', array( &$this, 'admin_bar' ), 100 );
 
 		//shortcode
 		add_shortcode('wp_resume', array( &$this, 'shortcode' ) );
@@ -283,7 +286,7 @@ class WP_Resume {
 			$author = $user->user_nicename;
 			wp_cache_delete( $author . '_sections', 'wp_resume' );
 			wp_cache_delete( $author . '_sections_hide_empty', 'wp_resume' );
-			
+			$this->flush_cache();
 		}
 		
 		//get updated post to send to taxonomy box
@@ -395,6 +398,7 @@ class WP_Resume {
 
 		$user = wp_get_current_user();
 		wp_cache_delete(  $user->user_nicename . '_resume', 'wp_resume' );
+		$this->flush_cache();
 
 
 	}
@@ -541,7 +545,7 @@ class WP_Resume {
 	 */
 	function get_options() {
 		$options = get_option('wp_resume_options');
-		return $options;
+		return apply_filters( 'wp_resume_options', $options );
 	}
 
 	/**
@@ -557,7 +561,70 @@ class WP_Resume {
 			$user = $userdata->ID;
 		}
 			
-		return get_user_meta($user, 'wp_resume', true);
+		return apply_filters( 'wp_resume_user_options', get_user_meta($user, 'wp_resume', true), $user );
+		
+	} 
+	
+	function flush_cache() {
+		global $wp_object_cache;
+		unset( $wp_object_cache->cache['wp_resume']);
+	}
+	
+	/**
+	 * Loops through all posts in a given query to determine if any contain the resume shortcode
+	 * @returns bool true if found, otherwise false
+	 */
+	function resume_in_query() {
+	
+		global $wp_query;
+
+		if ( $cache = wp_cache_get( 'query_' . $wp_query->query_vars_hash, 'wp_resume' ) )
+			return $cache;
+				
+		$enqueue = false;
+		while ( have_posts() ): the_post();
+			if ( preg_match( '/\[wp_resume([^\]]*)]/i', get_the_content() ) != 0) {
+				$enqueue = true;
+			}
+		endwhile;
+		
+		wp_reset_query();
+		
+		wp_cache_set( 'query_' . $wp_query->query_vars_hash, $enqueue, 'wp_resume', $this->ttl );
+		
+		return $enqueue;
+		
+	}
+	
+	function admin_bar() {
+		global $wp_admin_bar;
+		
+	    if ( !is_super_admin() || !is_admin_bar_showing() )
+    	  return;
+    
+    	if ( !is_page() )
+    		return;
+    		
+  		if ( !$this->resume_in_query() )
+  			return;
+  			
+  		global $post;
+  		
+  		if ( $post->post_author != get_current_user_id() && !current_user_can( 'edit_others_posts' ) )
+  			return;
+    
+		$wp_admin_bar->add_menu( array( 
+				'id' => 'wp-resume', 
+				'title' => __( 'Edit Resume', 'wp-resume' ), 
+				'href' => admin_url('edit.php?post_type=wp_resume_position'),
+			) );
+		
+		$wp_admin_bar->add_menu( array( 
+				'parent' => 'wp-resume', 
+				'id' => 'wp-resume-options', 
+				'title' => __( 'Resume Options', 'wp-resume' ), 
+				'href' => admin_url( 'edit.php?post_type=wp_resume_position&page=wp_resume_options' ), 
+			) );
 		
 	}
 
@@ -567,7 +634,10 @@ class WP_Resume {
 	 * @since 1.0a
 	 */
 	function enqueue_styles() {
-
+		
+		if ( !$this->resume_in_query() )
+			return;
+	
 		if ( file_exists ( get_stylesheet_directory() . '/resume-style.css' ) )
 			wp_enqueue_style('wp-resume-custom-stylesheet', get_stylesheet_directory_uri() . '/resume-style.css' );
 		else 
@@ -681,6 +751,7 @@ class WP_Resume {
 		wp_cache_delete(  $user->user_nicename . '_sections', 'wp_resume' );
 		wp_cache_delete(  $user->user_nicename . '_sections_hide_empty', 'wp_resume' );
 		wp_cache_delete(  $user->user_nicename . '_resume', 'wp_resume' );
+		$this->flush_cache();
 		
 		//flush in case they toggled rewrite
 		global $wp_rewrite;
@@ -1172,6 +1243,10 @@ class WP_Resume {
 	 * Adds HTML5 support to header
 	 */
 	function header() { 
+	
+		if ( !$this->resume_in_query() )
+			return;
+			
 		$options = $this->get_options(); ?>
 			<link rel="profile" href="http://microformats.org/profile/hcard" />
 			<?php if ($options['fix_ie']) { ?>
