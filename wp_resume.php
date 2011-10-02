@@ -92,6 +92,7 @@ class WP_Resume {
 		'public' => true,
 		'publicly_queryable' => true,
 		'show_ui' => true, 
+		'menu_icon' => plugins_url( '/menu-icon.png', __FILE__ ),
 		'query_var' => true,
 		'rewrite' => false,
 		'capability_type' => 'post',
