@@ -28,3 +28,5 @@
 }
 
 #loading-animation { display: none; }
+
+.wp_resume_admin ol li { list-style:decimal;}

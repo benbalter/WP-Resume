@@ -106,6 +106,15 @@ Make sure all your positions are associated with both organizations and sections
 
 == Changelog ==
 
+= 2.0.3 =
+* Checks that positions have sections and organizations before saving
+* Better caching support
+* Better organization of Javascript and stylesheet files
+* Added API Hooks and Filters to customize the plugin's behavior
+* Cleaned up administrative interfaces
+* Fixed bug where second tinyMCE editor would appear on options screen in certain cases
+* Fixed bug where contact fields could not be removed once added
+
 = 2.0.2 =
 * Fixes bug where options would not save and positions/summary would not display if user_nicename differed from user_login -- Special thanks to [Paul Maisonneuve](http://aboutpaul.com)
 * Options page is now accessible to non-administrators and performs proper capability checks (based off edit_posts, edit_others_posts, and manage_options)

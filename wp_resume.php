@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 2.0.2
+Version: 2.0.3
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -20,12 +20,13 @@ License: GPL2
 class WP_Resume {
 
 	static $instance;
-	public $version = '2.0';
+	public $version = '2.0.3';
 	public $author = '';
+	public $ttl = '3600';
 
 	function __construct() {
 		
-		self::$instance = $this;
+		self::$instance = &$this;
 		
 		//i18n
 		add_action( 'init', array( &$this, 'i18n' ) );
@@ -101,6 +102,8 @@ class WP_Resume {
 		'taxonomies' => array('wp_resume_section', 'wp_resume_organization'),
 	  ); 
 	  
+	  $args = apply_filters( 'wp_resume_cpt', $args );
+	  
 	  //Register the "wp_resume_position" custom post type
 	  register_post_type( 'wp_resume_position', $args );
 	  
@@ -118,8 +121,10 @@ class WP_Resume {
 		   'new_item_name' => __( 'New Section Name', 'wp-resume' ),
 		 ); 	
 		 
+		$args = apply_filters( 'wp_resume_section_ct', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => false ) ); 
+		 
 		//Register section taxonomy	
-		register_taxonomy( 'wp_resume_section', 'wp_resume_position', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => false ) );
+		register_taxonomy( 'wp_resume_section', 'wp_resume_position', $args );
 		
 		//orgs labels array
 		$labels = array(
@@ -135,8 +140,10 @@ class WP_Resume {
 		   'new_item_name' => __( 'New Organization Name', 'wp-resume' ),
 		 ); 
 		 
+		$args = apply_filters( 'wp_resume_organization_ct', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => false ) );
+		 
 		//Register organization taxonomy
-		register_taxonomy( 'wp_resume_organization', 'wp_resume_position', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => false ) );
+		register_taxonomy( 'wp_resume_organization', 'wp_resume_position', $args );
 		
 	}
 
@@ -162,21 +169,24 @@ class WP_Resume {
 		
 		//build custom order box w/ helptext
 		add_meta_box( 'pageparentdiv', __('Resume Order', 'wp-resume'), array( &$this, 'order_box' ), 'wp_resume_position', 'side', 'low');
+	
+		do_action( 'position_metaboxes' );
+		
 	}
 
+	/**
+	 * Position metabox callback
+	 * @param obj $post the post object
+	 */
 	function order_box($post) {
 	?>
-		<p><strong><?php _e('Order', 'wp-resume'); ?></strong></p>
-		<p>	
-			<div style="float:right; width: 200px; padding-right:10px; margin-top: -1em; display: inline;">
-				<i><?php _e('Hint', 'wp-resume'); ?>:</i> <?php _e('Your resume will be sorted based on this number (ascending)', 'wp-resume'); ?>. <a href="#" id="wp_resume_help_toggle"><?php _e('More', 'wp-resume'); ?></a><br /> <br />
-
+		<label class="screen-reader-text" for="menu_order"><?php _e('Order', 'wp-resume'); ?></label>
+		<input type="text" name="menu_order" size="4" id="menu_order" value="<?php echo $post->menu_order; ?>">
+		<p>
+			<?php _e('Your resume will be sorted based on this number (ascending)', 'wp-resume'); ?>. <a href="#" id="wp_resume_help_toggle"><?php _e('More', 'wp-resume'); ?></a><br />
 				<div id="wp_resume_help"><?php _e('When you add a new position, feel free to leave this number at "0" and a best guess will be made based on the position\'s end date (reverse chronological order)', 'wp-resume'); ?>. <br /><br /><?php _e('Of Course, you can always <a href="edit.php?post_type=wp_resume_position&page=wp_resume_options#sections">fine tune your resume order</a> on the options page', 'wp-resume');?>.</div>
-			</div>
-			<label class="screen-reader-text" for="menu_order"><?php _e('Order', 'wp-resume'); ?></label>
-			<input type="text" name="menu_order" size="4" id="menu_order" value="<?php echo $post->menu_order; ?>">
-		</p>
-		<p style="clear: both; height: 5px;" id="wp_resume_clearfix"> </p>
+			</p>
+			
 	<?php
 	}
 
@@ -267,6 +277,14 @@ class WP_Resume {
 		//associate position with new term
 		wp_set_object_terms( $_POST['post_ID'], $term['term_id'], 'wp_resume_section' );
 		
+		if ( $type == 'section' ) {
+			$user = wp_get_current_user();
+			$author = $user->user_nicename;
+			wp_cache_delete( $author . '_sections', 'wp_resume' );
+			wp_cache_delete( $author . '_sections_hide_empty', 'wp_resume' );
+			
+		}
+		
 		//get updated post to send to taxonomy box
 		$post = get_post( $_POST['post_ID'] );
 		
@@ -288,8 +306,8 @@ class WP_Resume {
 		$to = get_post_meta( $post->ID, 'wp_resume_to', true );
 		
 		//format and spit out
-		echo '<label for="from">From</label> <input type="text" name="from" id="from" value="'.$from.'" /> ';
-		echo '<label for="to">to</label> <input type="text" name="to" id="to" value="'.$to.'" />';
+		echo '<label for="from">' . __( 'From', 'wp-resume' ) . '</label> <input type="text" name="from" id="from" value="'.$from.'" placeholder="e.g., May 2011"/> ';
+		echo '<label for="to">' . __( 'To', 'wp-resume' ) . '</label> <input type="text" name="to" id="to" value="'.$to.'" placeholder="e.g., Present" />';
 
 	}
 
@@ -374,6 +392,10 @@ class WP_Resume {
 			
 		}
 
+		$user = wp_get_current_user();
+		wp_cache_delete(  $user->user_nicename . '_resume', 'wp_resume' );
+
+
 	}
 
 	/**
@@ -388,13 +410,19 @@ class WP_Resume {
 		$to = get_post_meta( $ID, 'wp_resume_to', true ); 
 		
 		//if we have a start date, format as "[from] - [to]" (e.g., May 2005 - May 2006)
-		if ( $from ) return '<span class="dtstart">' . $from . '</span> &ndash; <span class="dtend">' . $to . '</span>';
+		if ( $from ) 
+			$date = '<span class="dtstart">' . $from . '</span> &ndash; <span class="dtend">' . $to . '</span>';
 		
 		//if we only have a to, just pass back the to (e.g., "May 2015")
-		if ( $to ) return '<span class="dtend">' . $to . '</span>';
+		else if ( $to ) 
+			$date= '<span class="dtend">' . $to . '</span>';
 		
 		//If there's no date meta, just pass back an empty string so we dont generate errors
-		return '';
+		else 
+			$date = '';
+			
+		return apply_filters( 'wp_resume_date', $date, $ID, $from, $to );
+		
 	}
 
 	/**
@@ -412,15 +440,27 @@ class WP_Resume {
 			$user = wp_get_current_user();
 			$author = $user->user_nicename;
 		}
+		
+		$cache_slug = $author . '_sections';
+		if ( $hide_empty )
+			$cache_slug .= '_hide_empty';
+			
+		if ($cache = wp_cache_get( $cache_slug, 'wp_resume' ) )
+			return $cache;
 
 		//get all sections ordered by term_id (order added)
 		$sections = get_terms( 'wp_resume_section', array('hide_empty' => $hide_empty ) );
 				
-		//get the plugin options array to pulll the user-specified order
+		//get the plugin options array to pull the user-specified order
 		$options = $this->get_options();
 		
 		//pull out the order array
 		$user_options = $this->get_user_options($author);
+		
+		//user has not specified any sections, prevents errors on initial activation
+		if ( !isset( $user_options['order'] ) )
+			return apply_filters('wp_resume_sections', $sections );
+		
 		$section_order = $user_options['order'];
 			
 		//Loop through each section
@@ -443,9 +483,11 @@ class WP_Resume {
 		
 		//sort by key
 		ksort($output);
-		
+
 		$output = apply_filters('wp_resume_sections', $output);
 					
+		wp_cache_set( $cache_slug, $output, 'wp_resume', $this->ttl );
+				
 		//return the new array keyed to order
 		return $output;
 		
@@ -528,7 +570,7 @@ class WP_Resume {
 		if ( file_exists ( get_stylesheet_directory() . '/resume-style.css' ) )
 			wp_enqueue_style('wp-resume-custom-stylesheet', get_stylesheet_directory_uri() . '/resume-style.css' );
 		else 
-			wp_enqueue_style('wp-resume-default-stylesheet', plugins_url(  'resume-style.css', __FILE__ ) );
+			wp_enqueue_style('wp-resume-default-stylesheet', plugins_url(  'css/resume-style.css', __FILE__ ) );
 	}
 
 	/**
@@ -589,22 +631,27 @@ class WP_Resume {
 
 		$user_options = $this->get_user_options($current_author);
 		
+		//start with a blank array to remove empty fields
+		$user_options['contact_info'] = array();
+		
 		//strip html from fields
 		$user_options['name'] = wp_filter_nohtml_kses( $data['name'] );
 		$user_options['summary'] = wp_filter_post_kses( $data['summary'] );
 
 		foreach ($data['contact_info_field'] as $id=>$value) {
 			
-			if ( !$value ) continue;
 			$field = explode('|',$data['contact_info_field'][$id]);
-			
+
+			if ( !$value || !$id ) 
+				continue;
+							
 			if ( sizeof($field) == 1)
 				$user_options['contact_info'][$field[0]] = wp_filter_post_kses( $data['contact_info_value'][$id] );
 			else
 				$user_options['contact_info'][$field[0]][$field[1]] = wp_filter_post_kses( $data['contact_info_value'][$id] );
 
 		}
-		
+
 		//sanitize section order data
 		foreach ($data['order'] as $key=>$value)
 			$user_options['order'][$key] = intval( $value );
@@ -629,7 +676,11 @@ class WP_Resume {
 		//store usermeta
 		$user = get_user_by('slug', $current_author);
 		update_user_meta($user->ID, 'wp_resume', $user_options);
-
+		
+		wp_cache_delete(  $user->user_nicename . '_sections', 'wp_resume' );
+		wp_cache_delete(  $user->user_nicename . '_sections_hide_empty', 'wp_resume' );
+		wp_cache_delete(  $user->user_nicename . '_resume', 'wp_resume' );
+		
 		//flush in case they toggled rewrite
 		global $wp_rewrite;
 		$wp_rewrite->flush_rules();
@@ -695,7 +746,7 @@ class WP_Resume {
 	function options() { 	
 		global $wpdb;
 	?>
-	<div class="wrap">
+	<div class="wp_resume_admin wrap">
 		<h2><?php _e('Resume Options', 'wp_resume'); ?></h2>
 		<form method="post" action='options.php' id="wp_resume_form">
 	<?php 
@@ -927,10 +978,9 @@ class WP_Resume {
 			add_thickbox();
 			wp_enqueue_script('media-upload');
 			wp_enqueue_script('post');
-			add_action( 'admin_print_footer_scripts', 'wp_tiny_mce', 25 );
 			
 			//add css
-			wp_enqueue_style('wp_resume_admin_stylesheet', plugins_url(  'admin-style.css', __FILE__ ) );	
+			wp_enqueue_style('wp_resume_admin_stylesheet', plugins_url(  'css/admin-style.css', __FILE__ ) );	
 		}
 		
 		
@@ -946,11 +996,11 @@ class WP_Resume {
 	
 		//load javascript with libraries on options page
 		if ( !empty ( $_GET['page'] ) && $_GET['page'] == 'wp_resume_options' ) { 
-			wp_enqueue_script( 'wp_resume', plugins_url('/wp_resume.' . $suffix . 'js', __FILE__), array("jquery", "jquery-ui-core", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable"), $this->version );		
+			wp_enqueue_script( 'wp_resume', plugins_url('/js/wp_resume.' . $suffix . 'js', __FILE__), array("jquery", "jquery-ui-core", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable"), $this->version );		
 		//if on the org, section, or edit page, load the script without all the libraries
 		} else if ( ( !empty( $_GET['post_type'] ) && $_GET['post_type'] == 'wp_resume_position' ) ||
 			 ( !empty( $_GET['post'] ) && $post && $post->post_type == 'wp_resume_position' ) ) { 
-			wp_enqueue_script( 'wp_resume', plugins_url('/wp_resume.' . $suffix . 'js', __FILE__), array("jquery"), $this->version );		
+			wp_enqueue_script( 'wp_resume', plugins_url('/js/wp_resume.' . $suffix . 'js', __FILE__), array("jquery"), $this->version );		
 		}
 		
 		$data = array( 
@@ -962,8 +1012,7 @@ class WP_Resume {
 			'showAdv' => __('Show Advanced Options', 'wp-resume'),
 			'orgName' => __('The name of the organization as you want it to appear', 'wp-resume'),
 			'orgLoc' => __('Traditionally the location of the organization (optional)', 'wp-resume'),
-
-		
+			'missingTaxMsg' => __( 'Please make sure that the position is associated with a section and organization before saving', 'wp-resume'),
 		);
 		wp_localize_script( 'wp_resume', 'wp_resume', $data );
 	
@@ -1082,8 +1131,13 @@ class WP_Resume {
 
 		ob_start();
 		do_action('wp_resume_shortcode_pre');
-		$this->include_template('resume.php');
-		$resume = ob_get_contents();
+
+		if ( !( $resume = wp_cache_get( $this->author . '_resume', 'wp_resume' ) ) ) {
+			$this->include_template('resume.php');
+			$resume = ob_get_contents();
+			wp_cache_set( $this->author . '_resume', $resume, 'wp_resume', $this->ttl );
+		}
+		
 		do_action('wp_resume_shortcode_post');
 		ob_end_clean();
 		
@@ -1113,12 +1167,15 @@ class WP_Resume {
 		add_action('wp_head', array( &$this, 'header' ) );
 	}
 
+	/**
+	 * Adds HTML5 support to header
+	 */
 	function header() { 
 		$options = $this->get_options(); ?>
 			<link rel="profile" href="http://microformats.org/profile/hcard" />
 			<?php if ($options['fix_ie']) { ?>
 			<!--[if lt IE 9]>
-				<script type="text/javascript" src="<?php echo plugins_url(  'html5.js', __FILE__ ); ?>"></script>
+				<script type="text/javascript" src="<?php echo plugins_url(  'js/html5.js', __FILE__ ); ?>"></script>
 			<![endif]-->
 			<?php } ?>
 	<?php }
@@ -1281,4 +1338,4 @@ class WP_Resume {
 	
 }
 
-new WP_Resume();
+$wp_resume = new WP_Resume();
