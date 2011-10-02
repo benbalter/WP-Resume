@@ -28,6 +28,29 @@ jQuery(document).ready(function($){
 		});
 	} 
 
+	$('#publish').click( function( e ) {	
+		
+		//verify that position has section and organization
+		if ( pagenow == 'wp_resume_position' && (
+			 $('input:radio[name=wp_resume_section]:checked').val() == '' || 
+			 $('input:radio[name=wp_resume_organization]:checked').val() == '' )
+			 ) {
+			
+			e.preventDefault();
+			e.stopPropagation();
+			
+			alert( wp_resume.missingTaxMsg );
+			
+			$('#ajax-loading').hide();
+			setTimeout( "jQuery('#publish').removeClass('button-primary-disabled')", 1);
+
+			return false;
+
+		}
+			
+		
+	});
+
 	if ( pagenow == 'wp_resume_position_page_wp_resume_options' ) {
 
 		//options page -- contact info rows
@@ -88,7 +111,7 @@ jQuery(document).ready(function($){
 		$('#user').change(function(){
 			$('.button-primary').click();		
 		}); 
-		
+		 
 	}
 			
 	//organizations page

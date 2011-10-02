@@ -9,7 +9,9 @@
  * @since 1.0a
  */
 
-$wp_resume = WP_Resume::$instance;
+global $wp_resume;
+if ( !$wp_resume )
+	$wp_resume = &WP_Resume::$instance;
  
 //Retrieve plugin options for later use
 $options = $wp_resume->get_options();
