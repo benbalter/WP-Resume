@@ -113,6 +113,7 @@ Make sure all your positions are associated with both organizations and sections
 * Better caching support
 * Better organization of Javascript and stylesheet files
 * Added API Hooks and Filters to customize the plugin's behavior
+* Added resume icon to admin menu
 * Cleaned up administrative interfaces
 * Fixed bug where second tinyMCE editor would appear on options screen in certain cases
 * Fixed bug where contact fields could not be removed once added
