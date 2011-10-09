@@ -1490,18 +1490,34 @@ class WP_Resume {
 		 
 	}
 	
+	/**
+	 * Returns the section name, or a link to the section if rewrites are on
+	 * @param object $section the section object
+	 * @returns string the section name or link to section
+	 */
 	function get_section_name( $section ) {
 	
 		return $this->get_taxonomy_name( $section, 'section' );
 			
 	}
 	
+	/**
+	 * Returns the organization name, or a link to the organization if rewrites are on
+	 * @param object $organization the organization object
+	 * @returns string the organization name or link to organization
+	 */	
 	function get_organization_name( $organization ) {
 
 		return $this->get_taxonomy_name( $organization, 'organization' );
 		
 	}
 	
+	/**
+	 * Given a taxonomy object and taxonomy type, returns either the taxnomy name or a link to the taxnomy
+	 * @param object $object the taxonomy object
+	 * @param string $taxnonomy the taxnomy slug after "resume_"
+	 * @returns string the formatted taxonomy name/link
+	 */
 	function get_taxonomy_name( $object, $taxonomy ) {
 		
 		$options = $this->get_options();
