@@ -106,6 +106,14 @@ Make sure all your positions are associated with both organizations and sections
 
 == Changelog ==
 
+= 2.0.4 =
+* Added option to automatically hide page titles on resume pages (via .hide-title class)
+* If URL rewriting is enabled position, organization, and section titles now appear as links
+* URL Rewriting now properly works for sections and organizations, if enabled
+* Added .resume CSS class to posts with resume shortcodes
+* Created functions to help pull and format author's information into custom resume templates
+* Added additional API hooks for developers to customize the plugin's functionality
+
 = 2.0.3 =
 * Added Edit Resume button to the admin bar for logged in users
 * Stylesheet and Javascript only loaded on pages with resumes
@@ -229,6 +237,9 @@ Make sure all your positions are associated with both organizations and sections
 * Initial Alpha Release
 
 == Upgrade Notice ==
+
+= 2.0.4 =
+Formatting fixes including ability to hide page titles
 
 = 2.0.3 =
 Minor performance improvements, bug fixes, and user interface tweaks

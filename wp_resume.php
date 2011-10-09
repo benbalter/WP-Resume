@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 2.0.3
+Version: 2.0.4
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -20,7 +20,7 @@ License: GPL2
 class WP_Resume {
 
 	static $instance;
-	public $version = '2.0.3';
+	public $version = '2.0.4';
 	public $author = '';
 	public $ttl = '3600';
 
@@ -72,6 +72,8 @@ class WP_Resume {
 	 * @since 1.0a
 	 */
 	function register_cpt_and_t() {
+	
+		$options = $this->get_options();
 		
 		//Custom post type labels array
 		$labels = array(
@@ -97,7 +99,7 @@ class WP_Resume {
 		'show_ui' => true, 
 		'menu_icon' => plugins_url( '/menu-icon.png', __FILE__ ),
 		'query_var' => true,
-		'rewrite' => false,
+		'rewrite' => ( isset( $options['rewrite'] ) && $options['rewrite'] ),
 		'capability_type' => 'post',
 		'hierarchical' => false,
 		'menu_position' => null,
@@ -125,7 +127,7 @@ class WP_Resume {
 		   'new_item_name' => __( 'New Section Name', 'wp-resume' ),
 		 ); 	
 		 
-		$args = apply_filters( 'wp_resume_section_ct', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => false ) ); 
+		$args = apply_filters( 'wp_resume_section_ct', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => ( isset( $options['rewrite'] ) && $options['rewrite'] ) ? array( 'slug' => 'sections' ) : false ) ); 
 		 
 		//Register section taxonomy	
 		register_taxonomy( 'wp_resume_section', 'wp_resume_position', $args );
@@ -144,7 +146,7 @@ class WP_Resume {
 		   'new_item_name' => __( 'New Organization Name', 'wp-resume' ),
 		 ); 
 		 
-		$args = apply_filters( 'wp_resume_organization_ct', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => false ) );
+		$args = apply_filters( 'wp_resume_organization_ct', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => ( isset( $options['rewrite'] ) && $options['rewrite'] ) ? array( 'slug' => 'orgainizations' ) : false ) );
 		 
 		//Register organization taxonomy
 		register_taxonomy( 'wp_resume_organization', 'wp_resume_position', $args );
@@ -402,13 +404,21 @@ class WP_Resume {
 
 
 	}
+	
+	/**
+	 * Depricated for consistency
+	 */
+	function format_date( $ID ) {
+		_deprecated_function( __FUNCTION__, '2.0.4 of WP Resume', 'get_date' );
+		return $this->get_date( $ID );
+	}
 
 	/**
 	 * Function used to parse the date meta and move to human-readable format
 	 * @since 1.0a
 	 * @param int $ID post ID to generate date for
 	 */
-	function format_date( $ID ) {
+	function get_date( $ID ) {
 
 		//Grab from and to post meta
 		$from = get_post_meta( $ID, 'wp_resume_from', true ); 
@@ -534,8 +544,10 @@ class WP_Resume {
 	function get_org( $postID ) {
 
 		$organization = wp_get_object_terms( $postID, 'wp_resume_organization' );
+
 		if ( !is_array( $organization ) ) return false;
-		return $organization[0];
+		
+		return apply_filters( 'resume_organization', $organization[0] );
 		
 	}
 
@@ -553,12 +565,21 @@ class WP_Resume {
 	 * @param int|string $user username or ID to retrieve
 	 * @since 1.6
 	 */
-	function get_user_options($user) {
-		
+	function get_user_options( $user = '' ) {
+	
+		if ( $user == '' )
+			$user = $this->author;
+			
 		//get ID if we have a username
 		if ( !is_int($user) ) {
+		
 			$userdata =	get_user_by('slug', $user);
+			
+			if ( !$userdata )
+				return array();
+				
 			$user = $userdata->ID;
+			
 		}
 			
 		return apply_filters( 'wp_resume_user_options', get_user_meta($user, 'wp_resume', true), $user );
@@ -638,10 +659,29 @@ class WP_Resume {
 		if ( !$this->resume_in_query() )
 			return;
 	
+		add_filter('post_class', array( &$this, 'add_post_class' ) );
+
 		if ( file_exists ( get_stylesheet_directory() . '/resume-style.css' ) )
 			wp_enqueue_style('wp-resume-custom-stylesheet', get_stylesheet_directory_uri() . '/resume-style.css' );
 		else 
 			wp_enqueue_style('wp-resume-default-stylesheet', plugins_url(  'css/resume-style.css', __FILE__ ) );
+	}
+	
+	/**
+	 * Adds resume class to div, optionally adds class to hide the title
+	 * @param array $classes the classes as originally passed
+	 * @returns array $classes the modified classes array
+	 */
+	function add_post_class( $classes ) {
+
+		$classes[] = 'resume';
+		
+		$options = &$this->get_options();
+		if ( isset( $options['hide-title'] ) && $options['hide-title'] )
+			$classes[] = 'hide-title';
+				
+		return $classes;
+
 	}
 
 	/**
@@ -738,7 +778,7 @@ class WP_Resume {
 		
 		if ( current_user_can( 'manage_options' ) ) {		
 			//move site-wide fields to output array
-			$fields = array('fix_ie', 'rewrite');
+			$fields = array( 'fix_ie', 'rewrite', 'hide-title' );
 			foreach ($fields as $field) {
 				$options[$field] = $data[$field];
 			}
@@ -983,6 +1023,14 @@ class WP_Resume {
 				</td>
 			</tr>
 			<tr valign="top" class="underHood">
+				<th scrope="row"><?php _e('Hide Page Title', 'wp-resume'); ?></th>
+				<td>
+					<input type="radio" name="wp_resume_options[hide-title]" id="hide_yes" value="1" <?php checked($options['hide-title'], 1); ?>/> <label for="hide_yes"><?php _e('Yes', 'wp-resume'); ?></label><br />
+					<input type="radio" name="wp_resume_options[hide-title]" id="hide_no" value="0" <?php checked($options['hide-title'], 0); ?> <?php checked($options['hide-title'], null); ?>/> <label for="hide_no"><?php _e('No', 'wp-resume'); ?></label><br />
+					<span class="description"><?php _e('Hides the standard page title on pages (or posts) containing the <code>[wp_resume]</code> shortcode by adding a <code>hide-title</code> class', 'wp-resume'); ?>.</span>
+				</td>
+			</tr>
+			<tr valign="top" class="underHood">
 				<th scrope="row"><?php _e('Enable URL Rewriting', 'wp-resume'); ?></th>
 				<td>
 					<input type="radio" name="wp_resume_options[rewrite]" id="rewrite_yes" value="1" <?php checked($options['rewrite'], 1); ?>/> <label for="rewrite_yes"><?php _e('Yes', 'wp-resume'); ?></label><br />
@@ -1097,7 +1145,7 @@ class WP_Resume {
 	function upgrade_db() {
 		
 		//default fields and values
-		$fields['global'] = array('fix_ie' => true, 'rewrite' => false);
+		$fields['global'] = array('fix_ie' => true, 'rewrite' => false, 'hide-title' => false);
 		$fields['user'] = array('name'=>'', 'summary' => '', 'contact_info'=> array(), 'order'=>array() );
 		$i = 0;	foreach ( $this->get_sections( false ) as $section)
 				$fields['user']['order'][$section->term_id] = $i++;
@@ -1410,6 +1458,95 @@ class WP_Resume {
 	 */
 	function cap_filter( $cap ) {
 		return 'edit_posts';
+	}
+	
+	/** 
+	 * Applies filter and returns author's name
+	 * @uses $author
+	 * @returns string the author's name
+	 */
+	function get_name() {
+		$options = $this->get_user_options( );
+		return apply_filters( 'resume_name', $options['name'] );
+	}
+	
+	/**
+	 * Returns the title of the postition, or if rewriting is enabled, a link to the position
+	 * @param int $ID the position ID
+	 * @return string the title, or the title link
+	 */
+	function get_title( $ID ) {
+	
+		$options = $this->get_options();
+		
+		if ( !isset( $options['rewrite'] ) || !$options['rewrite'] ) {
+			$title = get_the_title();
+		} else {
+			$title = '<a href="' . get_permalink() . '">' . get_the_title() . '</a>';
+			$title = apply_filters( 'resume_position_link', $title );
+		}
+		
+		return apply_filters( 'resume_position_title', $title );
+		 
+	}
+	
+	function get_section_name( $section ) {
+	
+		return $this->get_taxonomy_name( $section, 'section' );
+			
+	}
+	
+	function get_organization_name( $organization ) {
+
+		return $this->get_taxonomy_name( $organization, 'organization' );
+		
+	}
+	
+	function get_taxonomy_name( $object, $taxonomy ) {
+		
+		$options = $this->get_options();
+		
+		if ( isset( $options['rewrite'] ) && $options['rewrite'] && ( $link = get_term_link( $object, "resume_{$taxonomy}" ) ) ) {
+			$title = '<a href="' . $link . '">' . $object->name . '</a>';
+			$title = apply_filters( "resume_{$taxonomy}_link", $title );
+		} else {
+			$title = $object->name;
+		}
+		
+		return apply_filters( "resume_{$taxonomy}_name", $title );
+
+	}
+	
+	/**
+	 * Returns the author's contact info
+	 * @uses $author
+	 * @returns array of contact info
+	 */
+	function get_contact_info() {
+	
+		$options = $this->get_user_options( );
+		
+		if ( !isset( $options['contact_info'] ) || !is_array( $options['contact_info'] ) )
+			return array();
+		
+		return apply_filters( 'resume_contact_info', $options['contact_info'] );	
+		
+	}
+	
+	/**
+	 * Returns the resume summary, if any
+	 * @uses $author
+	 * @returns string the resume summary
+	 */
+	function get_summary() {
+
+		$options = $this->get_user_options( );
+		
+		if ( empty( $options['summary'] ) )
+			return array();
+		
+		return apply_filters( 'resume_summary', $options['summary'] );
+		
 	}
 	
 }
