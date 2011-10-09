@@ -587,6 +587,9 @@ class WP_Resume {
 		
 	} 
 	
+	/**
+	 * Flushes all wp-resume data from the object cache, if it exists
+	 */ 
 	function flush_cache() {
 		global $wp_object_cache;
 		unset( $wp_object_cache->cache['wp_resume']);
@@ -618,10 +621,14 @@ class WP_Resume {
 		
 	}
 	
+	/**
+	 * Adds links to the admin bar
+	 * @since 2.0.3
+	 */
 	function admin_bar() {
 		global $wp_admin_bar;
 		
-	    if ( !is_super_admin() || !is_admin_bar_showing() )
+	    if ( !is_admin_bar_showing() )
     	  return;
     
     	if ( !is_page() )
@@ -1054,13 +1061,6 @@ class WP_Resume {
 			</tr>
 			<?php } ?>				
 		</table>
-		<script>
-		jQuery(document).ready(function($) {
-		
-		
-		
-	});
-		</script>
 		<p class="submit">
 			 <input type="submit" class="button-primary" value="<?php _e('Save Changes', 'wp-resume') ?>" />
 		</p>
@@ -1107,6 +1107,9 @@ class WP_Resume {
 		
 	}
 	
+	/**
+	 * Tells WP to load our javascript files
+	 */
 	function enqueue_scripts() {
 	
 		$suffix = ( WP_DEBUG ) ? 'dev.' : '';
