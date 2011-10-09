@@ -545,7 +545,8 @@ class WP_Resume {
 
 		$organization = wp_get_object_terms( $postID, 'wp_resume_organization' );
 
-		if ( !is_array( $organization ) ) return false;
+		if ( is_wp_error( $organization ) ) 
+			return false;
 		
 		return apply_filters( 'resume_organization', $organization[0] );
 		
