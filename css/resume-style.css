@@ -3,6 +3,9 @@
  * @package wp_resume
  * @since 1.0a
  */
+ 
+/* Post Title */
+.resume.hide-title .entry-title {display:none;}
 
 /* Header */
 .resume header {text-align:center; margin-bottom: 25px; background: none; display:block;}	
@@ -17,14 +20,17 @@
 /* Sections */
 .resume section {margin-bottom:20px; display:block;}
 .resume section header {text-align: left; font-size: 20px; font-weight: bold; margin-bottom: 20px; border-bottom: 1px solid black; }
+.resume section header a, .resume section header a:visited {color: #000;}
 
 /* Blocks */
 .resume article { margin-bottom: 10px; }
 .resume article ul {clear:both; text-align:justify; padding-left:16px; list-style-type:square; margin:0 !important;}
 .resume article header {border: 0;}
 .resume .orgName {float: left; font-size: 16px; text-transform: uppercase;  }
+.resume .orgName a, .resume .orgName a:visited {color: #000;}
 .resume .location {float:right; color: #aaa; font-size: 14px;}
 .resume .title {font-style: italic; float:left; clear:left;  font-size: 15px; }
+.resume .title a, .resume .title a:visited {color: #000;}
 .resume .date {float:right; color: #aaa; clear:right; font-size: 14px;}
 .resume .details {clear: both; text-align: justify; margin-bottom: 10px;font-size: 14px; display: block; }
 .resume .organization .details, .resume organization .title {margin:0;}

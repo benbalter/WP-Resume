@@ -15,16 +15,20 @@ if ( !$wp_resume )
  
 //Retrieve plugin options for later use
 $options = $wp_resume->get_options();
-$author_options = $wp_resume->get_user_options( $wp_resume->author );
 ?>
-		<div class="resume hresume">
+		<div class="hresume">
 			<div id="bar"> </div>
 			<header class="vcard">
-				<h2 class="fn n url" id="name"><a href="<?php get_permalink(); ?>"><?php echo $author_options['name']; ?></a></h2>
+				<h2 class="fn n url" id="name">
+					<a href="<?php get_permalink(); ?>">
+						<?php echo $wp_resume->get_name(); ?>
+					</a>
+				</h2>
 				<ul>
 					<?php //loop through contact info fields
-					if ( isset( $author_options['contact_info']) && is_array($author_options['contact_info'] ) ) {
-						foreach ($author_options['contact_info'] as $field=>$value) { ?>
+					$contact_info = $wp_resume->get_contact_info();
+					if ( !empty( $contact_info ) ) {
+						foreach ( $contact_info as $field => $value) { ?>
 						<?php 
 							//per hCard specs (http://microformats.org/profile/hcard) adr needs to be an array
 							if ( is_array( $value ) ) { ?>
@@ -42,9 +46,11 @@ $author_options = $wp_resume->get_user_options( $wp_resume->author );
 				<?php } ?>
 				</ul>
 			</header>
-			<?php if (! empty( $author_options['summary'] ) ) { ?>
+			<?php
+				$summary = $wp_resume->get_summary();
+				if ( !empty( $summary ) ) { ?>
 			<summary class="summary">
-				<?php echo $author_options['summary']; ?>
+				<?php echo $summary; ?>
 			</summary>
 			<?php } ?>
 <?php 		
@@ -61,15 +67,15 @@ $author_options = $wp_resume->get_user_options( $wp_resume->author );
 				$posts = $wp_resume->query( $section->slug, $wp_resume->author );
 				
 				//loop through all posts in the current section using the standard WP loop
-				if ( $posts->have_posts() ) :  ?>
-				<header><?php echo $section->name; ?></header>
+				if ( $posts->have_posts() ) : ?>
+				<header><?php echo $wp_resume->get_section_name( $section ); ?></header>
 				<?php while ( $posts->have_posts() ) : $posts->the_post();
 				
 					//Retrieve details on the current position's organization
 					$organization = $wp_resume->get_org( get_the_ID() ); 
 				
 					//If this is the first organization, or if this org. is different from the previous, format output acordingly
-					if ($organization && $organization->term_id != $current_org) {
+					if ( $organization && $organization->term_id != $current_org) {
 					
 						//If this is a new org., but not the first, end the previous org's article tag
 						if ($current_org != '') { 
@@ -85,37 +91,37 @@ $author_options = $wp_resume->get_user_options( $wp_resume->author );
 						?>
 				<article class="organization <?php echo $section->slug; ?> vevent" id="<?php echo $organization->slug; ?>">
 					<header>
-						<div class="orgName summary" id="<?php echo $organization->slug; ?>-name"><?php echo $organization->name; ?></div>
+						<div class="orgName summary" id="<?php echo $organization->slug; ?>-name"><?php echo $wp_resume->get_organization_name( $organization ); ?></div>
 						<div class="location"><?php echo $organization->description; ?></div>
 					</header>
 <?php 				
 					//End if new org
 					}  
 ?>
-					<<?php echo ($organization) ? 'section' : 'article'; ?> class="vcard">
-						<a href="#name" class="include" title="<?php echo $author_options['name']; ?>"></a>
+					<<?php echo ( $organization ) ? 'section' : 'article'; ?> class="vcard">
+						<a href="#name" class="include" title="<?php echo $wp_resume->get_name(); ?>"></a>
 						<a href="#<?php echo $organization->slug; ?>-name" class="include" title="<?php echo $organization->name; ?>"></a>
-						<?php if (!$organization) { ?>
+						<?php if ( !$organization ) { ?>
 							<header>
 						<?php } ?>
-						<div class="title"><?php echo the_title(); ?></div>
-						<div class="date"><?php echo $wp_resume->format_date( get_the_ID() ); ?></div>
-						<?php if (!$organization) { ?>
+						<div class="title"><?php echo $wp_resume->get_title( get_the_ID() ); ?></div>
+						<div class="date"><?php echo $wp_resume->get_date( get_the_ID() ); ?></div>
+						<?php if ( !$organization ) { ?>
 							</header>
 						<?php } ?>
 						<div class="details">
 						<?php the_content(); ?>
 <?php 			//If the current user can edit posts, output the link
 				if ( current_user_can( 'edit_posts' ) ) 
-					edit_post_link('Edit'); 	
+					edit_post_link( 'Edit' ); 	
 ?>
 						</div><!-- .details -->
-					</<?php echo ($organization) ? 'section' : 'article'; ?>> <!-- .vcard -->
+					</<?php echo ( $organization ) ? 'section' : 'article'; ?>> <!-- .vcard -->
 <?php 		
 				//End loop
 				endwhile; endif;	
 ?>
-<?php 		if ( isset($organization) && $organization ) { ?>
+<?php 		if ( isset( $organization ) && $organization ) { ?>
 				</article><!-- .organization -->
 <?php 		} ?>
 			</section><!-- .section -->
