@@ -426,11 +426,11 @@ class WP_Resume {
 		
 		//if we have a start date, format as "[from] - [to]" (e.g., May 2005 - May 2006)
 		if ( $from ) 
-			$date = '<span class="dtstart">' . $from . '</span> &ndash; <span class="dtend">' . $to . '</span>';
+			$date = '<span class="dtstart" title="' . date( 'Y-m-d', strtotime( $from ) ) . '">' . $from . '</span> &ndash; <span class="dtend" title="' . date( 'Y-m-d', strtotime( $to ) ) . '">' . $to . '</span>';
 		
 		//if we only have a to, just pass back the to (e.g., "May 2015")
 		else if ( $to ) 
-			$date= '<span class="dtend">' . $to . '</span>';
+			$date= '<span class="dtend" title="' . date( 'Y-m-d', strtotime( $to ) ) . '">' . $to . '</span>';
 		
 		//If there's no date meta, just pass back an empty string so we dont generate errors
 		else 

@@ -1,6 +1,6 @@
 === Plugin Name ===
 Contributors: benbalter
-Donate link: http://ben.balter.com/
+Donate link: http://ben.balter.com/donate/
 Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume
 Requires at least: 3.2
 Tested up to: 3.3
@@ -113,6 +113,7 @@ Make sure all your positions are associated with both organizations and sections
 * Added .resume CSS class to posts with resume shortcodes
 * Created functions to help pull and format author's information into custom resume templates
 * Added additional API hooks for developers to customize the plugin's functionality
+* Added donate link to plugin page
 
 = 2.0.3 =
 * Added Edit Resume button to the admin bar for logged in users
