@@ -39,6 +39,8 @@ You can [see it in action](http://ben.balter.com/resume/) or for information and
 
 The hardest part of getting your resume online should be doing the work listed on it, not wrestling the publishing platform. Simply put, WP Resume steps aside and lets your experience shine.
 
+*Enjoy using WP Resume? Feel free to [make a small donation](http://ben.balter.com/donate/) to support the software’s continued development.*
+
 == Installation ==
 
 1. Upload the `wp-resume` folder to the `/wp-content/plugins/` directory
