@@ -126,4 +126,16 @@ jQuery(document).ready(function($){
 		$('#parent').parent().hide();
 		$('#tag-description, #tag-slug').parent().hide();
 	}					
+	
+	$('#hide-donate').click( function(event){
+		$.ajax({
+			url: 'admin-ajax.php?action=wp_resume_hide_donate&_ajax_nonce-wp-resume-hide-donate=' + $('#_ajax_nonce-wp-resume-hide-donate').val(),
+			success: function() {
+				$('#donate').fadeOut();
+			}
+		});
+		event.preventDefault();
+		return false;
+	});
+	
 });		
