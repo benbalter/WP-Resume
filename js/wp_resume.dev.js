@@ -127,6 +127,7 @@ jQuery(document).ready(function($){
 		$('#tag-description, #tag-slug').parent().hide();
 	}					
 	
+	//donate button
 	$('#hide-donate').click( function(event){
 		$.ajax({
 			url: 'admin-ajax.php?action=wp_resume_hide_donate&_ajax_nonce-wp-resume-hide-donate=' + $('#_ajax_nonce-wp-resume-hide-donate').val(),
