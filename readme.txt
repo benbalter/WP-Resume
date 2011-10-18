@@ -108,6 +108,9 @@ Make sure all your positions are associated with both organizations and sections
 
 == Changelog ==
 
+= 2.0.5 =
+* Fix bug where resume would not pass HTML validation if URL rewriting was enabled
+
 = 2.0.4 =
 * Added option to automatically hide page titles on resume pages (via .hide-title class)
 * If URL rewriting is enabled position, organization, and section titles now appear as links
