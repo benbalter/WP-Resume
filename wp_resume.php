@@ -1510,22 +1510,24 @@ class WP_Resume {
 	/**
 	 * Returns the section name, or a link to the section if rewrites are on
 	 * @param object $section the section object
+	 * @param bool $link whether to link if possible	
 	 * @returns string the section name or link to section
 	 */
-	function get_section_name( $section ) {
+	function get_section_name( $section, $link = true ) {
 	
-		return $this->get_taxonomy_name( $section, 'section' );
+		return $this->get_taxonomy_name( $section, 'section', $link );
 			
 	}
 	
 	/**
 	 * Returns the organization name, or a link to the organization if rewrites are on
 	 * @param object $organization the organization object
+	 * @param bool $link whether to link if possible
 	 * @returns string the organization name or link to organization
 	 */	
-	function get_organization_name( $organization ) {
+	function get_organization_name( $organization, $link = true ) {
 
-		return $this->get_taxonomy_name( $organization, 'organization' );
+		return $this->get_taxonomy_name( $organization, 'organization', $link );
 		
 	}
 	
@@ -1533,13 +1535,14 @@ class WP_Resume {
 	 * Given a taxonomy object and taxonomy type, returns either the taxnomy name or a link to the taxnomy
 	 * @param object $object the taxonomy object
 	 * @param string $taxnonomy the taxnomy slug after "resume_"
+	 * @param bool $link whether to link if possible
 	 * @returns string the formatted taxonomy name/link
 	 */
-	function get_taxonomy_name( $object, $taxonomy ) {
+	function get_taxonomy_name( $object, $taxonomy, $link ) {
 		
 		$options = $this->get_options();
 		
-		if ( isset( $options['rewrite'] ) && $options['rewrite'] && ( $link = get_term_link( $object, "resume_{$taxonomy}" ) ) ) {
+		if ( $link && isset( $options['rewrite'] ) && $options['rewrite'] && ( $link = get_term_link( $object, "resume_{$taxonomy}" ) ) ) {
 			$title = '<a href="' . $link . '">' . $object->name . '</a>';
 			$title = apply_filters( "resume_{$taxonomy}_link", $title );
 		} else {
