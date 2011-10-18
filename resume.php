@@ -101,7 +101,7 @@ $options = $wp_resume->get_options();
 					<<?php echo ( $organization ) ? 'section' : 'article'; ?> class="vcard">
 						<a href="#name" class="include" title="<?php echo $wp_resume->get_name(); ?>"></a>
 						<?php if ( $organization ) { ?>
-							<a href="#<?php echo $organization->slug; ?>-name" class="include" title="<?php echo $wp_resume->get_organization_name( $organization ); ?>"></a>
+							<a href="#<?php echo $organization->slug; ?>-name" class="include" title="<?php echo $wp_resume->get_organization_name( $organization, false ); ?>"></a>
 						<?php } else { ?>
 							<header>
 						<?php } ?>
