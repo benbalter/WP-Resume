@@ -401,8 +401,8 @@ class WP_Resume {
 
 		$user = wp_get_current_user();
 		wp_cache_delete(  $user->user_nicename . '_resume', 'wp_resume' );
+		wp_cache_delete(  $post->ID . '_organization', 'wp_resume' );
 		$this->flush_cache();
-
 
 	}
 	
@@ -544,12 +544,19 @@ class WP_Resume {
 	 */
 	function get_org( $postID ) {
 
+		if ( $cache = wp_cache_get( $postID . '_organization', 'wp_resume' ) )
+			return $cache;
+		
 		$organization = wp_get_object_terms( $postID, 'wp_resume_organization' );
 
 		if ( is_wp_error( $organization ) || !isset( $organization[0] ) ) 
 			return false;
 		
-		return apply_filters( 'resume_organization', $organization[0] );
+		$org = apply_filters( 'resume_organization', $organization[0] );
+		
+		wp_cache_set( $postID . '_organization', $org, 'wp_resume', $this->ttl );
+		
+		return $org;
 		
 	}
 
@@ -978,39 +985,7 @@ class WP_Resume {
 			<tr valign="top">
 				<th scope="row"><?php _e('Resume Order', 'wp-resume'); ?></th>
 				<td>
-				<ul id="sections">
-	<?php foreach ( $this->get_sections( false, $current_author ) as $section ) { ?>
-
-					<li class="section" id="<?php echo $section->term_id; ?>">
-	<?php 				echo $section->name; ?>
-						<ul class="organizations">
-	<?php				$current_org='';
-						$posts = $this->query( $section->slug, $current_author );
-						if ( $posts->have_posts() ) : while ( $posts->have_posts() ) : $posts->the_post();
-							$organization = $this->get_org( get_the_ID() ); 
-							if ($organization && $organization->term_id != $current_org) {
-								if ($current_org != '') { 
-	?>								
-										</ul><!-- .positions -->
-									</li><!-- .organization -->
-	<?php 						} 
-								$current_org = $organization->term_id; 
-	?>
-								<li class="organization" id="<?php echo $organization->term_id; ?>">
-									<?php echo $organization->name; ?>
-									<ul class="positions">
-	<?php						}  ?>
-									<li class="position" id="<?php the_ID(); ?>">
-										<?php echo the_title(); ?> <?php if ($date = $this->format_date( get_the_ID() ) ) echo "($date)"; ?>
-									</li><!-- .position -->
-	<?php 				endwhile; ?>
-									</ul><!-- .positions -->				
-	<?php				endif;	 ?>
-							</li><!-- .organization -->
-						</ul><!-- .organizations -->
-					</li><!-- .section -->
-					<?php } ?>
-				</ul><!-- #sections -->
+				<?php $this->order_dragdrop( $current_author ); ?>
 				<span class="description"><?php _e('New positions are automatically displayed in reverse chronological order, but you can fine tune that order by rearranging the elements in the list above', 'wp-resume'); ?>.</span>
 				</td>
 			</tr>
@@ -1080,6 +1055,145 @@ class WP_Resume {
 		</form>
 	</div>
 	<?php
+	}
+	
+	/**
+	 * Outputs the dragable ordering UI
+	 * @param string $current_author the current author
+	 * @since 2.0.5
+	 * @uses dragdrop_section
+	 *
+	 * Structure:
+	 *
+	 * ul.sections
+	 * 	li.section
+	 * 		ul.organizations
+	 *			li.organization
+	 *				ul.positions
+	 * 					li.position
+	 */
+	function order_dragdrop( $current_author ) { 
+	?>
+	<ul id="sections">
+		<?php //loop through the user's non-empty section
+			foreach ( $this->get_sections( true, $current_author ) as $section )	
+				$this->dragdrop_section ( $current_author, $section );
+		?>
+	</ul><!-- #sections -->
+	<?php
+	}
+	
+	/**
+	 * Outputs one section of the dragdrop UI
+	 * @param string $current_author the current author
+	 * @param object $section the current section
+	 * @since 2.0.5
+	 * @uses dragrop_position
+	 * @uses get_previous_org
+	 * @uses get_next_org
+	 * @uses dragdrop_org_start
+	 * @uses dragdrop_org_end
+	 */
+	function dragdrop_section( $current_author, $section ) { ?>
+		<li class="section" id="<?php echo $section->term_id; ?>">
+			<a href="<?php echo admin_url( 'edit-tags.php?action=edit&taxonomy=wp_resume_section&tag_ID=' . $section->term_id . '&post_type=wp_resume_position' ); ?>">
+				<?php echo $section->name; ?>
+			</a>
+			<ul class="organizations">
+				<?php 
+				//init org var to force output
+				$current_org = '';
+				
+				//get all positions in this section and loop
+				$posts = $this->query( $section->slug, $current_author );
+				if ( $posts->have_posts() ) : while ( $posts->have_posts() ) : $posts->the_post();
+					
+					//grab the current position's organization and compare to last
+					//if different or this is the first position, output org label and UL
+					if ( $this->get_previous_org( ) != $this->get_org( get_the_ID() ) )
+						$this->dragdrop_org_start( $this->get_org( get_the_ID() ) );
+					
+					//main position li	 
+					$this->dragdrop_position();
+					
+					//next position's organization is not the same as this 
+					//or this is the last position in the query
+					if ( $this->get_next_org() != $this->get_org( get_the_ID() ) )
+						$this->dragdrop_org_end();
+					
+				endwhile; endif; ?>
+			</ul><!-- .organizations -->
+		</li><!-- .section -->
+		<?php
+	}
+	
+	/**
+	 * Outputs an individual position LI
+	 * @uses the_loop
+	 * @since 2.0.5
+	 */
+	function dragdrop_position() { ?>
+		<li class="position" id="<?php the_ID(); ?>">
+			<a href="<?php echo admin_url( 'post.php?post=' . get_the_ID() . '&action=edit' ); ?>">
+				<?php echo the_title(); ?> 
+			</a>
+			<?php if ($date = $this->format_date( get_the_ID() ) ) echo "($date)"; ?>
+		</li><!-- .position -->
+	<?php
+	}
+	
+	/**
+	 * Creates the opening LI and UL for organizations
+	 * @param object $organization the org
+	 * @since 2.0.5
+	 */
+	function dragdrop_org_start( $organization ) { ?>
+		<li class="organization" id="<?php echo $organization->term_id; ?>">
+			<a href="<?php echo admin_url( 'edit-tags.php?action=edit&taxonomy=wp_resume_organization&tag_ID=' . $organization->term_id . '&post_type=wp_resume_position' ); ?>">
+				<?php echo $organization->name; ?>
+			</a>
+			<ul class="positions">
+		<?php
+	}
+	
+	/**
+	 * Closes the org's UL and LI
+	 * @since 2.0.5
+	 */
+	function dragdrop_org_end( ) { ?>
+			</ul><!-- .positions -->
+		</li><!-- .organization -->
+		<?php
+	}
+	
+	/**
+	 * Peaks forward in the loop if possible, and tries to get next position's org
+	 * @uses wp_query
+	 * @returns bool|object either false or the org object
+	 * @since 2.0.5
+	 */
+	function get_next_org( ) {
+		global $wp_query; 
+
+		if ( empty( $wp_query->posts ) || !isset( $wp_query->posts[ $wp_query->$current_post++ ] ) )
+			return false;
+		
+		return $this->get_org( $wp_query->posts[ $wp_query->current_post++]->ID );  
+	}
+	
+	/**
+	 * Peaks backward in the loop if possible, and tries to get previous position's org
+	 * @uses wp_query
+	 * @returns bool|object either false or the org object
+	 * @since 2.0.5
+	 */
+	function get_previous_org() {
+		global $wp_query; 
+
+		if ( empty( $wp_query->posts ) || !isset( $wp_query->posts[ $wp_query->$current_post - 1 ] ) )
+			return false;
+		
+		return $this->get_org( $wp_query->posts[ $wp_query->current_post - 1 ]->ID );  
 	}
 	
 	/**
