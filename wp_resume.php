@@ -1074,12 +1074,12 @@ class WP_Resume {
 	 */
 	function order_dragdrop( $current_author ) { 
 	?>
-	<ul id="sections">
-		<?php //loop through the user's non-empty section
-			foreach ( $this->get_sections( true, $current_author ) as $section )	
-				$this->dragdrop_section ( $current_author, $section );
-		?>
-	</ul><!-- #sections -->
+		<ul id="sections">
+			<?php //loop through the user's non-empty section
+				foreach ( $this->get_sections( true, $current_author ) as $section )	
+					$this->dragdrop_section ( $current_author, $section );
+			?>
+		</ul><!-- #sections -->
 	<?php
 	}
 	
