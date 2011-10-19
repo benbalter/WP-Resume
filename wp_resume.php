@@ -23,6 +23,7 @@ class WP_Resume {
 	public $version = '2.0.4';
 	public $author = '';
 	public $ttl = '3600';
+	public $query_obj;
 
 	function __construct() {
 		
@@ -534,8 +535,8 @@ class WP_Resume {
 		$args = apply_filters('wp_resume_query_args', $args);
 			
 		//query and return
-		$query = new wp_query($args);
-		return $query;
+		$this->query_obj = new wp_query($args);
+		return $this->query_obj;
 	}
 
 	/**
@@ -1108,15 +1109,16 @@ class WP_Resume {
 					
 					//grab the current position's organization and compare to last
 					//if different or this is the first position, output org label and UL
-					if ( $this->get_previous_org( ) != $this->get_org( get_the_ID() ) )
-						$this->dragdrop_org_start( $this->get_org( get_the_ID() ) );
+					$org = $this->get_org( get_the_ID() );
+					if ( $org && $this->get_previous_org( ) != $org )
+						$this->dragdrop_org_start( $org );
 					
 					//main position li	 
 					$this->dragdrop_position();
 					
 					//next position's organization is not the same as this 
 					//or this is the last position in the query
-					if ( $this->get_next_org() != $this->get_org( get_the_ID() ) )
+					if ( $org && $this->get_next_org() != $org )
 						$this->dragdrop_org_end();
 					
 				endwhile; endif; ?>
@@ -1165,33 +1167,44 @@ class WP_Resume {
 	}
 	
 	/**
+	 * Returns either the next or previous position's org
+	 * @param int $delta either 1 or -1 for forward or backward
+	 * @returns bool|object false if no org, org object if exists
+	 * @since 2.0.5
+	 */
+	function get_delta_org( $delta ) {
+		
+		if ( empty( $this->query_obj->posts ) || !isset( $this->query_obj->current_post ) )
+			return false;
+		
+		$post_key = $this->query_obj->current_post + $delta;
+		
+		if ( !isset( $this->query_obj->posts[ $post_key ] ) )
+			return false;
+		
+		return $this->get_org( $this->query_obj->posts[ $post_key ]->ID ); 
+	}
+	
+	/**
 	 * Peaks forward in the loop if possible, and tries to get next position's org
-	 * @uses wp_query
 	 * @returns bool|object either false or the org object
 	 * @since 2.0.5
 	 */
 	function get_next_org( ) {
-		global $wp_query; 
-
-		if ( empty( $wp_query->posts ) || !isset( $wp_query->posts[ $wp_query->$current_post++ ] ) )
-			return false;
-		
-		return $this->get_org( $wp_query->posts[ $wp_query->current_post++]->ID );  
+	
+		return $this->get_delta_org( 1 );
+		  
 	}
 	
 	/**
 	 * Peaks backward in the loop if possible, and tries to get previous position's org
-	 * @uses wp_query
 	 * @returns bool|object either false or the org object
 	 * @since 2.0.5
 	 */
 	function get_previous_org() {
-		global $wp_query; 
 
-		if ( empty( $wp_query->posts ) || !isset( $wp_query->posts[ $wp_query->$current_post - 1 ] ) )
-			return false;
-		
-		return $this->get_org( $wp_query->posts[ $wp_query->current_post - 1 ]->ID );  
+		return $this->get_delta_org( -1 );
+  
 	}
 	
 	/**
