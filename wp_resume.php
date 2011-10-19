@@ -147,7 +147,7 @@ class WP_Resume {
 		   'new_item_name' => __( 'New Organization Name', 'wp-resume' ),
 		 ); 
 		 
-		$args = apply_filters( 'wp_resume_organization_ct', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => ( isset( $options['rewrite'] ) && $options['rewrite'] ) ? array( 'slug' => 'orgainizations' ) : false ) );
+		$args = apply_filters( 'wp_resume_organization_ct', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => ( isset( $options['rewrite'] ) && $options['rewrite'] ) ? array( 'slug' => 'organizations' ) : false ) );
 		 
 		//Register organization taxonomy
 		register_taxonomy( 'wp_resume_organization', 'wp_resume_position', $args );
