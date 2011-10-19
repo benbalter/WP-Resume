@@ -109,9 +109,11 @@ Make sure all your positions are associated with both organizations and sections
 == Changelog ==
 
 = 2.0.5 =
+* Dragdrop interface for reordering resume elements completely rewritten for greater compatability
+* Removed requirement that all positions have organizations before they could be saved
+* Positions, sections, and organizations in dragdrop interface now link to their edit pages
 * Fix bug where resume would not pass HTML validation if URL rewriting was enabled
 * Fixed typo in organizations slug when URL rewriting was enabled
-* Removed requirement that all positions have organizations before they could be saved
 
 = 2.0.4 =
 * Added option to automatically hide page titles on resume pages (via .hide-title class)
