@@ -1149,7 +1149,7 @@ class WP_Resume {
 			'showAdv' => __('Show Advanced Options', 'wp-resume'),
 			'orgName' => __('The name of the organization as you want it to appear', 'wp-resume'),
 			'orgLoc' => __('Traditionally the location of the organization (optional)', 'wp-resume'),
-			'missingTaxMsg' => __( 'Please make sure that the position is associated with a section and organization before saving', 'wp-resume'),
+			'missingTaxMsg' => __( 'Please make sure that the position is associated with a section before saving', 'wp-resume'),
 		);
 		wp_localize_script( 'wp_resume', 'wp_resume', $data );
 	
