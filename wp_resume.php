@@ -1101,8 +1101,6 @@ class WP_Resume {
 			</a>
 			<ul class="organizations">
 				<?php 
-				//init org var to force output
-				$current_org = '';
 				
 				//get all positions in this section and loop
 				$posts = $this->query( $section->slug, $current_author );
