@@ -94,7 +94,7 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 
 = I'm having trouble organizing some of the positions on the options screen; they're not sortable. What gives? =
 
-Make sure all your positions are associated with both organizations and sections.
+Make sure all your positions are associated with sections.
 
 == Planned Features ==
  
@@ -247,6 +247,9 @@ Make sure all your positions are associated with both organizations and sections
 * Initial Alpha Release
 
 == Upgrade Notice ==
+
+= 2.0.5 =
+Bug fixes for dragdrop interface and URL rewriting
 
 = 2.0.4 =
 Formatting fixes including ability to hide page titles
