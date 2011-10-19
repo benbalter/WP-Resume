@@ -30,11 +30,9 @@ jQuery(document).ready(function($){
 
 	$('#publish').click( function( e ) {	
 		
-		//verify that position has section and organization
-		if ( pagenow == 'wp_resume_position' && (
-			 $('input:radio[name=wp_resume_section]:checked').val() == '' || 
-			 $('input:radio[name=wp_resume_organization]:checked').val() == '' )
-			 ) {
+		//verify that position has a section
+		if ( pagenow == 'wp_resume_position' && 
+			 $('input:radio[name=wp_resume_section]:checked').val() == '' ) {
 			
 			e.preventDefault();
 			e.stopPropagation();
