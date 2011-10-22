@@ -108,8 +108,9 @@ Make sure all your positions are associated with sections.
 
 == Changelog ==
 
-= 2.0.5 =
-* Dragdrop interface for reordering resume elements completely rewritten for greater compatability
+= 2.1 =
+* Dragdrop interface for reordering resume elements completely rewritten for greater compatibility
+* Handling of organizations in default resume template greatly improved (organizations are no longer required for all positions)
 * Removed requirement that all positions have organizations before they could be saved
 * Positions, sections, and organizations in dragdrop interface now link to their edit pages
 * Fix bug where resume would not pass HTML validation if URL rewriting was enabled

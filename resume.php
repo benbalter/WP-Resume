@@ -72,42 +72,27 @@ $options = $wp_resume->get_options();
 				<?php while ( $posts->have_posts() ) : $posts->the_post();
 				
 					//Retrieve details on the current position's organization
-					$organization = $wp_resume->get_org( get_the_ID() ); 
-				
-					//If this is the first organization, or if this org. is different from the previous, format output acordingly
-					if ( $organization && $organization->term_id != $current_org) {
-					
-						//If this is a new org., but not the first, end the previous org's article tag
-						if ($current_org != '') { 
-?>
-				</article>
-<?php 				
-						} 
-						
-						//store this org's ID to our internal variable for the next loop
-						$current_org = $organization->term_id; 
-						
-						//Format organization header output
-						?>
-				<article class="organization <?php echo $section->slug; ?> vevent" id="<?php echo $organization->slug; ?>">
+					$org = $wp_resume->get_org( get_the_ID() ); 
+
+					// If this is the first organization, 
+					// or if this org. is different from the previous, begin new org
+					if ( $org && $wp_resume->get_previous_org() != $org) { ?>
+				<article class="organization <?php echo $section->slug; ?> vevent" id="<?php echo $org->slug; ?>">
 					<header>
-						<div class="orgName summary" id="<?php echo $organization->slug; ?>-name"><?php echo $wp_resume->get_organization_name( $organization ); ?></div>
-						<div class="location"><?php echo $organization->description; ?></div>
+						<div class="orgName summary" id="<?php echo $org->slug; ?>-name"><?php echo $wp_resume->get_organization_name( $org ); ?></div>
+						<div class="location"><?php echo $org->description; ?></div>
 					</header>
-<?php 				
-					//End if new org
-					}  
-?>
-					<<?php echo ( $organization ) ? 'section' : 'article'; ?> class="vcard">
+<?php 			} 	//End if new org ?>
+					<<?php echo ( $org ) ? 'section' : 'article'; ?> class="vcard">
 						<a href="#name" class="include" title="<?php echo $wp_resume->get_name(); ?>"></a>
-						<?php if ( $organization ) { ?>
-							<a href="#<?php echo $organization->slug; ?>-name" class="include" title="<?php echo $wp_resume->get_organization_name( $organization, false ); ?>"></a>
+						<?php if ( $org ) { ?>
+							<a href="#<?php echo $org->slug; ?>-name" class="include" title="<?php echo $wp_resume->get_organization_name( $org, false ); ?>"></a>
 						<?php } else { ?>
 							<header>
 						<?php } ?>
 						<div class="title"><?php echo $wp_resume->get_title( get_the_ID() ); ?></div>
 						<div class="date"><?php echo $wp_resume->get_date( get_the_ID() ); ?></div>
-						<?php if ( !$organization ) { ?>
+						<?php if ( !$org ) { ?>
 							</header>
 						<?php } ?>
 						<div class="details">
@@ -117,14 +102,15 @@ $options = $wp_resume->get_options();
 					edit_post_link( 'Edit' ); 	
 ?>
 						</div><!-- .details -->
-					</<?php echo ( $organization ) ? 'section' : 'article'; ?>> <!-- .vcard -->
-<?php 		
+					</<?php echo ( $org ) ? 'section' : 'article'; ?>> <!-- .vcard -->
+<?php  
+				if ( $org && $wp_resume->get_next_org() != $org ) { ?>
+					</article><!-- .organization -->
+				<?php }
+
 				//End loop
 				endwhile; endif;	
 ?>
-<?php 		if ( isset( $organization ) && $organization ) { ?>
-				</article><!-- .organization -->
-<?php 		} ?>
 			</section><!-- .section -->
 <?php } ?> 
 		</div><!-- #resume -->
