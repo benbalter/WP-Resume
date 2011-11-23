@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 2.1
+Version: 2.1.1
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -20,7 +20,7 @@ License: GPL2
 class WP_Resume {
 
 	static $instance;
-	public $version = '2.1';
+	public $version = '2.1.1';
 	public $author = '';
 	public $ttl = '3600';
 	public $query_obj;
@@ -34,6 +34,8 @@ class WP_Resume {
 		
 		//cpt and CT
 		add_action( 'init', array( &$this, 'register_cpt_and_t' ) );
+		add_action( 'wp_resume_organization_add_form_fields', array( &$this, 'link_field' ) );
+		add_action( 'wp_resume_organization_edit_form_fields', array( &$this, 'link_field' ), 10, 2 );
 		
 		//ajax callbacks
 		add_action('wp_ajax_add_wp_resume_section', array(&$this, 'ajax_add') );
@@ -458,6 +460,11 @@ class WP_Resume {
 			$author = $user->user_nicename;
 		}
 		
+		if ( is_int( $author ) ) {
+			$user = get_userdata( $author );
+			$author = $user->user_nicename;
+		}
+		
 		$cache_slug = $author . '_sections';
 		if ( $hide_empty )
 			$cache_slug .= '_hide_empty';
@@ -529,8 +536,13 @@ class WP_Resume {
 			'order' => 'ASC',
 			'nopaging' => true,
 			'wp_resume_section' => $section,
-			'author_name' => $author
 		);
+		
+		if ( is_int( $author ) )
+			$args['author'] = $author;		
+		else
+			$args['author_name'] = $author;
+
 		
 		$args = apply_filters('wp_resume_query_args', $args);
 			
@@ -576,13 +588,13 @@ class WP_Resume {
 	 * @since 1.6
 	 */
 	function get_user_options( $user = '' ) {
-	
+
 		if ( $user == '' )
 			$user = $this->author;
 			
 		//get ID if we have a username
 		if ( !is_int($user) ) {
-		
+
 			$userdata =	get_user_by('slug', $user);
 			
 			if ( !$userdata )
@@ -591,7 +603,7 @@ class WP_Resume {
 			$user = $userdata->ID;
 			
 		}
-			
+
 		return apply_filters( 'wp_resume_user_options', get_user_meta($user, 'wp_resume', true), $user );
 		
 	} 
@@ -617,8 +629,18 @@ class WP_Resume {
 				
 		$enqueue = false;
 		while ( have_posts() ): the_post();
+			global $post;
+			
+			//if post is a position, we should load CSS
+			if ( $post->post_type == 'position' ) {
+				$enqueue = true;
+				break;
+			}
+			
+			//post is a post/page, but has shortcode, so load CSS
 			if ( preg_match( '/\[wp_resume([^\]]*)]/i', get_the_content() ) != 0) {
 				$enqueue = true;
+				break;
 			}
 		endwhile;
 		
@@ -640,7 +662,7 @@ class WP_Resume {
 	    if ( !is_admin_bar_showing() )
     	  return;
     
-    	if ( !is_page() )
+    	if ( !is_single() )
     		return;
     		
   		if ( !$this->resume_in_query() )
@@ -728,16 +750,16 @@ class WP_Resume {
 		
 		//figure out what user we are acting on
 		global $wpdb;
-		$authors = 	$wpdb->get_col( $wpdb->prepare("SELECT $wpdb->users.user_nicename FROM $wpdb->users") );
+		$authors = 	get_users( array( 'blog_id' => $GLOBALS['blog_id'] ) );
+
 		if ( !current_user_can('edit_others_posts') ) {
 			
-			$user = wp_get_current_user();
-			$current_author = $user->user_nicename;
+			$current_author = get_current_user_id();
 			
 		} else if ( sizeof($authors) == 1 ) {
 		
 			//if there is only one user in the system, it's gotta be him
-			$current_author = $authors[0];
+			$current_author = $authors[0]->ID;
 		
 		} else if ( $_POST['old_user'] != $_POST['user'] ) {
 		
@@ -757,8 +779,8 @@ class WP_Resume {
 		
 		}
 
-		$user_options = $this->get_user_options($current_author);
-		
+		$user_options = $this->get_user_options( (int) $current_author );
+
 		//start with a blank array to remove empty fields
 		$user_options['contact_info'] = array();
 		
@@ -802,9 +824,9 @@ class WP_Resume {
 		}
 			
 		//store usermeta
-		$user = get_user_by('slug', $current_author);
-		update_user_meta($user->ID, 'wp_resume', $user_options);
-		
+		$user = get_userdata( $current_author );
+		update_user_meta( $current_author, 'wp_resume', $user_options);
+	
 		wp_cache_delete(  $user->user_nicename . '_sections', 'wp_resume' );
 		wp_cache_delete(  $user->user_nicename . '_sections_hide_empty', 'wp_resume' );
 		wp_cache_delete(  $user->user_nicename . '_resume', 'wp_resume' );
@@ -890,24 +912,24 @@ class WP_Resume {
 	$options = $this->get_options();
 
 	//set up the current author
-	$authors = $wpdb->get_results("SELECT display_name, user_nicename from $wpdb->users ORDER BY display_name");
+	$authors = get_users( array( 'blog_id' => $GLOBALS['blog_id'] ) );
 
 	if ( !current_user_can('edit_others_posts') ) {
 		$user = wp_get_current_user();
-		$current_author = $user->user_nicename;	
+		$current_author = $user->ID;	
 	} else if ( sizeof($authors) == 1 ) {
 		//if there's only one author, that's our author
-		$current_author = $authors[0]->user_nicename;
+		$current_author = $authors[0]->ID;
 	} else if ( isset($_GET['user'] ) ) {
 		//if there's multiple authors, look for post data from author drop down
 		$current_author = $_GET['user'];
 	} else {
 		//otherwise, assume the current user
 		$current_user = wp_get_current_user();
-		$current_author = $current_user->user_nicename;
+		$current_author = $current_user->ID;
 	}
 
-	$user_options = $this->get_user_options($current_author);
+	$user_options = $this->get_user_options( (int) $current_author );
 
 	?>
 		<table class="form-table">
@@ -944,11 +966,7 @@ class WP_Resume {
 			<tr valign="top">
 				<th scope="row"><?php _e('User', 'wp_resume'); ?></label></th>
 				<td>
-					<select name="user" id="user">
-						<?php foreach ($authors as $author) { ?>
-						<option value="<?php echo $author->user_nicename; ?>" <?php selected($author->user_nicename, $current_author); ?>><?php echo $author->display_name; ?></option>
-						<?php } ?>
-					</select>
+					<?php wp_dropdown_users( array( 'selected' => $current_author ) ); ?>
 					<input type="hidden" name="old_user" value="<?php echo $current_author; ?>" />
 				</td>
 			</tr>
@@ -986,7 +1004,7 @@ class WP_Resume {
 			<tr valign="top">
 				<th scope="row"><?php _e('Resume Order', 'wp-resume'); ?></th>
 				<td>
-				<?php $this->order_dragdrop( $current_author ); ?>
+				<?php $this->order_dragdrop( (int) $current_author ); ?>
 				<span class="description"><?php _e('New positions are automatically displayed in reverse chronological order, but you can fine tune that order by rearranging the elements in the list above', 'wp-resume'); ?>.</span>
 				</td>
 			</tr>
@@ -1073,7 +1091,7 @@ class WP_Resume {
 	 *				ul.positions
 	 * 					li.position
 	 */
-	function order_dragdrop( $current_author ) { 
+	function order_dragdrop( $current_author ) {
 	?>
 		<ul id="sections">
 			<?php //loop through the user's non-empty section
@@ -1437,6 +1455,9 @@ class WP_Resume {
 		if ( !$this->resume_in_query() )
 			return;
 			
+		if ( !is_single() )
+			return;
+			
 		$options = $this->get_options(); ?>
 			<link rel="profile" href="http://microformats.org/profile/hcard" />
 			<?php if ($options['fix_ie']) { ?>
@@ -1718,13 +1739,39 @@ class WP_Resume {
 		check_ajax_referer( 'wp_resume_hide_donate' , '_ajax_nonce-wp-resume-hide-donate' );
 		
 		$current_user_id = get_current_user_id();
-		$options = $this->get_user_options( $current_user_id );
+		$options = $this->get_user_options( (int) $current_user_id );
 		$options['hide-donate'] = true;
 		
 		update_user_meta( $current_user_id, 'wp_resume', $options);
 		
 		die( 1 );
 		
+	}
+	
+	function link_field( $term, $taxonomy = '' ) {
+		$edit = ( $taxonomy != '' );
+	if ( $edit ) { 
+		$options = $this->get_options(); 
+		$value = ( isset( $options['org_links'][ $term->term_id ] ) ) ? $options['org_links'][ $term->term_id ] : '';
+	} else {
+		$value = '';
+	}
+	
+		?>
+		<?php if ( $edit ) { ?>
+			<tr class="form-row">
+				<th scope="row" valign="top">
+					<label for="link">Link</label>
+				</th>
+				<td class="form-field">
+		<?php } else { ?> 
+			<div class="form-field">
+				<label for="link">Link</label>			
+		<?php } ?>
+			<input type="text" name="link" value="<?php echo esc_attr( $value ); ?>" <?php if ( $edit ) { echo 'size="40"'; } ?> />
+			<p class="description">(optional) The link to the organization's home page</p>
+		<?php echo ( $taxonomy == '' ) ? '</div' : '</td></tr>'; ?>
+	<?php
 	}
 	
 }
