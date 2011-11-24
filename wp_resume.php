@@ -36,6 +36,8 @@ class WP_Resume {
 		add_action( 'init', array( &$this, 'register_cpt_and_t' ) );
 		add_action( 'wp_resume_organization_add_form_fields', array( &$this, 'link_field' ) );
 		add_action( 'wp_resume_organization_edit_form_fields', array( &$this, 'link_field' ), 10, 2 );
+		add_action( 'create_wp_resume_organization', array( &$this, 'save_link_field' ) );
+		add_action( 'edited_wp_resume_organization', array( &$this, 'save_link_field' ) );
 		
 		//ajax callbacks
 		add_action('wp_ajax_add_wp_resume_section', array(&$this, 'ajax_add') );
@@ -47,7 +49,7 @@ class WP_Resume {
 
 		//frontend printstyles
 		add_action( 'wp_print_styles', array( &$this, 'enqueue_styles' ) );
-		
+
 		//admin bar
 		add_action( 'admin_bar_menu', array( &$this, 'admin_bar' ), 100 );
 
@@ -62,8 +64,8 @@ class WP_Resume {
 		add_filter( 'option_page_capability_wp_resume_options', array( &$this, 'cap_filter' ), 10, 1 );
 		
 		//rewrites and redirects
-		add_action('template_redirect',array( &$this, 'add_feeds' ) );
-		add_action('init', array( &$this, 'rewrite_rules' ) );
+		add_action( 'template_redirect',array( &$this, 'add_feeds' ) );
+		add_action( 'init', array( &$this, 'rewrite_rules' ) );
 		add_action( 'post_type_link', array( &$this, 'permalink' ), 10, 4 );
 	
 		//i18n
@@ -404,7 +406,7 @@ class WP_Resume {
 
 		$user = wp_get_current_user();
 		wp_cache_delete(  $user->user_nicename . '_resume', 'wp_resume' );
-		wp_cache_delete(  $post->ID . '_organization', 'wp_resume' );
+		wp_cache_delete(  $post_id . '_organization', 'wp_resume' );
 		$this->flush_cache();
 
 	}
@@ -629,19 +631,17 @@ class WP_Resume {
 				
 		$enqueue = false;
 		while ( have_posts() ): the_post();
+		
 			global $post;
 			
 			//if post is a position, we should load CSS
-			if ( $post->post_type == 'position' ) {
+			if ( $post->post_type == 'position' )
 				$enqueue = true;
-				break;
-			}
-			
+				
 			//post is a post/page, but has shortcode, so load CSS
-			if ( preg_match( '/\[wp_resume([^\]]*)]/i', get_the_content() ) != 0) {
+			else if ( preg_match( '/\[wp_resume([^\]]*)]/i', get_the_content() ) != 0)
 				$enqueue = true;
-				break;
-			}
+			
 		endwhile;
 		
 		wp_reset_query();
@@ -698,7 +698,7 @@ class WP_Resume {
 		if ( !$this->resume_in_query() )
 			return;
 	
-		add_filter('post_class', array( &$this, 'add_post_class' ) );
+		add_filter( 'post_class', array( &$this, 'add_post_class' ) );
 
 		if ( file_exists ( get_stylesheet_directory() . '/resume-style.css' ) )
 			wp_enqueue_style('wp-resume-custom-stylesheet', get_stylesheet_directory_uri() . '/resume-style.css' );
@@ -712,7 +712,11 @@ class WP_Resume {
 	 * @returns array $classes the modified classes array
 	 */
 	function add_post_class( $classes ) {
+		global $post;
 
+		if ( preg_match( '/\[wp_resume([^\]]*)]/i', get_the_content() ) == false )
+			return $classes;
+			
 		$classes[] = 'resume';
 		
 		$options = &$this->get_options();
@@ -1405,7 +1409,7 @@ class WP_Resume {
 	 * @since 1.3
 	 */
 	function shortcode( $atts ) {
-
+	
 		//determine author and set as global so templates can read
 		$this->author = $this->get_author( $atts );
 
@@ -1630,6 +1634,10 @@ class WP_Resume {
 	 */
 	function get_name() {
 		$options = $this->get_user_options( );
+		
+		if ( !isset( $options['name'] ) )
+			return;
+		
 		return apply_filters( 'resume_name', $options['name'] );
 	}
 	
@@ -1685,18 +1693,29 @@ class WP_Resume {
 	 * @returns string the formatted taxonomy name/link
 	 */
 	function get_taxonomy_name( $object, $taxonomy, $link ) {
+		global $post;
 		
 		$options = $this->get_options();
+		$user_options = $this->get_user_options( (int) $post->post_author );
 		
-		if ( $link && isset( $options['rewrite'] ) && $options['rewrite'] && ( $link = get_term_link( $object, "resume_{$taxonomy}" ) ) ) {
-			$title = '<a href="' . $link . '">' . $object->name . '</a>';
-			$title = apply_filters( "resume_{$taxonomy}_link", $title );
-		} else {
-			$title = $object->name;
-		}
+		if ( !$link )
+			return apply_filters( "resume_{$taxonomy}_name", $object->name );
 		
-		return apply_filters( "resume_{$taxonomy}_name", $title );
+		//org link
+		if ( $taxonomy == 'organization' && isset( $user_options[ 'org_links'][ $object->term_id ] ) ) {
+			$link = $user_options[ 'org_links'][ $object->term_id ];
+		
+		//rewrite links
+		} else if ( isset( $options['rewrite'] ) && $options['rewrite'] ) {
+			$link = get_term_link( $object, "resume_{$taxonomy}" );
+		} 
 
+		$title = '<a href="' . $link . '">' . $object->name . '</a>';
+		
+		$title = apply_filters( "resume_{$taxonomy}_link", $title );
+		$title = apply_filters( "resume_{$taxonomy}_name", $title );
+		
+		return $title;
 	}
 	
 	/**
@@ -1748,17 +1767,20 @@ class WP_Resume {
 		
 	}
 	
+	/**
+	 * Adds field to edit organization page to allow linking to organization's site
+	 */
 	function link_field( $term, $taxonomy = '' ) {
-		$edit = ( $taxonomy != '' );
-	if ( $edit ) { 
-		$options = $this->get_options(); 
-		$value = ( isset( $options['org_links'][ $term->term_id ] ) ) ? $options['org_links'][ $term->term_id ] : '';
-	} else {
-		$value = '';
-	}
+
+		$options = $this->get_user_options( get_current_user_id() ); 
+		$tax = get_taxonomy( $taxonomy );
 	
-		?>
-		<?php if ( $edit ) { ?>
+		$edit = ( $taxonomy != '' );
+		$value = '';
+		if ( $edit && isset( $options['org_links'][ $term->term_id ] ) )
+			$value = $options['org_links'][ $term->term_id ];
+
+		if ( $edit ) { ?>
 			<tr class="form-row">
 				<th scope="row" valign="top">
 					<label for="link">Link</label>
@@ -1768,10 +1790,29 @@ class WP_Resume {
 			<div class="form-field">
 				<label for="link">Link</label>			
 		<?php } ?>
-			<input type="text" name="link" value="<?php echo esc_attr( $value ); ?>" <?php if ( $edit ) { echo 'size="40"'; } ?> />
+			<?php wp_nonce_field( 'wp_resume_org_link', 'wp_resume_nonce' ); ?>
+			<input type="text" name="org_link" value="<?php echo esc_attr( $value ); ?>" <?php if ( $edit ) { echo 'size="40"'; } ?> />
 			<p class="description">(optional) The link to the organization's home page</p>
 		<?php echo ( $taxonomy == '' ) ? '</div' : '</td></tr>'; ?>
 	<?php
+	}
+	
+	/**
+	 * Saves organization link
+	 */
+	function save_link_field( $termID ) {
+	
+		wp_verify_nonce( 'wp_resume_org_link', $_REQUEST['wp_resume_nonce'] );
+	
+		$options = $this->get_options(); 
+		$tax = get_taxonomy( 'wp_resume_organization' );	
+		
+		if ( !current_user_can( $tax->cap->edit_terms ) )
+			return;
+		
+		$options['org_links'][ $termID ] = esc_url( $_REQUEST['org_link'] );
+		update_user_meta( get_current_user_id(), 'wp_resume', $options );
+				
 	}
 	
 }
