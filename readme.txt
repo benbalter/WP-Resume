@@ -108,8 +108,10 @@ Make sure all your positions are associated with sections.
 
 == Changelog ==
 
-= 2.1.1 = 
-* Resume_in_query now looks for position post types in addition to the short code
+= 2.2 = 
+* User options are now site specific
+* Organization names can now be links to organization websites
+* Stylesheets now included on organization, section, and position pages
 
 = 2.1 =
 * Dragdrop interface for reordering resume elements completely rewritten for greater compatibility

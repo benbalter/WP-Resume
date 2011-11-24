@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 2.1.1
+Version: 2.2
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -20,7 +20,7 @@ License: GPL2
 class WP_Resume {
 
 	static $instance;
-	public $version = '2.1.1';
+	public $version = '2.2';
 	public $author = '';
 	public $ttl = '3600';
 	public $query_obj;
@@ -40,9 +40,9 @@ class WP_Resume {
 		add_action( 'edited_wp_resume_organization', array( &$this, 'save_link_field' ) );
 		
 		//ajax callbacks
-		add_action('wp_ajax_add_wp_resume_section', array(&$this, 'ajax_add') );
-		add_action('wp_ajax_add_wp_resume_organization', array(&$this, 'ajax_add') );
-		add_action('wp_ajax_wp_resume_hide_donate', array(&$this, 'hide_donate') );
+		add_action('wp_ajax_add_wp_resume_section', array( &$this, 'ajax_add') );
+		add_action('wp_ajax_add_wp_resume_organization', array( &$this, 'ajax_add') );
+		add_action('wp_ajax_wp_resume_hide_donate', array( &$this, 'hide_donate') );
 		
 		//edit position screen
 		add_action( 'save_post', array( &$this, 'save_wp_resume_position' ) );
@@ -606,8 +606,12 @@ class WP_Resume {
 			
 		}
 
-		return apply_filters( 'wp_resume_user_options', get_user_meta($user, 'wp_resume', true), $user );
-		
+		return apply_filters( 'wp_resume_user_options', get_user_option( 'wp_resume', $user ), $user );
+
+	} 
+	
+	function update_user_options( $user, $value ) {
+		update_user_option( $user, 'wp_resume', $value );
 	} 
 	
 	/**
@@ -829,7 +833,7 @@ class WP_Resume {
 			
 		//store usermeta
 		$user = get_userdata( $current_author );
-		update_user_meta( $current_author, 'wp_resume', $user_options);
+		$this->update_user_options( $user->ID, $user_options);
 	
 		wp_cache_delete(  $user->user_nicename . '_sections', 'wp_resume' );
 		wp_cache_delete(  $user->user_nicename . '_sections_hide_empty', 'wp_resume' );
@@ -1326,7 +1330,7 @@ class WP_Resume {
 		}
 			
 		//add multi-user support (v. 1.6)
-		if ( !isset($options['db_version']) || substr( $options['db_version'], 0, 2 ) < '1.6' ) {
+		if ( !isset( $options['db_version'] ) || substr( $options['db_version'], 0, 2 ) < '1.6' ) {
 			
 			$usermeta = array();
 			$current_user = wp_get_current_user();
@@ -1341,12 +1345,12 @@ class WP_Resume {
 
 			//store usermeta to current user
 			//(assumption: user upgrading is author of resume)
-			add_user_meta($current_user->ID, 'wp_resume', $usermeta);
+			$this->add_user_option($current_user->ID, $usermeta);
 
 		}
 		
 		//if global fields are null, set to default
-		foreach ($fields['global'] as $key=>$value) {
+		foreach ( $fields['global'] as $key=>$value ) {
 			if ( !isset( $options[$key] ) )
 				$options[$key] = $value;
 		}
@@ -1356,18 +1360,24 @@ class WP_Resume {
 		$users = $wpdb->get_col( $wpdb->prepare("SELECT $wpdb->users.ID FROM $wpdb->users") );
 		foreach ($users as $user) {
 		
-			//get current options
-			$user_options = get_user_meta($user, 'wp_resume', true);
+			if ( isset( $options['db_version'] ) && $options['db_version'] < '2.2' ) {
+				//move from user_meta to user_option
+				$user_options = get_user_meta( $user, 'wp_resume', true );
+				delete_user_meta( $user, 'wp_resume' );
+			} else {		
+				//get current options
+				$user_options = $this->get_user_options( $user );
+			}
 			
 			//loop default fields
-			foreach ($fields['user'] as $key=>$value) {
+			foreach ( $fields['user'] as $key=>$value ) {
 			
 				//check they exist, if not set
 				if ( !isset( $user_options[$key] ) )
 					$user_options[$key] = $value;
 					
 				//update
-				update_user_meta($user,'wp_resume', $user_options);
+				$this->update_user_options( $user, $user_options );
 			}	
 			
 		}
@@ -1761,7 +1771,7 @@ class WP_Resume {
 		$options = $this->get_user_options( (int) $current_user_id );
 		$options['hide-donate'] = true;
 		
-		update_user_meta( $current_user_id, 'wp_resume', $options);
+		$this->update_user_options( $current_user_id, $options);
 		
 		die( 1 );
 		
@@ -1811,7 +1821,7 @@ class WP_Resume {
 			return;
 		
 		$options['org_links'][ $termID ] = esc_url( $_REQUEST['org_link'] );
-		update_user_meta( get_current_user_id(), 'wp_resume', $options );
+		$this->update_user_options( get_current_user_id(), $options );
 				
 	}
 	
