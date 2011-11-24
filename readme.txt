@@ -108,6 +108,9 @@ Make sure all your positions are associated with sections.
 
 == Changelog ==
 
+= 2.1.1 = 
+* Resume_in_query now looks for position post types in addition to the short code
+
 = 2.1 =
 * Dragdrop interface for reordering resume elements completely rewritten for greater compatibility
 * Handling of organizations in default resume template greatly improved (organizations are no longer required for all positions)
