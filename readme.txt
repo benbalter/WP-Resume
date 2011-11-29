@@ -112,6 +112,7 @@ Make sure all your positions are associated with sections.
 * User options are now site specific
 * Organization names can now be links to organization websites
 * Stylesheets now included on organization, section, and position pages
+* Updated translations (special thanks once again to [Rodolfo Buaiz](http://rodbuaiz.com/))
 
 = 2.1 =
 * Dragdrop interface for reordering resume elements completely rewritten for greater compatibility
