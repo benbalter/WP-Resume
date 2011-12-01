@@ -1718,7 +1718,11 @@ class WP_Resume {
 		//rewrite links
 		} else if ( isset( $options['rewrite'] ) && $options['rewrite'] ) {
 			$link = get_term_link( $object, "resume_{$taxonomy}" );
-		} 
+		
+		//no link
+		} else {
+			return apply_filters( "resume_{$taxonomy}_name", $object->name );
+		}
 
 		$title = '<a href="' . $link . '">' . $object->name . '</a>';
 		
