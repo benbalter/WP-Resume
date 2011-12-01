@@ -1068,7 +1068,7 @@ class WP_Resume {
 					<?php _e( 'Support', 'wp-resume' ); ?>
 				</th>
 				<td>
-					<em><?php _e('Enjoy using WP Resume? Please consider <a href="http://ben.balter.com/donate/">making a small donation</a> to support the software’s continued development.', 'wp-resume'); ?></em> <span style="font-size: 10px;">(<a href="#" id="hide-donate"><?php _e( 'hide this message', 'wp-resume'); ?></a>)</span>
+					<em><?php _e('Enjoy using WP Resume? Please consider <a href="http://ben.balter.com/donate/">making a small donation</a> to support the software\'s continued development.', 'wp-resume'); ?></em> <span style="font-size: 10px;">(<a href="#" id="hide-donate"><?php _e( 'hide this message', 'wp-resume'); ?></a>)</span>
 					<?php wp_nonce_field( 'wp_resume_hide_donate', '_ajax_nonce-wp-resume-hide-donate' ); ?>
 
 				</td>
