@@ -95,6 +95,7 @@ class WP_Resume {
 		'not_found_in_trash' => __('No Positions Found in Trash', 'wp-resume'),
 		'parent_item_colon' => '',
 		'menu_name' => __('Resume', 'wp-resume' ),
+		'all_items' => __('All Positions', 'wp-resume'),
 	  );
 	  
 	  //Custom post type settings array
@@ -1509,12 +1510,16 @@ class WP_Resume {
 	 * @since 1.5
 	 */
 	function include_template( $template ) {
-
-		if ( file_exists( get_stylesheet_directory() . '/' . $template ) )
-			include ( get_stylesheet_directory() . '/' . $template ) ;
-		else 
-			include ( $template );
-							
+		
+		//use WP's native function to search for child theme, then parent
+		$file = locate_template( $template );
+		
+		//the theme has no template, use default
+		if ( $file == '' )
+			$file = dirname( __FILE__ ) . '/includes/' . $template;
+			
+		load_template( $file );
+									
 	}
 
 	/**

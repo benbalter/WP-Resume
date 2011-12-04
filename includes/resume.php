@@ -64,12 +64,12 @@ $options = $wp_resume->get_options();
 				$current_org=''; 
 				
 				//retrieve all posts in the current section using our custom loop query
-				$posts = $wp_resume->query( $section->slug, $wp_resume->author );
+				$positions = $wp_resume->query( $section->slug, $wp_resume->author );
 				
 				//loop through all posts in the current section using the standard WP loop
-				if ( $posts->have_posts() ) : ?>
+				if ( $positions->have_posts() ) : ?>
 				<header><?php echo $wp_resume->get_section_name( $section ); ?></header>
-				<?php while ( $posts->have_posts() ) : $posts->the_post();
+				<?php while ( $positions->have_posts() ) : $positions->the_post();
 				
 					//Retrieve details on the current position's organization
 					$org = $wp_resume->get_org( get_the_ID() ); 
