@@ -109,10 +109,14 @@ Make sure all your positions are associated with sections.
 == Changelog ==
 
 = 2.2 = 
-* User options are now site specific
-* Organization names can now be links to organization websites
+* User options are now site specific on multisite installs
+* Organization names can now be links (e.g., organization's website)
 * Stylesheets now included on organization, section, and position pages
 * Updated translations (special thanks once again to [Rodolfo Buaiz](http://rodbuaiz.com/))
+* "Resume" sub-menu label changed to "All Positions" for clarity
+* Default templates moved to "includes" folder (resume.php, resume-text.php, resume-json.php)
+* Support for custom templates in parent themes (using WordPress's native `locate_template()` function)
+* Better handing of template files (using WordPress's native `load_template()` function)
 
 = 2.1 =
 * Dragdrop interface for reordering resume elements completely rewritten for greater compatibility
