@@ -42,16 +42,16 @@ foreach ( $wp_resume->get_sections(null, $wp_resume->author) as $section) {
 	$current_org=''; 
 	
 	//retrieve all posts in the current section using our custom loop query
-	$posts = $wp_resume->query( $section->slug, $wp_resume->author);
+	$positions = $wp_resume->query( $section->slug, $wp_resume->author);
 
 	//loop through all posts in the current section using the standard WP loop
-	if ( $posts->have_posts() ) : 
+	if ( $positions->have_posts() ) : 
 	
 	//Output section name, all uppercase
 	echo "\r\n" . strtoupper( $section->name ) . "\r\n\r\n";
 	
 	//loop positions
-	while ( $posts->have_posts() ) : $posts->the_post();
+	while ( $positions->have_posts() ) : $positions->the_post();
 
 		//Retrieve details on the current position's organization
 		$organization = $wp_resume->get_org( get_the_ID() ); 

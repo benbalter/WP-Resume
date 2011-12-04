@@ -40,10 +40,10 @@ foreach ( $wp_resume->get_sections( null, $this->author ) as $section) {
 	$org = array();
 	
 	//retrieve all posts in the current section using our custom loop query
-	$posts = $wp_resume->query( $section->slug, $this->author );
+	$positions = $wp_resume->query( $section->slug, $this->author );
 	
 	//loop through all posts in the current section using the standard WP loop
-	if ( $posts->have_posts() ) : while ( $posts->have_posts() ) : $posts->the_post();
+	if ( $positions->have_posts() ) : while ( $positions->have_posts() ) : $positions->the_post();
 		
 		//init. array for this position
 		$pos = array();
