@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 2.2
+Version: 2.2.1
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -1346,7 +1346,7 @@ class WP_Resume {
 
 			//store usermeta to current user
 			//(assumption: user upgrading is author of resume)
-			$this->add_user_option($current_user->ID, $usermeta);
+			$this->update_user_options($current_user->ID, $usermeta);
 
 		}
 		
