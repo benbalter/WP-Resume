@@ -4,7 +4,7 @@ Donate link: http://ben.balter.com/donate/
 Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume
 Requires at least: 3.2
 Tested up to: 3.3
-Stable tag: 2.1
+Stable tag: 2.2
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
 
@@ -109,7 +109,7 @@ Make sure all your positions are associated with sections.
 == Changelog ==
 
 = 2.2 = 
-* User options are now site specific on multisite installs
+* User options are now site specific on multisite installs (beta)
 * Organization names can now be links (e.g., organization's website)
 * Stylesheets now included on organization, section, and position pages
 * Updated translations (special thanks once again to [Rodolfo Buaiz](http://rodbuaiz.com/))
