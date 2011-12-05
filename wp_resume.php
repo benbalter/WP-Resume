@@ -1346,7 +1346,7 @@ class WP_Resume {
 
 			//store usermeta to current user
 			//(assumption: user upgrading is author of resume)
-			$this->update_user_options($current_user->ID, $usermeta);
+			$this->update_user_meta($current_user->ID, $usermeta);
 
 		}
 		
