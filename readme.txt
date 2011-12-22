@@ -62,6 +62,8 @@ Each position has a title (e.g., Widget Specialist), details (e.g., increased bo
 
 Note: Although some styling is included by default, you can customize the layout by modifying your theme's stylesheet or creating a custom template file.
 
+[Photo via [shawnmichael](http://www.flickr.com/photos/shawnmichael/4246330043/)]
+
 == Frequently Asked Questions == 
 
 = I don't like your CSS, can I use my own? =
