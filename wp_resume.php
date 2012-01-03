@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 2.2.2
+Version: 2.2.3
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -20,7 +20,7 @@ License: GPL2
 class WP_Resume {
 
 	static $instance;
-	public $version = '2.2';
+	public $version = '2.2.3';
 	public $author = '';
 	public $ttl = '3600';
 	public $query_obj;
@@ -477,7 +477,7 @@ class WP_Resume {
 
 		//get all sections ordered by term_id (order added)
 		$sections = get_terms( 'wp_resume_section', array('hide_empty' => $hide_empty ) );
-				
+		
 		//get the plugin options array to pull the user-specified order
 		$options = $this->get_options();
 		
@@ -487,11 +487,11 @@ class WP_Resume {
 		//user has not specified any sections, prevents errors on initial activation
 		if ( !isset( $user_options['order'] ) )
 			return apply_filters('wp_resume_sections', $sections );
-		
+
 		$section_order = $user_options['order'];
 			
 		//Loop through each section
-		foreach( $sections as $ID => $section ) {
+		foreach( $sections as $ID => $section ) { 
 			
 			//if the term is in our order array
 			if ( is_array($section_order) && array_key_exists( $section->term_id, $section_order ) ) { 
@@ -514,7 +514,7 @@ class WP_Resume {
 		$output = apply_filters('wp_resume_sections', $output);
 					
 		wp_cache_set( $cache_slug, $output, 'wp_resume', $this->ttl );
-				
+						
 		//return the new array keyed to order
 		return $output;
 		
@@ -584,6 +584,22 @@ class WP_Resume {
 		$options = get_option('wp_resume_options');
 		return apply_filters( 'wp_resume_options', $options );
 	}
+	
+	/**
+	 * Saves global options
+	 * @param $data, some or all option fields
+	 * @return bool success/fail
+	 */
+	function update_options( $data, $merge = true ) {
+		
+		if ( $merge ) {
+			$defaults = $this->get_options();
+			$data = wp_parse_args( $data, $defaults );	
+		}
+		
+		return update_option( 'wp_resume_options', $data );
+	
+	}
 
 	/**
 	 * Gets wp_resume usermeta field
@@ -607,13 +623,36 @@ class WP_Resume {
 			
 		}
 
-		return apply_filters( 'wp_resume_user_options', get_user_option( 'wp_resume', $user ), $user );
+		return apply_filters( 'wp_resume_user_options', get_user_option( 'wp_resume', (int) $user ), $user );
 
 	} 
 	
 	function update_user_options( $user, $value ) {
 		update_user_option( $user, 'wp_resume', $value );
 	} 
+	
+	/**
+	 * Retrieves an organization's link, if any
+	 * @param int $org the org ID
+	 * @return string the org link
+	 */
+	function get_org_link( $org ) {
+		
+		$link = get_option( 'wp_resume_organization_link_' . (int) $org );
+		return apply_filters( 'wp_resume_organization_link', $link, $org );
+	
+	}
+	
+	/**
+	 * Stores an organization's link
+	 * @param int $org the org ID
+	 * @return bool success/fail
+	 */
+	function set_org_link( $org, $link ) {
+	
+		return update_option( 'wp_resume_organization_link_' . (int) $org, esc_url( $link ) );
+	
+	}
 	
 	/**
 	 * Flushes all wp-resume data from the object cache, if it exists
@@ -652,7 +691,7 @@ class WP_Resume {
 		wp_reset_query();
 		
 		wp_cache_set( 'query_' . $wp_query->query_vars_hash, $enqueue, 'wp_resume', $this->ttl );
-		
+				
 		return $enqueue;
 		
 	}
@@ -661,15 +700,15 @@ class WP_Resume {
 	 * Adds links to the admin bar
 	 * @since 2.0.3
 	 */
-	function admin_bar() {
+	function admin_bar() {	
 		global $wp_admin_bar;
 		
 	    if ( !is_admin_bar_showing() )
     	  return;
-    
-    	if ( !is_single() )
+    	  
+    	if ( !is_single() && !is_page() )
     		return;
-    		
+		
   		if ( !$this->resume_in_query() )
   			return;
   			
@@ -1367,7 +1406,7 @@ class WP_Resume {
 				delete_user_meta( $user, 'wp_resume' );
 			} else {		
 				//get current options
-				$user_options = $this->get_user_options( $user );
+				$user_options = $this->get_user_options( (int) $user );
 			}
 			
 			//loop default fields
@@ -1376,7 +1415,7 @@ class WP_Resume {
 				//check they exist, if not set
 				if ( !isset( $user_options[$key] ) )
 					$user_options[$key] = $value;
-					
+
 				//update
 				$this->update_user_options( $user, $user_options );
 			}	
@@ -1385,9 +1424,9 @@ class WP_Resume {
 			
 		//DB Versioning
 		$options['db_version'] = $this->version;
-		
+
 		//store updated options
-		update_option( 'wp_resume_options', $options );
+		$this->update_options( $options, false );
 		
 		//flush rewrite rules just in case
 		global $wp_rewrite;
@@ -1549,7 +1588,7 @@ class WP_Resume {
 	function rewrite_rules() {
 		$options = $this->get_options();
 		
-		if (!isset($options['rewrite']) || !$options['rewrite'] )
+		if ( !isset($options['rewrite']) || !$options['rewrite'] )
 			return;
 
 		global $wp_rewrite;
@@ -1711,14 +1750,13 @@ class WP_Resume {
 		global $post;
 		
 		$options = $this->get_options();
-		$user_options = $this->get_user_options( (int) $post->post_author );
 		
 		if ( !$link )
 			return apply_filters( "resume_{$taxonomy}_name", $object->name );
 		
 		//org link
-		if ( $taxonomy == 'organization' && isset( $user_options[ 'org_links'][ $object->term_id ] ) ) {
-			$link = $user_options[ 'org_links'][ $object->term_id ];
+		if ( $taxonomy == 'organization' && $this->get_org_link( $object->term_id ) ) {
+			$link = $this->get_org_link( $object->term_id );
 		
 		//rewrite links
 		} else if ( isset( $options['rewrite'] ) && $options['rewrite'] ) {
@@ -1791,13 +1829,13 @@ class WP_Resume {
 	 */
 	function link_field( $term, $taxonomy = '' ) {
 
-		$options = $this->get_user_options( get_current_user_id() ); 
+		$options = $this->get_options( ); 
 		$tax = get_taxonomy( $taxonomy );
 	
 		$edit = ( $taxonomy != '' );
 		$value = '';
-		if ( $edit && isset( $options['org_links'][ $term->term_id ] ) )
-			$value = $options['org_links'][ $term->term_id ];
+		if ( $edit && $this->get_org_link( $term->term_id ) )
+			$value = $this->get_org_link( $term->term_id );
 
 		if ( $edit ) { ?>
 			<tr class="form-row">
@@ -1820,17 +1858,15 @@ class WP_Resume {
 	 * Saves organization link
 	 */
 	function save_link_field( $termID ) {
-	
+		
 		wp_verify_nonce( 'wp_resume_org_link', $_REQUEST['wp_resume_nonce'] );
 	
-		$options = $this->get_options(); 
 		$tax = get_taxonomy( 'wp_resume_organization' );	
-		
+				
 		if ( !current_user_can( $tax->cap->edit_terms ) )
 			return;
-		
-		$options['org_links'][ $termID ] = esc_url( $_REQUEST['org_link'] );
-		$this->update_user_options( get_current_user_id(), $options );
+						
+		$this->set_org_link( $termID, $_REQUEST['org_link'] );
 				
 	}
 	
