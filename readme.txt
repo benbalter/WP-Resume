@@ -3,7 +3,7 @@ Contributors: benbalter
 Donate link: http://ben.balter.com/donate/
 Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume
 Requires at least: 3.2
-Tested up to: 3.3
+Tested up to: 3.4
 Stable tag: 2.2.2
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
@@ -110,9 +110,14 @@ Make sure all your positions are associated with sections.
 
 == Changelog ==
 
+= 2.2.3 =
+* Fix for organization links not properly saving in certain cases
+* Better scalability of organization link storage
+* Better internal handling of plugin options
+
 = 2.2.2 =
 * Additional refinement of upgrade path from certain older versions
-
+ 
 = 2.2.1 =
 * Fixed bug where users upgrading from certain versions would receive an error upon reactivation.
 
