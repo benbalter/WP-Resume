@@ -881,8 +881,7 @@ class WP_Resume {
 		$this->flush_cache();
 		
 		//flush in case they toggled rewrite
-		global $wp_rewrite;
-		$wp_rewrite->flush_rules();
+		flush_rewrite_rules();
 		
 		$options = apply_filters('wp_resume_options', $options);
 
@@ -1429,8 +1428,7 @@ class WP_Resume {
 		$this->update_options( $options, false );
 		
 		//flush rewrite rules just in case
-		global $wp_rewrite;
-		$wp_rewrite->flush_rules();
+		flush_rewrite_rules();
 		
 		do_action('wp_resume_upgrade', $options['db_version'] );
 	  

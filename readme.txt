@@ -112,6 +112,7 @@ Make sure all your positions are associated with sections.
 
 = 2.2.3 =
 * Fix for organization links not properly saving in certain cases
+* Fix for Edit Resume link not appearing on some pages with embedded resumes
 * Better scalability of organization link storage
 * Better internal handling of plugin options
 
