@@ -70,6 +70,19 @@ class WP_Resume {
 	
 		//i18n
 		add_filter( 'list_terms_exclusions', array( &$this, 'exclude_the_terms' ) );
+		
+		//plaintext resume
+		add_filter( 'resume_plaintext_content', array( &$this, 'bulletit'), 5 );
+		add_filter( 'resume_plaintext_content', 'wp_filter_nohtml_kses' );
+		add_filter( 'resume_plaintext_content', 'stripslashes' );
+		add_filter( 'resume_plaintext_content', array( &$this, 'html_entity_decode' ) );
+		add_filter( 'resume_plaintext_title', array( &$this, 'html_entity_decode' ) );
+		add_filter( 'resume_plaintext_title', 'stripslashes' );
+		add_filter( 'resume_plaintext_location', array( &$this, 'format_plaintext_location' ) );
+		add_filter( 'resume_plaintext_location', array( &$this, 'html_entity_decode' ) );
+		add_filter( 'resume_plaintext_date', array( &$this, 'html_entity_decode' ) );
+		add_filter( 'resume_plaintext_date', 'wp_filter_nohtml_kses' );
+		add_filter( 'resume_plaintext_date', array( &$this, 'format_date_plaintext' ) );
 
 	}
 	 
@@ -1867,6 +1880,80 @@ class WP_Resume {
 		$this->set_org_link( $termID, $_REQUEST['org_link'] );
 				
 	}
+	
+	/**
+	 * Filters HTML from contact info array recursively
+	 * @uses plaintext_contact_info_walker
+	 */
+	function plaintext_contact_info( $author = null ) {
+		$author = $this->get_author( $author );
+		$author_options = $this->get_user_options( $author );
+		$contact_info = $author_options['contact_info'];
+		
+		array_walk_recursive( &$contact_info, array( &$this, 'plaintext_contact_info_walker' ) );
+		
+		$contact_info = apply_filters( 'resume_plaintext_contact_info', $contact_info );
+				
+		return $contact_info;
+	
+	}
+	
+	/**
+	 * Helper function to parse contact info array from HTML to plaintext
+	 */
+	function plaintext_contact_info_walker( &$info ) {
+		$info = wp_filter_nohtml_kses( $info );
+	}
+	
+	/**
+	 * Converts LIs to bullets
+	 * @param string $text the HTML formatted text
+	 * @return string plaintext with bullets
+	 * @uses resume_plaintext_bullet
+	 */
+	function bulletit( $text ) {
+		$bullet = apply_filters( 'resume_plaintext_bullet', '&bull; ' ); 
+		return preg_replace( "#<li[^>]*>#", $bullet, $text );
+	
+	}
+	
+	/**
+	 * Wraps date in parenthesis where appropriate
+	 * @param string $date the date
+	 * @return string the formatted date
+	 */
+	function format_date_plaintext( $date ) {
+
+		if ( strlen( trim ( $date ) ) > 0 )
+			return " ($date)";
+	
+		return $date;
+		
+	}
+	
+	/**
+	 * Converts HTML entities, and passes proper charset
+	 * @param strint $text the text
+	 * @return string plaintext
+	 */
+	function html_entity_decode( $text ) {
+		return html_entity_decode( $text, null, get_bloginfo('charset') );
+	}
+	
+	/**
+	 * Prepends dash to location when appropriate
+	 * @param string $location the location
+	 * @return string the formatted location
+	 */
+	function format_plaintext_location( $location ) {
+	
+		if ( strlen( trim( $location ) ) == 0 )
+			return '';
+			
+		return " &ndash; $location";
+	
+	}
+	
 	
 }
 

@@ -110,6 +110,9 @@ Make sure all your positions are associated with sections.
 
 == Changelog ==
 
+= 2.2.4 =
+* Significant enhancements to json and plain text versions
+
 = 2.2.3 =
 * Fix for organization links not properly saving in certain cases
 * Fix for plugin not retaining section ordering under certain circumstances
