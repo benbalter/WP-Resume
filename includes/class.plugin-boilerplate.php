@@ -13,13 +13,13 @@ class Plugin_Boilerplate {
 
 		self::$instance = &$this;
 		
-		$this->load_subclasses();
+		$this->_load_subclasses();
 		
 		//i18n
 		add_action( 'init', array( &$this, '_i18n' ) ); 
 		
 		//upgrade db
-		add_action( 'admin_init', array( &$this, 'upgrade' ) );
+		add_action( 'admin_init', array( &$this, '_upgrade' ) );
 
 	}
 	
@@ -31,7 +31,7 @@ class Plugin_Boilerplate {
 	function _load_subclasses() {
 
 		foreach ( glob( dirname( __FILE__ ) . '/boilerplate-classes/*.php' ) as $file ) {
-			
+					
 			$name = str_replace( '-', '_', basename( $file, '.php' ) );
 			$class = 'Plugin_Boilerplate_' . ucwords( $name );
 			
