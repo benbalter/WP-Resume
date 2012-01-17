@@ -69,7 +69,7 @@ class Plugin_Boilerplate_Enqueue {
 
 			$slug = ( $i === 0 ) ? self::$parent->slug : self::$parent->slug . "-$i";
 			
-			wp_enqueue_script( $slug, plugins_url( $file, $directory ), array( 'jquery' ), filemtime( $directory . $file ), true );
+			wp_enqueue_script( $slug, plugins_url( $this->js_path . $name . '/' . $file, self::$parent->directory . '/readme.txt' ), array( 'jquery' ), filemtime( $directory . $file ), true );
 			
 			$i++;
 			
@@ -118,7 +118,7 @@ class Plugin_Boilerplate_Enqueue {
 			if ( !self::$parent->api->apply_filters( 'enqueue_css', true, $file, $name ) )
 				continue;
 	
-		 	wp_enqueue_style( self::$parent->slug, plugins_url( $file, $directory ), null, filemtime( $directory . $file ) );
+		 	wp_enqueue_style( self::$parent->slug, plugins_url( $this->css_path . $name . '/' . $file , self::$parent->directory . '/readme.txt' ), null, filemtime( $directory . $file ) );
 	
 		}			
 				
