@@ -65,7 +65,7 @@ class Plugin_Boilerplate_Options {
 		
 		$options = (array) get_user_option( self::$parent->slug, $user );
 		$options = wp_parse_args( $options, $this->user_defaults );
-		return self::$parent->apply_filters( 'user_options', $options, $user );
+		return self::$parent->api->apply_filters( 'user_options', $options, $user );
 
 	}
 	
@@ -78,7 +78,7 @@ class Plugin_Boilerplate_Options {
 	function get_user_option( $option, $user = null ) {
 		$options = $this->get_user_options( $user );
 		$value = ( isset( $options[ $option ] ) ) ? $options[ $option ] : false;
-		return self::$parent->apply_filters( $option, $value );
+		return self::$parent->api->apply_filters( $option, $value );
 	}
 	
 	/**
@@ -117,7 +117,7 @@ class Plugin_Boilerplate_Options {
 	
 		$options = (array) get_option( self::$parent->slug ); 
 		$options = wp_parse_args( $options, $this->defaults );
-		return self::$parent->apply_filters( 'options', $options );
+		return self::$parent->api->apply_filters( 'options', $options );
 	}
 	
 	/**
@@ -128,7 +128,7 @@ class Plugin_Boilerplate_Options {
 	function get_option( $option ) {
 		$options = $this->get_options( );
 		$value = ( isset( $options[ $option ] ) ) ? $options[ $option ] : false;
-		return self::$parent->apply_filters( $option, $value );
+		return self::$parent->api->apply_filters( $option, $value );
 	}
 	
 	/**

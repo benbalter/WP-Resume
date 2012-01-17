@@ -85,7 +85,7 @@ class Hello_Dolly2 extends Plugin_Boilerplate {
 
 		$lyrics = $this->options->lyrics;
 		$lyric = wptexturize( $lyrics[ mt_rand( 0, count( $lyrics ) - 1 ) ] );
-		return $this->apply_filters( 'lyric', $lyric );
+		return $this->api->apply_filters( 'lyric', $lyric );
 		
 	}
 	
@@ -100,27 +100,14 @@ class Hello_Dolly2 extends Plugin_Boilerplate {
 	 * Filter to wrap lyric in <p> tags
 	 */
 	function add_p_tag( $lyric ) {
-		return "<p id='dolly'>$lyric</p>";
+		return $this->template->get( 'sample-header', compact( 'lyric' ) );
 	}
 	
 	/**
 	 * Inject CSS into admin header
 	 */
 	function css() {
-
-		$x = is_rtl() ? 'left' : 'right';
-		
-		echo "
-		<style type='text/css'>
-		#dolly {
-			float: $x;
-			padding-$x: 15px;
-			padding-top: 5px;		
-			margin: 0;
-			font-size: 11px;
-		}
-		</style>
-		";
+		$this->template->load( 'sample-css' );
 	}
 		
 }

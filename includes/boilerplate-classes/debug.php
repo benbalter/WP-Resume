@@ -15,10 +15,22 @@ class Plugin_Boilerplate_Debug {
 			self::$parent = new Plugin_Boilerplate;
 		else
 			self::$parent = &$instance;
+			
+		add_action( 'init', array( &$this, 'init' ), 5 );
+	
+	}
+	
+	/**
+	 * Check user cap and WP_DEBUG on init to see if class should continue loading
+	 */
+	function init() {
+
+		if ( !current_user_can( 'manage_options' ) || !WP_DEBUG )
+	    	return;
 
 		add_filter('debug_bar_panels', array( &$this, 'init_panel' ) );	
 		add_filter('debug_bar_panels',  array( &$this, 'register_panel' ), 20 );
-	
+
 	}
 	
 	/**

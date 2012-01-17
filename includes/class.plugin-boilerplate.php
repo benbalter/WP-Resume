@@ -8,21 +8,38 @@ class Plugin_Boilerplate {
 	public $name = 'Plugin Boilerplate';
 	public $slug = 'plugin-boilerplate';
 	public $version = '1.0';
+	public $min_wp = '3.2';
 	public $classes = array();
 	
 	function __construct() {
 
 		self::$instance = &$this;
 		
-		$this->_load_subclasses();
+		//verify minimum WP version, and shutdown if insufficient
+		if ( !$this->_verify_wp_version() )
+			return false;
+		
+		//load subclasses on init, allowing other plugins or self to override
+		add_action( 'plugins_loaded', array( &$this, 'init' ), 5 );
 		
 		//i18n
 		add_action( 'init', array( &$this, '_i18n' ) ); 
 		
 		//upgrade db
-		add_action( 'admin_init', array( &$this, '_upgrade' ) );
+		add_action( 'admin_init', array( &$this, '_upgrade_check' ) );
+
+	}
+	
+	/**
+	 * Loads all subclasses
+	 * Fires on init (rather than construct)
+	 * Other plugins and child plugins can override default behavior
+	 */
+	function init() { 
 		
-		$this->do_action( 'init' );
+		$this->_load_subclasses();
+
+		$this->api->do_action( 'init' );
 
 	}
 	
@@ -38,7 +55,7 @@ class Plugin_Boilerplate {
 			$name = str_replace( '-', '_', basename( $file, '.php' ) );
 			$class = 'Plugin_Boilerplate_' . ucwords( $name );
 			
-			if ( !$this->apply_filters( "load_{$name}", true ) )
+			if ( !apply_filters( "{$this->slug}_load_{$name}", true ) )
 				continue;
 			
 			if ( !class_exists( $class ) )
@@ -50,7 +67,7 @@ class Plugin_Boilerplate {
 			$this->$name = new $class( &$this );
 			$this->classes[] = $name;
 			
-			$this->do_action( "{$name}_init" );
+			$this->api->do_action( "{$name}_init" );
 			
 		}
 		
@@ -67,73 +84,45 @@ class Plugin_Boilerplate {
 	 * Upgrades DB
 	 * Fires on admin init to support SVN
 	 */
-	function _upgrade() {
+	function _upgrade_check() {
 
 		if ( $this->options->db_version == $this->version )
 			return;
-			
-		$this->do_action( 'upgrade' );
+		
+		$this->upgrade( $this->options->db_version, $this->version );
+		$this->do_action( 'upgrade', $this->options->db_version, $this->version );
 			
 		$this->options->db_version = $this->version;
 		
 	}
 	
 	/**
-	 * Prepends slug to action and calls standard do_action function
-	 * @param string $name the name of the action
+	 * Default upgrade procedure, to be overridden by child class
 	 */
-	function do_action( $name ) {
-		
-		$args = func_get_args();
-		array_unshift( $args, 'action' );
-		
-		call_user_func_array( array( &$this, 'api'), $args );
+	function upgrade( $from_version, $to_version ) {
 	
 	}
 	
 	/**
-	 * Prepends slug to action and calls standard apply_filters function
-	 * @param string $name the name of the action
-	 * @return the result of the filter
-	 */	
-	function apply_filters( $name ) {
-
-		$args = func_get_args();
-		array_unshift( $args, 'filter' );
+	 * Verifies WordPress version meets the necessary minimum
+	 */
+	function _verify_wp_version() {
 		
-		return call_user_func_array( array( &$this, 'api'), $args );	
+		if ( get_bloginfo( 'version' ) >= $this->min_wp )
+			return true;
+		
+		add_action( 'admin_notices', array( &$this, 'update_wp' ) );
+		$this->api->do_action( 'wp_outdated' );
+		
+		return false;
 	}
 	
 	/**
-	 * Prepends slug to do_action and apply_filters calls
-	 * @param string $type either action or filter
-	 * @param string $name the name of the api call
+	 * Default update notice
+	 * Allow child plugins to override
 	 */
-	function api( $type, $name ) {
-
-		if ( $type == 'action' )
-			$function = 'do_action';
-		else
-			$function = 'apply_filters';
-
-		$args = func_get_args();
-		array_shift( $args );
-		$args[0] = str_replace( '-', '_', "{$this->slug}_$name" );
-				
-		return call_user_func_array( $function, $args );
-
-	}
-	
-	/**
-	 * Allows debug to be called directly from main class
-	 */
-	function debug( $var, $die = false, $function = 'var_dump' ) {
-
-		if ( !in_array( 'debug', $this->classes ) )
-			return false;
-		
-		return $this->debug->debug( $var, $die, $function );
-			
+	function update_wp() {
+		$this->template->update_wp();
 	}
 	
 }
