@@ -63,8 +63,12 @@ class Plugin_Boilerplate_Options {
 		if ( $user == null )
 			$user = get_current_user_id();
 		
-		$options = (array) get_user_option( self::$parent->slug, $user );
-		$options = wp_parse_args( $options, $this->user_defaults );
+		if ( !$options = self::$parent->cache->get( "{$user}_options" ) ) {
+			$options = (array) get_user_option( self::$parent->slug, $user );
+			$options = wp_parse_args( $options, $this->user_defaults );
+			self::$parent->cache->set( "{$user}_options", $options );
+		}
+		
 		return self::$parent->api->apply_filters( 'user_options', $options, $user );
 
 	}
@@ -106,6 +110,8 @@ class Plugin_Boilerplate_Options {
 		if ( $user == null )
 			$user = get_current_user_id();
 
+		self::$parent->cache->set( "{$user}_options", $options );
+
 		return update_user_option( $user, self::$parent->slug, $options, $global );
 	}
 	
@@ -114,9 +120,12 @@ class Plugin_Boilerplate_Options {
 	 * @return array the options
 	 */
 	function get_options( ) {
-	
-		$options = (array) get_option( self::$parent->slug ); 
-		$options = wp_parse_args( $options, $this->defaults );
+		
+		if ( !$options = self::$parent->cache->get( 'options' ) ) {
+			$options = (array) get_option( self::$parent->slug ); 
+			$options = wp_parse_args( $options, $this->defaults );
+			self::$parent->cache->set( 'options', $options );
+		}
 		return self::$parent->api->apply_filters( 'options', $options );
 	}
 	
@@ -149,6 +158,8 @@ class Plugin_Boilerplate_Options {
 	 * @return bool success/fail
 	 */
 	function set_options( $options ) {
+
+		self::$parent->cache->set( 'options', $options );
 
 		return update_option( self::$parent->slug, $options );
 		

@@ -44,6 +44,10 @@ class Plugin_Boilerplate_Enqueue {
 	 * @param string $name the name of the script to enqueue
 	 */	
 	function enqueue_js( $name ) {
+				
+		//allow child plugins to control when js is enqueued
+		if ( !self::$parent->api->apply_filters( 'enqueue_js', true, $name ) )
+			return;
 			
 		$file = ( WP_DEBUG || SCRIPT_DEBUG ) ? "/js/$name.dev.js" : "/js/$name.js";
 		
@@ -75,6 +79,10 @@ class Plugin_Boilerplate_Enqueue {
 	 */	
 	function enqueue_css( $name ) {
 	
+		//allow child plugins to control when css is enqueued
+		if ( !self::$parent->api->apply_filters( 'enqueue_css', true, $name ) )
+			return;
+			
 		$file = "/css/$name.css";
 		
 		//verify file exists and isn't empty
