@@ -1,9 +1,10 @@
 Javascript
 ==========
 
-Your plugin's javascript files should go in this folder. If the file is empty or missing, it will not be included.
+Your plugin's javascript files should go in the `front-end` and `admin` folders. 
 
-* `admin.dev.js` - Included in the WordPress administrative dashboard
-* `admin.js` - Minified version of `admin.dev.js`, included in the WordPress administrative dashboard
-* `front-end.dev.js` - Included on the front end
-* `front-end.dev.js` - Minified version of `front-end.dev.js`, Included on the front end
+Any .js file in the folder will be included automatically. Inclusion can be filter (e.g., to only include on certain pages) via filter.
+
+Files ending in `.dev.js` will be preferred if using `WP_DEBUG` or `SCRIPT_DEBUG`.
+
+If set, any i18n data will be stored as the plugin slug.

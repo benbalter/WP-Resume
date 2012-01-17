@@ -7,6 +7,7 @@ class Plugin_Boilerplate {
 	static $instance;
 	public $name = 'Plugin Boilerplate';
 	public $slug = 'plugin-boilerplate';
+	public $directory = null;
 	public $version = '1.0';
 	public $min_wp = '3.2';
 	public $classes = array();
@@ -14,11 +15,14 @@ class Plugin_Boilerplate {
 	function __construct() {
 
 		self::$instance = &$this;
-				
+		
 		//verify minimum WP version, and shutdown if insufficient
 		if ( !$this->_verify_wp_version() )
 			return false;
-			
+		
+		//assume plugin base is one directory up
+		$this->directory = dirname( dirname( __FILE__ ) );
+
 		//upgrade db
 		add_action( 'admin_init', array( &$this, '_upgrade_check' ) );
 		
@@ -26,7 +30,7 @@ class Plugin_Boilerplate {
 		add_action( 'init', array( &$this, '_i18n' ) ); 
 		
 		//load subclasses on init, allowing other plugins or self to override
-		add_action( 'plugins_loaded', array( &$this, 'init' ), 5 );
+		add_action( 'plugins_loaded', array( &$this, '_init' ), 5 );
 
 	}
 	
@@ -35,12 +39,16 @@ class Plugin_Boilerplate {
 	 * Fires on init (rather than construct)
 	 * Other plugins and child plugins can override default behavior
 	 */
-	function init() { 
+	function _init() { 
 		
 		$this->_load_subclasses();
 		
 		$this->api->do_action( 'init' );
-
+		
+	}
+	
+	function _get_plugin_basename() {
+		return plugin_basename( __FILE__ );	
 	}
 	
 	/**

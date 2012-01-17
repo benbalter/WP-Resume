@@ -1,7 +1,6 @@
 CSS
 ===
 
-Your plugin's CSS files should go in this folder. If the file is empty or missing, it will not be included.
+Your plugin's stylesheet files should go in the `front-end` and `admin` folders. 
 
-* `admin.css` - Included in the WordPress administrative dashboard
-* `front-end.css` - Included on the front end
+Any .css file in the folder will be included automatically. Inclusion can be filter (e.g., to only include on certain pages) via filter.

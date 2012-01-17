@@ -3,7 +3,7 @@
 class Plugin_Boilerplate_Template {
 
 	static $parent;
-	public $directory = '../../templates/'; //relative path to templates folder
+	public $path = '/templates/'; //path to templates folder relative to plugin root
 	
 	/**
 	 * Store parent and init template directory
@@ -40,10 +40,7 @@ class Plugin_Boilerplate_Template {
 		
 		$template = self::$parent->api->apply_filters( 'template', $template );
 		
-		$cwd = getcwd();
-		chdir( dirname( __FILE__ ) );
-		$file = realpath( $this->directory . $template . '.php' );
-		chdir( $cwd );
+		$file = self::$parent->directory . $this->path . $template . '.php';
 
 		if ( !file_exists( $file ) ) {
 			trigger_error( "{self::$parent->name} -- cannot locate template $file" );

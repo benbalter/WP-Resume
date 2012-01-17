@@ -6,6 +6,10 @@
 class Plugin_Boilerplate_Enqueue {
 	
 	static $parent;
+	public $js_path = '/js/'; //path to javascript directory relative to plugin base
+	public $css_path = '/css/'; //path to css directory relative to plugin base
+	public $front_end_data = array(); //array of script localication data for front-end
+	public $admin_data = array(); //array of script localication data for admin
 	
 	/**
 	 * Register hooks with WP API
@@ -17,11 +21,11 @@ class Plugin_Boilerplate_Enqueue {
 			self::$parent = new Plugin_Boilerplate;
 		else
 			self::$parent = &$instance;
-	
+				
 		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_admin_js' ) );
-		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_admin_js' ) );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_admin_css' ) );
 		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_end_css' ) );
-		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_end_css' ) );
+		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_end_js' ) );
 		
 	}	
 	
@@ -44,25 +48,47 @@ class Plugin_Boilerplate_Enqueue {
 	 * @param string $name the name of the script to enqueue
 	 */	
 	function enqueue_js( $name ) {
+								
+		$directory = self::$parent->directory . $this->js_path . $name . '/';
+
+		$i = 0;
+		foreach ( glob( $directory . '*.js' ) as $file ) {
+
+			if ( !filesize( $file ) )
+				continue;
 				
-		//allow child plugins to control when js is enqueued
-		if ( !self::$parent->api->apply_filters( 'enqueue_js', true, $name ) )
+			//when in debug mode prefer .dev.js version if it exists
+			if ( ( WP_DEBUG || SCRIPT_DEBUG ) && file_exists( str_replace( '.js', '.dev.js', $file ) ) ) 
+				continue;
+
+			$file = basename( $file );
+			
+			//allow child plugins to control when js is enqueued
+			if ( !self::$parent->api->apply_filters( 'enqueue_js', true, $file, $name ) )
+				continue;
+
+			$slug = ( $i === 0 ) ? self::$parent->slug : self::$parent->slug . "-$i";
+			
+			wp_enqueue_script( $slug, plugins_url( $file, $directory ), array( 'jquery' ), filemtime( $directory . $file ), true );
+			
+			$i++;
+			
+		}
+		
+		$data = $name . '_data';
+		$this->$data = apply_filters( 'localize_script', $this->$data, $name );
+		
+		if ( empty( $this->$data ) )
 			return;
 			
-		$file = ( WP_DEBUG || SCRIPT_DEBUG ) ? "/js/$name.dev.js" : "/js/$name.js";
-		
-		//verify file exists and isn't empty
-		if ( !file_exists( dirname( __FILE__ ) . $file ) || !filesize( dirname( __FILE__ ) . $file ) )
-			return;
-		
-		return wp_enqueue_script( self::$parent->slug, plugins_url( $file, __FILE__ ), array( 'jquery' ), filemtime( dirname( __FILE__ ) . $file ), true );
+		wp_localize_script( self::$parent->slug, self::$parent->slug, $this->$data );
 				
 	}
 	
 	/**
 	 * Enqueue stylesheets for admin backend, if any
 	 */
-	function enqueue_admin_css( ) {
+	function enqueue_admin_css( ) { 
 		return $this->enqueue_css( 'admin' );
 	}
 
@@ -78,19 +104,24 @@ class Plugin_Boilerplate_Enqueue {
 	 * @param string $name the name of the stylesheet to enqueue
 	 */	
 	function enqueue_css( $name ) {
-	
-		//allow child plugins to control when css is enqueued
-		if ( !self::$parent->api->apply_filters( 'enqueue_css', true, $name ) )
-			return;
-			
-		$file = "/css/$name.css";
 		
-		//verify file exists and isn't empty
-		if ( !file_exists( dirname( __FILE__ ) . $file ) || !filesize( dirname( __FILE__ ) . $file ) )
-			return;
-		
-		return wp_enqueue_style( self::$parent->slug, plugins_url( $file, __FILE__ ), null, filemtime( dirname( __FILE__ ) . $file ) );
+		$directory = self::$parent->directory . $this->css_path . $name . '/';
 
+		foreach ( glob( $directory . '*.css' ) as $file ) {
+
+			if ( !filesize( $file ) )
+				continue;
+		
+			$file = basename( $file );
+			
+			//allow child plugins to control when css is enqueued
+			if ( !self::$parent->api->apply_filters( 'enqueue_css', true, $file, $name ) )
+				continue;
+	
+		 	wp_enqueue_style( self::$parent->slug, plugins_url( $file, $directory ), null, filemtime( $directory . $file ) );
+	
+		}			
+				
 	}
 	
 }
