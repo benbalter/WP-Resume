@@ -40,7 +40,7 @@ class Plugin_Boilerplate_Debug {
 	 * @param bool $die whether to die after outputting
 	 * @param string $function the function to call, usually either print_r or var_dump, but can be anything
 	 */
-	function debug( $var, $die = false, $function = 'var_dump' ) {
+	function debug( $var, $die = false, $function = 'var_dump', $output = 'screen' ) {
 
 	    if ( !current_user_can( 'manage_options' ) || !WP_DEBUG )
 	    	return;
@@ -53,14 +53,23 @@ class Plugin_Boilerplate_Debug {
 	    if ( $die )
 	    	die();
 		
-		$debug = ob_get_contents();
-		ob_end_flush();
+		$debug = ob_get_clean();
+		
+		if ( $output == 'screen' )
+			echo $debug;
 		
 		$this->history[] = $debug;
 		
 		//allow this to be used as a filter
 		return $var;
 		
+	}
+	
+	/**
+	 * Shorthand function to log to debug bar directly (skipping screen)
+	 */
+	function log( $var, $function = 'var_dump' ) {
+		return $this->debug( $var, false, $function, false );
 	}
 		
 	/**

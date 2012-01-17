@@ -47,9 +47,12 @@ class Plugin_Boilerplate_Template {
 		$file = realpath( $this->directory . $template . '.php' );
 		chdir( $cwd );
 
-		if ( !file_exists( $file ) )
+		if ( !file_exists( $file ) ) {
+			trigger_error( "{self::$parent->name} -- cannot locate template $file" );
 			return false;	
+		}
 			
+		self::$parent->debug->log( $file );
 		include( $file );
 		
 		return true;
