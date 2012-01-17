@@ -8,6 +8,7 @@ class Plugin_Boilerplate {
 	public $name = 'Plugin Boilerplate';
 	public $slug = 'plugin-boilerplate';
 	public $version = '1.0';
+	public $classes = array();
 	
 	function __construct() {
 
@@ -20,6 +21,8 @@ class Plugin_Boilerplate {
 		
 		//upgrade db
 		add_action( 'admin_init', array( &$this, '_upgrade' ) );
+		
+		$this->do_action( 'init' );
 
 	}
 	
@@ -35,12 +38,20 @@ class Plugin_Boilerplate {
 			$name = str_replace( '-', '_', basename( $file, '.php' ) );
 			$class = 'Plugin_Boilerplate_' . ucwords( $name );
 			
+			if ( !$this->apply_filters( "load_{$name}", true ) )
+				continue;
+			
 			if ( !class_exists( $class ) )
 				@require_once( $file );
 			
-			if ( class_exists( $class ) )
-				$this->$name = new $class( &$this );
-	
+			if ( !class_exists( $class ) ) 
+				continue;
+				
+			$this->$name = new $class( &$this );
+			$this->classes[] = $name;
+			
+			$this->do_action( "{$name}_init" );
+			
 		}
 		
 	}
@@ -108,9 +119,21 @@ class Plugin_Boilerplate {
 		$args = func_get_args();
 		array_shift( $args );
 		$args[0] = str_replace( '-', '_', "{$this->slug}_$name" );
-
+				
 		return call_user_func_array( $function, $args );
 
+	}
+	
+	/**
+	 * Allows debug to be called directly from main class
+	 */
+	function debug( $var, $die = false, $function = 'var_dump' ) {
+
+		if ( !in_array( 'debug', $this->classes ) )
+			return false;
+		
+		return $this->debug->debug( $var, $die, $function );
+			
 	}
 	
 }
