@@ -19,8 +19,6 @@ class Plugin_Boilerplate_Cache {
 		else
 			self::$parent = &$instance;
 			
-		$this->ttl = self::$parent->apply_filters( 'ttl', $this->ttl );
-
 	}
 	
 	/**
