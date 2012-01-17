@@ -24,7 +24,7 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-require_once( 'class.plugin-boilerplate.php' );
+require_once( dirname( __FILE__ ) . '/includes/class.plugin-boilerplate.php' );
 
 class Hello_Dolly2 extends Plugin_Boilerplate {
 
