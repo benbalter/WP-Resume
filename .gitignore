@@ -4,3 +4,6 @@
 .Spotlight-V100
 .Trashes
 error_log
+
+#for child plugins
+#sample-*.php
