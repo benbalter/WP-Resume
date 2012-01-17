@@ -13,13 +13,13 @@ class Plugin_Boilerplate {
 
 		self::$instance = &$this;
 		
-		$this->load_subclasses();
+		$this->_load_subclasses();
 		
 		//i18n
-		add_action( 'init', array( &$this, 'i18n' ) ); 
+		add_action( 'init', array( &$this, '_i18n' ) ); 
 		
 		//upgrade db
-		add_action( 'admin_init', array( &$this, 'upgrade' ) );
+		add_action( 'admin_init', array( &$this, '_upgrade' ) );
 
 	}
 	
@@ -28,7 +28,7 @@ class Plugin_Boilerplate {
 	 * Classes should be named in the form of Plugin_Boilerplate_{Class_Name}
 	 * Files should be the name of the class name e.g. class-name.php
 	 */ 
-	function load_subclasses() {
+	function _load_subclasses() {
 
 		foreach ( glob( dirname( __FILE__ ) . '/includes/*.php' ) as $file ) {
 			
@@ -48,7 +48,7 @@ class Plugin_Boilerplate {
 	/**
 	 * Init i18n files
 	 */
-	function i18n() {
+	function _i18n() {
 		load_plugin_textdomain( $this->slug, false, plugin_basename( dirname( __FILE__ ) ) . '/languages/' );
 	}
 	
@@ -56,7 +56,7 @@ class Plugin_Boilerplate {
 	 * Upgrades DB
 	 * Fires on admin init to support SVN
 	 */
-	function upgrade() {
+	function _upgrade() {
 
 		if ( $this->options->db_version == $this->version )
 			return;
@@ -90,7 +90,7 @@ class Plugin_Boilerplate {
 		$args = func_get_args();
 		array_unshift( $args, 'filter' );
 		
-		call_user_func_array( array( &$this, 'api'), $args );	
+		return call_user_func_array( array( &$this, 'api'), $args );	
 	}
 	
 	/**

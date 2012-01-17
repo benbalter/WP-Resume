@@ -8,6 +8,8 @@ class Plugin_Boilerplate_Options {
 	//default scope for options when called directly,
 	//choices: site, user, or global (user option across sites)
 	public $scope = 'site'; 
+	public $defaults = array();
+	public $user_defaults = array();
 	static $parent;
 	
 	/**
@@ -62,6 +64,7 @@ class Plugin_Boilerplate_Options {
 			$user = get_current_user_id();
 		
 		$options = (array) get_user_option( self::$parent->slug, $user );
+		$options = wp_parse_args( $options, $this->user_defaults );
 		return self::$parent->apply_filters( 'user_options', $options, $user );
 
 	}
@@ -112,9 +115,9 @@ class Plugin_Boilerplate_Options {
 	 */
 	function get_options( ) {
 	
-		$options = (array) get_option( self::$parent->slug );
+		$options = (array) get_option( self::$parent->slug ); 
+		$options = wp_parse_args( $options, $this->defaults );
 		return self::$parent->apply_filters( 'options', $options );
-		
 	}
 	
 	/**
