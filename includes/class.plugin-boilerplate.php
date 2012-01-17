@@ -61,7 +61,8 @@ class Plugin_Boilerplate {
 		foreach ( $files as $file ) {
 					
 			$name = str_replace( '-', ' ', basename( $file, '.php' ) );
-			$class = 'Plugin_Boilerplate_' . str_replace( ' ', '_', ucwords( $name ) );
+			$base = ( dirname( __FILE__ ) == dirname( $file ) ) ? get_class( &$this ) : get_parent_class( &$this );
+			$class = $base . '_' . str_replace( ' ', '_', ucwords( $name ) );
 						
 			if ( !apply_filters( "{$this->slug}_load_{$name}", true ) )
 				continue;

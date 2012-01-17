@@ -2,9 +2,10 @@
 /**
  * Main Hello Dolly 2.0 Logic
  * @package Plugin_Boilerplate
+ * @subpackage Hello_Dolly2
  */
  
-class Plugin_Boilerplate_Sample_Lyrics {
+class Hello_Dolly2_Sample_Lyrics {
 	
 	static $parent;
 	public $lyrics = array ( 
