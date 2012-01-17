@@ -3,7 +3,7 @@
 class Plugin_Boilerplate_Template {
 
 	static $parent;
-	public $directory = '../../templates/';
+	public $directory = '../../templates/'; //relative path to templates folder
 	
 	/**
 	 * Store parent and init template directory
@@ -15,8 +15,6 @@ class Plugin_Boilerplate_Template {
 			self::$parent = new Plugin_Boilerplate;
 		else
 			self::$parent = &$instance;
-		
-	
 			
 	}
 	

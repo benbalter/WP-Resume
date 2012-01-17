@@ -68,48 +68,11 @@ class Hello_Dolly2 extends Plugin_Boilerplate {
 	
 		parent::__construct(); // construct the boilerplate
 		
-		add_action( "{$this->slug}_upgrade", array( &$this, 'upgrade' ) );
-		add_filter( "{$this->slug}_lyric", array( &$this, 'add_p_tag' ) );
-		add_action( 'admin_notices', array( &$this, 'lyric' ) );
-		add_action( 'admin_head', array( &$this, 'css' ) );
-		
 		$this->options->defaults = &$this->lyrics;
 
 	}
 	
-	/**
-	 * Returns a single lyric
-	 * @uses hd2_lyric filter
-	 */
-	function get_lyric() {
-
-		$lyrics = $this->options->lyrics;
-		$lyric = wptexturize( $lyrics[ mt_rand( 0, count( $lyrics ) - 1 ) ] );
-		return $this->api->apply_filters( 'lyric', $lyric );
-		
-	}
 	
-	/**
-	 * Echos a lyric
-	 */
-	function lyric() {
-		echo $this->get_lyric();
-	}
-	
-	/**
-	 * Filter to wrap lyric in <p> tags
-	 */
-	function add_p_tag( $lyric ) {
-		return $this->template->get( 'sample-header', compact( 'lyric' ) );
-	}
-	
-	/**
-	 * Inject CSS into admin header
-	 */
-	function css() {
-		$this->template->load( 'sample-css' );
-	}
-		
 }
 
 $hd2 = new Hello_Dolly2();

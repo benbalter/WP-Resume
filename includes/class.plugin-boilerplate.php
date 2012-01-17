@@ -14,19 +14,19 @@ class Plugin_Boilerplate {
 	function __construct() {
 
 		self::$instance = &$this;
-		
+				
 		//verify minimum WP version, and shutdown if insufficient
 		if ( !$this->_verify_wp_version() )
 			return false;
-		
-		//load subclasses on init, allowing other plugins or self to override
-		add_action( 'plugins_loaded', array( &$this, 'init' ), 5 );
+			
+		//upgrade db
+		add_action( 'admin_init', array( &$this, '_upgrade_check' ) );
 		
 		//i18n
 		add_action( 'init', array( &$this, '_i18n' ) ); 
 		
-		//upgrade db
-		add_action( 'admin_init', array( &$this, '_upgrade_check' ) );
+		//load subclasses on init, allowing other plugins or self to override
+		add_action( 'plugins_loaded', array( &$this, 'init' ), 5 );
 
 	}
 	
@@ -38,23 +38,31 @@ class Plugin_Boilerplate {
 	function init() { 
 		
 		$this->_load_subclasses();
-
+		
 		$this->api->do_action( 'init' );
 
 	}
 	
 	/**
-	 * Loads and substantiates all classes in the includes folder
+	 * Loads and substantiates all classes in the includes and boilerplate-classes folders
 	 * Classes should be named in the form of Plugin_Boilerplate_{Class_Name}
 	 * Files should be the name of the class name e.g. class-name.php
+	 * Classes will be autoloaded as $object->{class_name}
 	 */ 
 	function _load_subclasses() {
-
-		foreach ( glob( dirname( __FILE__ ) . '/boilerplate-classes/*.php' ) as $file ) {
-					
-			$name = str_replace( '-', '_', basename( $file, '.php' ) );
-			$class = 'Plugin_Boilerplate_' . ucwords( $name );
 			
+		//load all boilerplate core classes, followed by and child plugin classes
+		$files = glob( dirname( __FILE__ ) . '/boilerplate-classes/*.php' ) ;
+		$files = array_merge( $files, glob( dirname( __FILE__ ) . '/*.php' ) );
+		
+		//don't include self
+		unset( $files[ array_search( __FILE__ ) ] );
+
+		foreach ( $files as $file ) {
+					
+			$name = str_replace( '-', ' ', basename( $file, '.php' ) );
+			$class = 'Plugin_Boilerplate_' . str_replace( ' ', '_', ucwords( $name ) );
+						
 			if ( !apply_filters( "{$this->slug}_load_{$name}", true ) )
 				continue;
 			
@@ -63,11 +71,12 @@ class Plugin_Boilerplate {
 			
 			if ( !class_exists( $class ) ) 
 				continue;
-				
+								
 			$this->$name = new $class( &$this );
-			$this->classes[] = $name;
+			$this->classes[ $name ] = $class;
 			
 			$this->api->do_action( "{$name}_init" );
+			
 			
 		}
 		
@@ -85,12 +94,12 @@ class Plugin_Boilerplate {
 	 * Fires on admin init to support SVN
 	 */
 	function _upgrade_check() {
-
+	
 		if ( $this->options->db_version == $this->version )
 			return;
 		
 		$this->upgrade( $this->options->db_version, $this->version );
-		$this->do_action( 'upgrade', $this->options->db_version, $this->version );
+		$this->api->do_action( 'upgrade', $this->options->db_version, $this->version );
 			
 		$this->options->db_version = $this->version;
 		
@@ -112,7 +121,7 @@ class Plugin_Boilerplate {
 			return true;
 		
 		add_action( 'admin_notices', array( &$this, 'update_wp' ) );
-		$this->api->do_action( 'wp_outdated' );
+		do_action( "{$this->slug}_wp_outdated" );
 		
 		return false;
 	}
