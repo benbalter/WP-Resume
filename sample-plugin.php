@@ -28,48 +28,17 @@ require_once( dirname( __FILE__ ) . '/includes/class.plugin-boilerplate.php' );
 
 class Hello_Dolly2 extends Plugin_Boilerplate {
 
-	public $name = 'Hello Dolly 2.0';
-	public $version = '2.0';
-	public $slug = 'hd2';
-	public $lyrics = array ( 	"Hello, Dolly",
-								"Well, hello, Dolly",
-								"It's so nice to have you back where you belong",
-								"You're lookin' swell, Dolly",
-								"I can tell, Dolly",
-								"You're still glowin', you're still crowin'",
-								"You're still goin' strong",
-								"We feel the room swayin'",
-								"While the band's playin'",
-								"One of your old favourite songs from way back when",
-								"So, take her wrap, fellas",
-								"Find her an empty lap, fellas",
-								"Dolly'll never go away again",
-								"Hello, Dolly",
-								"Well, hello, Dolly",
-								"It's so nice to have you back where you belong",
-								"You're lookin' swell, Dolly",
-								"I can tell, Dolly",
-								"You're still glowin', you're still crowin'",
-								"You're still goin' strong",
-								"We feel the room swayin'",
-								"While the band's playin'",
-								"One of your old favourite songs from way back when",
-								"Golly, gee, fellas",
-								"Find her a vacant knee, fellas",
-								"Dolly'll never go away",
-								"Dolly'll never go away",
-								"Dolly'll never go away again",
-						);
+	public $name = 'Hello Dolly 2.0'; //human-readable plugin name
+	public $version = '2.0'; //plugin version
+	public $slug = 'hd2'; //slug to prepend to api calls, etc.
 
 	/**
-	 * Register hooks with WordPress API
+	 * Construct the boilerplate and autoload all child classes
 	 */
 	function __construct() {
 	
-		parent::__construct(); // construct the boilerplate
+		parent::__construct();
 		
-		$this->options->defaults = &$this->lyrics;
-
 	}
 	
 	
