@@ -56,7 +56,7 @@ class Plugin_Boilerplate {
 		$files = array_merge( $files, glob( dirname( __FILE__ ) . '/*.php' ) );
 		
 		//don't include self
-		unset( $files[ array_search( __FILE__ ) ] );
+		unset( $files[ array_search( __FILE__, $files ) ] );
 
 		foreach ( $files as $file ) {
 					
@@ -70,9 +70,11 @@ class Plugin_Boilerplate {
 			if ( !class_exists( $class ) )
 				@require_once( $file );
 			
-			if ( !class_exists( $class ) ) 
+			if ( !class_exists( $class ) ) {
+				trigger_error( "{$this->name} -- Unable to load class {$class}. see the readme for class and file naming conventions" );
 				continue;
-								
+			}
+			
 			$this->$name = new $class( &$this );
 			$this->classes[ $name ] = $class;
 			
