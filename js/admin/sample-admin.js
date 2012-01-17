@@ -1,0 +1,1 @@
+jQuery(document).ready(function(a){a("#dolly").click(function(){a(this).fadeOut("slow",function(){a(this).html(hd2.lyrics[Math.floor(Math.random()*hd2.lyrics.length)])}).fadeIn("slow")})});
