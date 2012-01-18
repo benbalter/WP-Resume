@@ -47,6 +47,10 @@ Class-by-Class Usage
   * See `sample-lyrics.php` for an example
   * Classes will be available as `$this->{child_class}`
   * Be sure to store parent as static instance (passed via `__construct`) to access parent or sibling classes 
+* Hooks
+  * Fires `{prefix}_init` once all classes loaded
+  * Loading each class is run through the `{prefix}_load_{class_name}` filter prior to loading (to disable a specific class)
+  * Fires `{prefix}_{class_name}_{init}` when each class is loaded (to hook into class-specific functions)
  
 **API**
 
@@ -95,6 +99,9 @@ Class-by-Class Usage
 * Admin - Automatically enqueues all files in `/css/admin/` and `/js/admin`
 * To pass strings or information to script, pass an array to `$this->enqueue->data`
 * Data will be available as `{plugin_slug}` via `wp_localize_script`
+* Question to enqueue is run through `{prefix}_{enqueue_js}` and `{prefix}_{enqueue_css}`
+  * Useful for only loading js/css files on specific pages
+  * Use `get_current_screen()` and template functions like `is_single()` and return false if you wouldn't like to enqueue
 
 **Options**
 
@@ -120,5 +127,13 @@ Class-by-Class Usage
     * Get a specific site option: `$this->options->get_option( 'name' );`
     * Set a specific site option: `$this->options->set_option( 'name' );`
     * Set all site options: `$this->options->set_options( $array )`
+  
+**Template**
 
-( work in progress )
+* Template slug is filename within `/templates/` folder
+* Load via: `$this->template->{template-name}()` or `$this->templates->load( 'template-name )`
+* Get (as string) via `$this->template->get( 'template-name' )
+* Will be in function scope within the template class (so can use `self::$parent` to retieve parent class)
+* Can pass an array as 2nd argument (or 1st via magic method) which will be run through `extract()` (e.g., after running through `compact()`)
+* Can allow themes to override template by placing in themes directory via `allow_template_override` filter or by adding slug to `$this->templats->overrides`
+* See `sample-lyrics.php` for an example
