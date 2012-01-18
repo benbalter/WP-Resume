@@ -37,7 +37,7 @@ Class-by-Class Usage
 
 **Plugin_Boilerplate**
 
-* Create a child plugin by extending the `Plugin_Boilerplate` class (**see `sample-plugin.php`**)
+* Create a child plugin by extending the `Plugin_Boilerplate` class (*see `sample-plugin.php`*)
 * Define name, slug, slug_, prefix, version, and min_wp within your child class. These variables are used throughout the plugin to do things like prefix api calls or name your plugins options in the options table.
 * Place any langauge files in the `/languages/` folder using the format `{plugin-slug}_{language}.php`
 * Create a function in the child class called upgrade (or hook into the `{prefix_}slug` action) to handle upgrades / activation
@@ -65,5 +65,60 @@ Class-by-Class Usage
 
 **Capabilities**
 
-*
+* Registers default capabilities with roles API
+* If capability already exists, honors pre-existing grant
+* If a custom role exists, will default to subscriber
+* See inline documentation for details on how to pass roles/capabilities array
+* Default capabilities can be overridden by 3d party plugins such as Members
+
+**Debug**
+
+* Available via `$this->debug` or `self::$parent->debug`
+* Only displays for administrators while `WP_DEBUG` is enabled
+* Integrates with Debug_Bar plugin
+* Returns value so can be apply directly to a filter
+* `$this->debug->debug( $variable );` will var_dump the variable
+* `$this->debug->debug( $variable, true );` will var_dump the varible, then die immediatly after
+* `$this->debug->debug( $variable, null, 'print_r'` will run variable through `print_r` (or other user-defined function)
+* `$this->debug->log( $variable )` will log variable(s) to the Debug_Bar plugin
+
+**Donate**
+
+* Creates an unobtrusive donate link
+* Usage: `$this->donate->form()` to display donation form
+* Form customizable via `/templates/` folder
+* Stores user-preference to hide via ajax
+
+**Enqueue**
+
+* Front End - Automatically enqueues all files in `/css/front-end/` and `/js/front-end`
+* Admin - Automatically enqueues all files in `/css/admin/` and `/js/admin`
+* To pass strings or information to script, pass an array to `$this->enqueue->data`
+* Data will be available as `{plugin_slug}` via `wp_localize_script`
+
+**Options**
+
+* Stores all options in a single row in the options table
+* All request run through `{prefix}_options` and `{prefix}_{options name}`
+* All requests cached
+* Three option scopes, site, user, or global
+    * site - all users on the site
+    * user - that specific user on that specific site
+    * global - that specific user on all sites within network
+* Default scope is site
+* Set via `$this->options->scope`, e.g., `$this->options->scope = 'user';`
+* Only applies to magic methods
+* Magic methods
+    * Retrieve a stored option called "name": `$value = $this->options->name;`
+    * Store an option: `$this->options->name = 'Ben';`
+* Other methods
+    * Get all user options for a user: `$this->options->get_user_options()` (current user) or `$this->options->get_user_options( 1 )` (specific user)
+    * Get specific user option: `$this->options->get_user_option( 'name' )`;
+    * Set a specific user option: `$this->options->set_user_option( 'name', 'Ben' )`
+    * Set all user options: `$this->options->set_user_options( $array )`
+    * Get all site options: `$this->options->get_options()`;
+    * Get a specific site option: `$this->options->get_option( 'name' );`
+    * Set a specific site option: `$this->options->set_option( 'name' );`
+    * Set all site options: `$this->options->set_options( $array )`
+
 ( work in progress )
