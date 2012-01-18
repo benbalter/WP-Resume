@@ -1,3 +1,9 @@
+<?php
+/**
+ * Simple, unobtrusive prompt to solicit donations
+ * @package Plugin_Boilerplate
+ */
+?>
 <tr valign="top" id="donate">
 	<th scope="row">
 		<?php _e( 'Support' ); ?>
