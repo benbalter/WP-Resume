@@ -12,5 +12,6 @@ $x = is_rtl() ? 'left' : 'right';
 		padding-top: 5px;		
 		margin: 0;
 		font-size: 11px;
+		cursor: pointer;
 	}
 </style>

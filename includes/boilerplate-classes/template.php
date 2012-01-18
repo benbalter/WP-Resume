@@ -4,6 +4,7 @@ class Plugin_Boilerplate_Template {
 
 	static $parent;
 	public $path = '/templates/'; //path to templates folder relative to plugin root
+	public $overrides = array(); //array of template slugs to allow themes to override by default
 	
 	/**
 	 * Store parent and init template directory
@@ -40,14 +41,23 @@ class Plugin_Boilerplate_Template {
 		
 		$template = self::$parent->api->apply_filters( 'template', $template );
 		
-		$file = self::$parent->directory . $this->path . $template . '.php';
+		$file = false;
+		
+		//if in overrides or set by filter look in child then parent folder for the file
+		//before looking in plugin's template folder
+		//note: by default, this functionality is disabled
+		if ( 	in_array( $template, $this->overrides ) 	||
+				self::$parent->api->apply_filters( 'allow_template_override', false, $template ) )
+			$file = locate_template( $template );
+		
+		if ( !$file )
+			$file = self::$parent->directory . $this->path . $template . '.php';
 
 		if ( !file_exists( $file ) ) {
 			trigger_error( "{self::$parent->name} -- cannot locate template $file" );
 			return false;	
 		}
 			
-		self::$parent->debug->log( $file );
 		include( $file );
 		
 		return true;

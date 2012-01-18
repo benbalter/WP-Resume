@@ -43,9 +43,9 @@ class Plugin_Boilerplate_Options {
 	 * Usage: $object->{option name} = $value
 	 */	
 	function __set( $name, $value ) {
-		
+			
 		$global = ( $this->scope == 'global' );
-		
+
 		if ( $this->scope == 'site' )
 			return $this->set_option( $name, $value );
 		else
@@ -64,7 +64,7 @@ class Plugin_Boilerplate_Options {
 			$user = get_current_user_id();
 		
 		if ( !$options = self::$parent->cache->get( "{$user}_options" ) ) {
-			$options = (array) get_user_option( self::$parent->slug, $user );
+			$options = (array) get_user_option( self::$parent->slug_, $user );
 			$options = wp_parse_args( $options, $this->user_defaults );
 			self::$parent->cache->set( "{$user}_options", $options );
 		}
@@ -112,7 +112,7 @@ class Plugin_Boilerplate_Options {
 
 		self::$parent->cache->set( "{$user}_options", $options );
 
-		return update_user_option( $user, self::$parent->slug, $options, $global );
+		return update_user_option( $user, self::$parent->slug_, $options, $global );
 	}
 	
 	/**
@@ -121,12 +121,14 @@ class Plugin_Boilerplate_Options {
 	 */
 	function get_options( ) {
 		
-		if ( !$options = self::$parent->cache->get( 'options' ) ) {
-			$options = (array) get_option( self::$parent->slug ); 
-			$options = wp_parse_args( $options, $this->defaults );
+		if ( !$options = self::$parent->cache->get( 'options' ) ) { 
+			$options = (array) get_option( self::$parent->slug_ );
+			$options = wp_parse_args( $options, $this->defaults ); 
 			self::$parent->cache->set( 'options', $options );
 		}
+
 		return self::$parent->api->apply_filters( 'options', $options );
+
 	}
 	
 	/**
@@ -161,7 +163,7 @@ class Plugin_Boilerplate_Options {
 
 		self::$parent->cache->set( 'options', $options );
 
-		return update_option( self::$parent->slug, $options );
+		return update_option( self::$parent->slug_, $options );
 		
 	}
 

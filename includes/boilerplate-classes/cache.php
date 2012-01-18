@@ -38,7 +38,7 @@ class Plugin_Boilerplate_Cache {
 	 */
 	function get( $key ) {
 
-		return wp_cache_get( $key, self::$parent->slug );
+		return wp_cache_get( $key, self::$parent->slug_ );
 
 	}
 	
@@ -65,7 +65,7 @@ class Plugin_Boilerplate_Cache {
 		if ( $ttl == null )
 			$ttl = $this->ttl;
 			
-		return wp_cache_set( $key, $value, self::$parent->slug, $ttl );
+		return wp_cache_set( $key, $value, self::$parent->slug_, $ttl );
 		
 	}
 	
@@ -76,7 +76,7 @@ class Plugin_Boilerplate_Cache {
 	 */
  	function delete( $key ) {
  		
- 		return wp_cache_delete( $key, self::$parent->slug );
+ 		return wp_cache_delete( $key, self::$parent->slug_ );
  		
  	}
 }

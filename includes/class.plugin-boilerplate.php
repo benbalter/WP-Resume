@@ -5,8 +5,10 @@ if ( !class_exists( 'Plugin_Boilerplate' ) ):
 class Plugin_Boilerplate {
 	
 	static $instance;
-	public $name = 'Plugin Boilerplate';
-	public $slug = 'plugin-boilerplate';
+	public $name = 'Plugin Boilerplate'; //Human-readable name of plugin
+	public $slug = 'plugin-boilerplate'; //plugin slug, generally base filename and in url on wordpress.org
+	public $slug_ = 'plugin_boilerplate'; //slug with underscores (PHP/JS safe)
+	public $prefix = 'plugin_boilerplate_'; //prefix to append to all options, API calls, etc. w/ trailing underscore
 	public $directory = null;
 	public $version = '1.0';
 	public $min_wp = '3.2';
@@ -71,8 +73,9 @@ class Plugin_Boilerplate {
 			$name = str_replace( '-', ' ', basename( $file, '.php' ) );
 			$base = ( dirname( __FILE__ ) == dirname( $file ) ) ? get_class( &$this ) : get_parent_class( &$this );
 			$class = $base . '_' . str_replace( ' ', '_', ucwords( $name ) );
+			$name = str_replace( ' ', '_', $name );
 						
-			if ( !apply_filters( "{$this->slug}_load_{$name}", true ) )
+			if ( !apply_filters( "{$this->prefix}_load_{$name}", true ) )
 				continue;
 			
 			if ( !class_exists( $class ) )
@@ -132,7 +135,7 @@ class Plugin_Boilerplate {
 			return true;
 		
 		add_action( 'admin_notices', array( &$this, 'update_wp' ) );
-		do_action( "{$this->slug}_wp_outdated" );
+		do_action( "{$this->prefix}_wp_outdated" );
 		
 		return false;
 	}

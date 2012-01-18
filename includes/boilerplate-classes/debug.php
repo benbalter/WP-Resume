@@ -76,7 +76,7 @@ class Plugin_Boilerplate_Debug {
 	 * Registers panel with debug bar
 	 */	
 	function register_panel( $panels ) {
-		$slug = self::$parent->slug;
+		$slug = self::$parent->slug_;
 		$class = "{$slug}_Debug_Panel";
 		$panels[] = new $class( self::$parent->name . ' Debug', &$this );
 		
@@ -97,8 +97,7 @@ class Plugin_Boilerplate_Debug {
 	 */
 	function init_panel( $panels ) {
 
-		$slug = self::$parent->slug;
-		$code = 'class ' . $slug . '_Debug_Panel extends Debug_Bar_Panel { 
+		$code = 'class ' . self::$parent->slug_ . '_Debug_Panel extends Debug_Bar_Panel { 
 			static $parent; 
 			
 			function __construct( $name, &$instance ) { 
@@ -110,6 +109,7 @@ class Plugin_Boilerplate_Debug {
 				self::$parent->render(); 
 			} 
 		}';
+
 		$init = create_function( '', $code );
 		$init( );
 		

@@ -15,7 +15,7 @@ class Plugin_Boilerplate_Api {
 	}
 	
 	/**
-	 * Prepends slug to action and calls standard do_action function
+	 * Prepends prefix to action and calls standard do_action function
 	 * @param string $name the name of the action
 	 */
 	function do_action( $name ) {
@@ -28,7 +28,7 @@ class Plugin_Boilerplate_Api {
 	}
 	
 	/**
-	 * Prepends slug to action and calls standard apply_filters function
+	 * Prepends prefix to action and calls standard apply_filters function
 	 * @param string $name the name of the action
 	 * @return the result of the filter
 	 */	
@@ -36,12 +36,12 @@ class Plugin_Boilerplate_Api {
 
 		$args = func_get_args();
 		array_unshift( $args, 'filter' );
-		
+
 		return call_user_func_array( array( &$this, 'api'), $args );	
 	}
 	
 	/**
-	 * Prepends slug to do_action and apply_filters calls
+	 * Prepends prefix to do_action and apply_filters calls
 	 * @param string $type either action or filter
 	 * @param string $name the name of the api call
 	 */
@@ -54,9 +54,9 @@ class Plugin_Boilerplate_Api {
 
 		$args = func_get_args();
 		array_shift( $args );
-		$slug = self::$parent->slug;
-		$args[0] = str_replace( '-', '_', "{$slug}_$name" );
-				
+		$prefix = self::$parent->prefix;
+		$args[0] = $prefix . $name;
+		
 		return call_user_func_array( $function, $args );
 
 	}

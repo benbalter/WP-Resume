@@ -81,7 +81,7 @@ class Plugin_Boilerplate_Enqueue {
 		if ( empty( $this->$data ) )
 			return;
 			
-		wp_localize_script( self::$parent->slug, self::$parent->slug, $this->$data );
+		wp_localize_script( self::$parent->slug, self::$parent->slug_, $this->$data );
 				
 	}
 	

@@ -28,9 +28,10 @@ require_once( dirname( __FILE__ ) . '/includes/class.plugin-boilerplate.php' );
 
 class Hello_Dolly2 extends Plugin_Boilerplate {
 
-	public $name = 'Hello Dolly 2.0'; //human-readable plugin name
-	public $version = '2.0'; //plugin version
-	public $slug = 'hd2'; //slug to prepend to api calls, etc.
+	public $name = 'Hello Dolly 2.0'; //Human-readable name of plugin
+	public $slug = 'hello-dolly2'; //plugin slug, generally base filename and in url on wordpress.org
+	public $slug_ = 'hello_dolly2'; //slug with underscores (PHP/JS safe)
+	public $prefix = 'hd2_'; //prefix to append to all options, API calls, etc. w/ trailing underscore
 
 	/**
 	 * Construct the boilerplate and autoload all child classes
