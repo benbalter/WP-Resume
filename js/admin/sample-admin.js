@@ -1,1 +1,0 @@
-jQuery(document).ready(function(a){a("#dolly").click(function(){a(this).fadeOut("slow",function(){a(this).html(hello_dolly2.lyrics[Math.floor(Math.random()*hello_dolly2.lyrics.length)])}).fadeIn("slow")})});
