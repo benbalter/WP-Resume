@@ -564,5 +564,61 @@ class WP_Resume_Admin {
 		$this->set_org_link( $termID, $_REQUEST['org_link'] );
 				
 	}	
+	
+	/**
+	 * Checks DB version on admin init and upgrades if necessary
+	 * Used b/c 1) no CPTs on activation hook, 2) no activation hook on multi-update
+	 * @since 1.6
+	 */
+	function admin_init() {
+					
+		register_setting( 'wp_resume_options', 'wp_resume_options', array( &$this, 'options_validate' ) );
+		
+		if ( empty ($_GET['page'] ) || $_GET['page'] != 'wp_resume_options' )
+			return;
+			
+		//If we are on the wp_resume_options page, enque the tinyMCE editor
+		wp_enqueue_script('editor');
+		add_thickbox();
+		wp_enqueue_script('media-upload');
+		wp_enqueue_script('post');
+		
+	}
+	
+	/**
+	 * Tells WP to load our javascript files
+	 */
+	function enqueue_scripts() {
+	
+		$suffix = ( WP_DEBUG ) ? 'dev.' : '';
+	
+		$post = false;
+		if ( !empty( $_GET['post'] ) )
+			$post = get_post( $_GET['post'] );
+	
+		//load javascript with libraries on options page
+		if ( !empty ( $_GET['page'] ) && $_GET['page'] == 'wp_resume_options' ) { 
+			wp_enqueue_script( 'wp_resume', plugins_url('/js/wp_resume.' . $suffix . 'js', __FILE__), array("jquery", "jquery-ui-core", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable"), $this->version );		
+		//if on the org, section, or edit page, load the script without all the libraries
+		} else if ( ( !empty( $_GET['post_type'] ) && $_GET['post_type'] == 'wp_resume_position' ) ||
+			 ( !empty( $_GET['post'] ) && $post && $post->post_type == 'wp_resume_position' ) ) { 
+			wp_enqueue_script( 'wp_resume', plugins_url('/js/wp_resume.' . $suffix . 'js', __FILE__), array("jquery"), $this->version );		
+		}
+		
+		$data = array( 
+			'more' => __('More', 'wp-resume'),
+			'less' => __('less', 'wp-resume'),
+			'yes' => __('Yes!', 'wp-resume'),
+			'no' => __('No.', 'wp-resume'),
+			'hideAdv' => __('Hide Advanced Options', 'wp-resume'),
+			'showAdv' => __('Show Advanced Options', 'wp-resume'),
+			'orgName' => __('The name of the organization as you want it to appear', 'wp-resume'),
+			'orgLoc' => __('Traditionally the location of the organization (optional)', 'wp-resume'),
+			'missingTaxMsg' => __( 'Please make sure that the position is associated with a section before saving', 'wp-resume'),
+		);
+		wp_localize_script( 'wp_resume', 'wp_resume', $data );
+	
+	}
+
 
 }

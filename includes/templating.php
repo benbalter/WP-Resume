@@ -37,9 +37,7 @@ class WP_Resume_Templating {
 	 * @return string the title, or the title link
 	 */
 	function get_title( $ID ) {
-	
-		$options = 
-		
+			
 		if ( !$this->options->get_option( 'rewrite' ) ) {
 			$title = get_the_title();
 		} else {

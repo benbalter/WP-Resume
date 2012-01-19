@@ -3,7 +3,7 @@
 Plugin Name: WP Resume
 Plugin URI: http://ben.balter.com/2010/09/12/wordpress-resume-plugin/
 Description: Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site. 
-Version: 2.2.3
+Version: 3.0
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
 License: GPL2
@@ -16,6 +16,8 @@ License: GPL2
  * @shoutout Rvencu for help with WPML and multi-user prototyping
  * @shoutout Rodolfo Buaiz (http://www.brasofilo.com) for the translation help
  */
+
+require_once( dirname( __FILE__ ) . '/includes/class.plugin-boilerplate.php' );
 
 class WP_Resume extends Plugin_Boilerplate {
 
@@ -33,8 +35,8 @@ class WP_Resume extends Plugin_Boilerplate {
 	function __construct() {
 		
 		self::$instance = &$this;
-		parent::__construct();
-				
+		parent::__construct(); 
+						
 		//cpt and CT
 		add_action( 'init', array( &$this, 'register_cpt_and_t' ) );
 		
@@ -66,10 +68,6 @@ class WP_Resume extends Plugin_Boilerplate {
 												'order'=>array(), 
 												'hide-donate' => false 
 											);
-		
-		$i = 0;	
-		foreach ( $this->get_sections( false ) as $section)
-				$this->options->user_defaults['order'][$section->term_id] = $i++;
 
 	}
 	 
@@ -79,7 +77,7 @@ class WP_Resume extends Plugin_Boilerplate {
 	 */
 	function register_cpt_and_t() {
 	  	
-	  	$options = $this->get_options();
+	  	$options = $this->options->get_options();
 	  		
 	  	//Custom post type labels array
 	  	$labels = array(
@@ -157,6 +155,10 @@ class WP_Resume extends Plugin_Boilerplate {
 		 
 		//Register organization taxonomy
 		register_taxonomy( 'wp_resume_organization', 'wp_resume_position', $args );
+		
+		$i = 0;	
+		foreach ( $this->get_sections( false ) as $section)
+				$this->options->user_defaults['order'][$section->term_id] = $i++;
 		
 	}
 	
@@ -435,8 +437,7 @@ class WP_Resume extends Plugin_Boilerplate {
 			
 		$classes[] = 'resume';
 		
-		$options = &$this->get_options();
-		if ( isset( $options['hide-title'] ) && $options['hide-title'] )
+		if ( $this->options->get_option( 'hide-title' ) )
 			$classes[] = 'hide-title';
 				
 		return $classes;
@@ -509,61 +510,6 @@ class WP_Resume extends Plugin_Boilerplate {
   
 	}
 	
-	/**
-	 * Checks DB version on admin init and upgrades if necessary
-	 * Used b/c 1) no CPTs on activation hook, 2) no activation hook on multi-update
-	 * @since 1.6
-	 */
-	function admin_init() {
-					
-		register_setting( 'wp_resume_options', 'wp_resume_options', array( &$this, 'options_validate' ) );
-		
-		if ( empty ($_GET['page'] ) || $_GET['page'] != 'wp_resume_options' )
-			return;
-			
-		//If we are on the wp_resume_options page, enque the tinyMCE editor
-		wp_enqueue_script('editor');
-		add_thickbox();
-		wp_enqueue_script('media-upload');
-		wp_enqueue_script('post');
-		
-	}
-	
-	/**
-	 * Tells WP to load our javascript files
-	 */
-	function enqueue_scripts() {
-	
-		$suffix = ( WP_DEBUG ) ? 'dev.' : '';
-	
-		$post = false;
-		if ( !empty( $_GET['post'] ) )
-			$post = get_post( $_GET['post'] );
-	
-		//load javascript with libraries on options page
-		if ( !empty ( $_GET['page'] ) && $_GET['page'] == 'wp_resume_options' ) { 
-			wp_enqueue_script( 'wp_resume', plugins_url('/js/wp_resume.' . $suffix . 'js', __FILE__), array("jquery", "jquery-ui-core", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable"), $this->version );		
-		//if on the org, section, or edit page, load the script without all the libraries
-		} else if ( ( !empty( $_GET['post_type'] ) && $_GET['post_type'] == 'wp_resume_position' ) ||
-			 ( !empty( $_GET['post'] ) && $post && $post->post_type == 'wp_resume_position' ) ) { 
-			wp_enqueue_script( 'wp_resume', plugins_url('/js/wp_resume.' . $suffix . 'js', __FILE__), array("jquery"), $this->version );		
-		}
-		
-		$data = array( 
-			'more' => __('More', 'wp-resume'),
-			'less' => __('less', 'wp-resume'),
-			'yes' => __('Yes!', 'wp-resume'),
-			'no' => __('No.', 'wp-resume'),
-			'hideAdv' => __('Hide Advanced Options', 'wp-resume'),
-			'showAdv' => __('Show Advanced Options', 'wp-resume'),
-			'orgName' => __('The name of the organization as you want it to appear', 'wp-resume'),
-			'orgLoc' => __('Traditionally the location of the organization (optional)', 'wp-resume'),
-			'missingTaxMsg' => __( 'Please make sure that the position is associated with a section before saving', 'wp-resume'),
-		);
-		wp_localize_script( 'wp_resume', 'wp_resume', $data );
-	
-	}
-
 	/**
 	 * Moves information around the database, supports back to 1.5
 	 * @since 1.2
@@ -752,9 +698,8 @@ class WP_Resume extends Plugin_Boilerplate {
 	 * Injects resume rewrite rules into the rewrite array when applicable
 	 */
 	function rewrite_rules() {
-		$options = $this->options->get_options();
-		
-		if ( !isset($options['rewrite']) || !$options['rewrite'] )
+			
+		if ( !$this->options->get_option( 'rewrite' ) );
 			return;
 
 		global $wp_rewrite;
@@ -770,10 +715,8 @@ class WP_Resume extends Plugin_Boilerplate {
 	 * Generates permalink for a given resume position
 	 */
 	function permalink($link, $post, $leavename, $sample) {
-
-		$options = $this->get_options();
 		
-		if ( $post->post_type != 'wp_resume_position' && isset($options['rewrite']) && $options['rewrite'] )
+		if ( $post->post_type != 'wp_resume_position' || $this->options->get_option( 'rewrite' ) )
 			return $link;
 			
 		$section = wp_get_post_terms($post->ID, 'wp_resume_section');
