@@ -105,10 +105,15 @@ class Plugin_Boilerplate_Options {
 	 * @param bool $global whether the option should be global or site specific
 	 * @return bool success/fail
 	 */
-	function set_user_options( $options, $user = null, $global = false ) {
+	function set_user_options( $options, $user = null, $global = false, $merge = true) {
 		
 		if ( $user == null )
 			$user = get_current_user_id();
+			
+		if ( $merge ) {
+			$defaults = $this->get_user_options( $user );
+			$options = wp_parse_args( $options, $defaults );	
+		}
 
 		self::$parent->cache->set( "{$user}_options", $options );
 
@@ -159,8 +164,13 @@ class Plugin_Boilerplate_Options {
 	 * @param array $options the options array
 	 * @return bool success/fail
 	 */
-	function set_options( $options ) {
-
+	function set_options( $options, $merge = true ) {
+		
+		if ( $merge ) {
+			$defaults = $this->get_options();
+			$options = wp_parse_args( $options, $defaults );	
+		}
+		
 		self::$parent->cache->set( 'options', $options );
 
 		return update_option( self::$parent->slug_, $options );
