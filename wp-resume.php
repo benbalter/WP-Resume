@@ -788,17 +788,7 @@ class WP_Resume extends Plugin_Boilerplate {
 		return $this->author;
 		
 	}
-	
-	/**
-	 * Allows non-admins to edit their own resume options
-	 * @since 2.0.2
-	 * @param string $cap the cap to check
-	 * @return string edit_post casts
-	 */
-	function cap_filter( $cap ) {
-		return 'edit_posts';
-	}
-	
+		
 }
 
 $wp_resume = new WP_Resume();

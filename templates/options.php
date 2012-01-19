@@ -1,6 +1,8 @@
 <div class="wp_resume_admin wrap">
 	<h2><?php _e('Resume Options', 'wp_resume'); ?></h2>
 	<form method="post" action='options.php' id="wp_resume_form">
+<?php	settings_errors(); ?>
+<?php	settings_fields( 'wp_resume_options' );  ?>	
     <table class="form-table">
     	<tr valign="top">
     		<th scope="row"><?php _e('Usage', 'wp-resume'); ?></label></th>

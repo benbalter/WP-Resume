@@ -5,9 +5,6 @@ class WP_Resume_Plaintext {
 	static $parent;
 
 	function __construct( &$instance ) {
-	
-		if ( !is_feed() )
-			return;
 		
 		//create or store parent instance
 		if ( $instance === null ) 
@@ -15,6 +12,18 @@ class WP_Resume_Plaintext {
 		else
 			self::$parent = &$instance;
 
+		add_action( 'init', array( &$this, 'init' ) );
+	}
+	
+	/**
+	 * Check if this is a feed, if not, don't register hooks
+	 * note: is_feed() can't be run until init
+	 */
+	function init() {
+	
+		if ( !is_feed() )
+			return;
+			
 		add_filter( 'resume_plaintext_content', array( &$this, 'bulletit'), 5 );
 		add_filter( 'resume_plaintext_content', 'wp_filter_nohtml_kses' );
 		add_filter( 'resume_plaintext_content', 'stripslashes' );

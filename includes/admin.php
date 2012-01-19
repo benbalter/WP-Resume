@@ -42,11 +42,11 @@ class WP_Resume_Admin {
 		add_action( 'edited_wp_resume_organization', array( &$this, 'save_link_field' ) );
 		
 		self::$parent->capabilities->defaults = array( 
-										'administrator' => array( 'edit_others_resume' => true ),
-										'editor' => array( 'edit_others_resume' => true ),
-										'author' => array( 'edit_others_resume' => false ),
-										'contributor' => array( 'edit_others_resume' => false ),
-										'subscriber' => array( 'edit_others_resume' => false ),
+										'administrator' => array( 'edit_others_resume' => true, 'edit_resume' => true ),
+										'editor' => array( 'edit_others_resume' => true, 'edit_resume' => true ),
+										'author' => array( 'edit_others_resume' => false, 'edit_resume' => true ),
+										'contributor' => array( 'edit_others_resume' => false, 'edit_resume' => true ),
+										'subscriber' => array( 'edit_others_resume' => false, 'edit_resume' => false ),
 							);
 	}
 	
@@ -278,11 +278,11 @@ class WP_Resume_Admin {
 	 * @returns array of validated data (without position order)
 	 */
 	function options_validate($data) {
-
+	
 		//make sure we're POSTing
 		if ( empty($_POST) )
 			return $data;
-			
+				
 		//grab the existing options, we must hand WP back a complete option array
 		$options = self::$parent->options->get_options();
 		
@@ -341,7 +341,7 @@ class WP_Resume_Admin {
 		}
 
 		//sanitize section order data
-		foreach ($data['order'] as $key=>$value)
+		foreach ( (array) $data['order'] as $key=>$value)
 			$user_options['order'][$key] = intval( $value );
 		
 		//store position order data
@@ -356,26 +356,29 @@ class WP_Resume_Admin {
 		if ( current_user_can( 'manage_options' ) ) {		
 			//move site-wide fields to output array
 			$fields = array( 'fix_ie', 'rewrite', 'hide-title' );
-			foreach ($fields as $field) {
-				$options[$field] = $data[$field];
-			}
-		}
+
+			foreach ($fields as $field)
+				$options[$field] = (int) $data[$field];
+
+			$options = self::$parent->api->apply_filters( 'options', $options );
+			self::$parent->options->set_options( $options );
 			
+			flush_rewrite_rules();
+		}
+
 		//store usermeta
 		$user = get_userdata( $current_author );
-		self::$parent->options->update_user_options( $user->ID, $user_options);
+		self::$parent->options->set_user_options( $user_options,  $user->ID );
 	
 		self::$parent->cache->delete(  $user->user_nicename . '_sections');
 		self::$parent->cache->delete(  $user->user_nicename . '_sections_hide_empty' );
 		self::$parent->cache->delete(  $user->user_nicename . '_resume', 'wp_resume' );
-		$this->flush_cache();
+		self::$parent->flush_cache();
 		
-		//flush in case they toggled rewrite
-		flush_rewrite_rules();
-		
-		$options = self::$parent->api->apply_filters( 'options', $options );
+
 
 		return $options;
+
 	}
 
 	/**
@@ -383,13 +386,7 @@ class WP_Resume_Admin {
 	 * @since 1.0a
 	 */
 	function options() { 	
-		global $wpdb;
-			
-	//provide feedback
-	settings_errors();
-
-	//Tell WP that we are on the wp_resume_options page
-	settings_fields( 'wp_resume_options' ); 
+		global $wpdb; 
 
 	//Pull the existing options from the DB
 	$options = self::$parent->options->get_options();
@@ -647,6 +644,16 @@ class WP_Resume_Admin {
 			
 		return $this->maybe_enqueue( $default, $file, $name );
 		 
+	}
+	
+	/**
+	 * Allows non-admins to edit their own resume options
+	 * @since 2.0.2
+	 * @param string $cap the cap to check
+	 * @return string edit_post casts
+	 */
+	function cap_filter( $cap ) {
+		return 'edit_resume';
 	}
 
 }
