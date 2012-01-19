@@ -22,10 +22,10 @@ class Plugin_Boilerplate_Enqueue {
 		else
 			self::$parent = &$instance;
 				
-		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_admin_js' ) );
-		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_admin_css' ) );
-		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_end_css' ) );
-		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_end_js' ) );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_admin_js' ), 50 );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_admin_css' ), 50 );
+		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_end_css' ), 50 );
+		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_end_js' ), 50 );
 		
 	}	
 	
@@ -75,7 +75,7 @@ class Plugin_Boilerplate_Enqueue {
 			
 		}
 		
-		$data = $name . '_data';
+		$data = str_replace( '-', '_', $name . '_data' );
 		$this->$data = apply_filters( 'localize_script', $this->$data, $name );
 		
 		if ( empty( $this->$data ) )

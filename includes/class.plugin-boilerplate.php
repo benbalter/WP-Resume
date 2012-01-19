@@ -113,7 +113,7 @@ class Plugin_Boilerplate {
 			return;
 		
 		$this->upgrade( $this->options->db_version, $this->version );
-		$this->api->do_action( 'upgrade', $this->options->db_version, $this->version );
+		$this->api->do_action( 'upgrade', $this->version, $this->options->db_version );
 			
 		$this->options->db_version = $this->version;
 		

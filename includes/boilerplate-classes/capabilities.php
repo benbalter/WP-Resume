@@ -54,9 +54,9 @@ class Plugin_Boilerplate_Capabilities {
 			foreach (  $wp_roles->role_names as $role=>$label ) { 
 			
 			//if the role is a standard role, map the default caps, otherwise, map as a subscriber
-			$caps = ( array_key_exists( $role, $defaults ) ) ? $defaults[$role] : $defaults['subscriber'];
+			$caps = ( array_key_exists( $role, $this->defaults ) ) ? $this->defaults[$role] : $this->defaults['subscriber'];
 		
-			$caps = self::$parent->api( 'caps', $caps, $role );
+			$caps = self::$parent->api->apply_filters( 'caps', $caps, $role );
 					
 			//loop and assign
 			foreach ( $caps as $cap=>$grant ) {	

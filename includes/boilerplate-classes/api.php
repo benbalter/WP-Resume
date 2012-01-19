@@ -28,6 +28,24 @@ class Plugin_Boilerplate_Api {
 	}
 	
 	/**
+	 * Provides mechanism to deprecate action hooks
+	 * @param string $replacement the proper hook to use
+	 * @param int $version the version the hook was deprecated
+	 * @param string $name the name of the hook called
+	 * @uses do_action
+	 */
+	function do_deprecated_action ( $replacement, $version, $name ) {
+	
+		_doing_it_wrong( $name, sprintf( __( '%1$s of %2$s' ), $version, $self::$parent->name ), sprintf( __( 'Use the action hook "%s" instead'), self::$parent->prefix . "_$replacement" ) );
+		
+		//remove replacement and version arguments
+		$args = array_slice( func_get_args(), 2 );
+		
+		call_user_func_array( array( &$this, 'do_action'), $args );
+		
+	}
+	
+	/**
 	 * Prepends prefix to action and calls standard apply_filters function
 	 * @param string $name the name of the action
 	 * @return the result of the filter
@@ -39,6 +57,24 @@ class Plugin_Boilerplate_Api {
 
 		return call_user_func_array( array( &$this, 'api'), $args );	
 	}
+	
+	/**
+	 * Provides mechanism to deprecate filters
+	 * @param string $replacement the proper hook to use
+	 * @param int $version the version the filter was deprecated
+	 * @param string $name the name of the filter called
+	 * @uses apply_filters
+	 */	
+	function apply_deprecated_filters( $replacement, $version, $name ) {	
+	
+		_doing_it_wrong( $name, sprintf( __( '%1$s of %2$s'), $version, $self::$parent->name ), sprintf( __( 'Use the filter "%s" instead'), self::$parent->prefix . "_$replacement" ) );	
+		
+		//remove replacement and version arguments
+		$args = array_slice( func_get_args(), 2 );
+
+		call_user_func_array( array( &$this, 'apply_filters'), $args );
+	}
+
 	
 	/**
 	 * Prepends prefix to do_action and apply_filters calls
@@ -56,7 +92,7 @@ class Plugin_Boilerplate_Api {
 		array_shift( $args );
 		$prefix = self::$parent->prefix;
 		$args[0] = $prefix . $name;
-		
+			
 		return call_user_func_array( $function, $args );
 
 	}
