@@ -39,6 +39,8 @@ You can [see it in action](http://ben.balter.com/resume/) or for information and
 
 The hardest part of getting your resume online should be doing the work listed on it, not wrestling the publishing platform. Simply put, WP Resume steps aside and lets your experience shine.
 
+**Developers,** have a killer feature you'd love to see included? Feel free to [fork the project on GitHub](https://github.com/benbalter/WP-Resume/) and submit your contributions via pull request.
+
 *Enjoy using WP Resume? Please consider [making a small donation](http://ben.balter.com/donate/) to support the software’s continued development.*
 
 == Installation ==
@@ -88,7 +90,7 @@ Awesome. Just append "?feed=json" to the URL of your resume and you're all set. 
 
 = Wouldn't it be really cool if it could do X? =
 
-Yes.  It probably would be.  [Leave a comment on the plugin page](http://ben.balter.com/2010/09/12/wordpress-resume-plugin/), and I'll try my best to make it happen.
+Yes.  It probably would be.  [Leave a comment on the plugin page](http://ben.balter.com/2010/09/12/wordpress-resume-plugin/), and I'll try my best to make it happen, or if you're a developer, feel free to [fork the code on Github](https://github.com/benbalter/WP-Resume/) and send a pull request to get your feature included.
 
 = I just want to make a small tweak to the CSS, do I have to do the whole template thing? =
 
@@ -112,6 +114,7 @@ Make sure all your positions are associated with sections.
 
 = 2.2.4 =
 * Significant enhancements to json and plain text versions
+* Added project to [Github](https://github.com/benbalter/WP-Resume/)
 
 = 2.2.3 =
 * Fix for organization links not properly saving in certain cases
