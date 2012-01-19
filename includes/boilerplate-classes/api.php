@@ -92,7 +92,7 @@ class Plugin_Boilerplate_Api {
 		array_shift( $args );
 		$prefix = self::$parent->prefix;
 		$args[0] = $prefix . $name;
-		
+			
 		return call_user_func_array( $function, $args );
 
 	}

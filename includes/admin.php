@@ -24,6 +24,8 @@ class WP_Resume_Admin {
 		add_action( 'wp_resume_organization_add_form', array( &$this, 'org_helptext' ) );
 		add_action( 'admin_init', array( &$this, 'enqueue_scripts' ) );
 		add_filter( 'option_page_capability_wp_resume_options', array( &$this, 'cap_filter' ), 10, 1 );
+		add_filter( 'wp_resume_enqueue_js', array( &$this, 'maybe_enqueue' ), 10, 3 );
+		add_filter( 'wp_resume_enqueue_css', array( &$this, 'maybe_enqueue_css' ), 10, 3 );
 
 		//ajax callbacks
 		add_action('wp_ajax_add_wp_resume_section', array( &$this, 'ajax_add') );
@@ -128,7 +130,7 @@ class WP_Resume_Admin {
 	 * @param obj $post the post object
 	 */
 	function order_box($post) {
-		self::$parent->template->order_box();
+		self::$parent->template->order_box( compact( 'post' ) );
 	}
 
 	/**
@@ -152,7 +154,7 @@ class WP_Resume_Admin {
 		//garb the current selected term where applicable so we can select it
 		$current = wp_get_object_terms( $post->ID, $type );
 		
-		self::$parent->template->taxonomy_box( compact( $taxonomy, $type, $terms, $current ) );
+		self::$parent->template->taxonomy_box( compact( 'taxonomy', 'type', 'terms', 'current' ) );
 
 	}
 
@@ -167,7 +169,7 @@ class WP_Resume_Admin {
 		$from = get_post_meta( $post->ID, 'wp_resume_from', true );
 		$to = get_post_meta( $post->ID, 'wp_resume_to', true );
 		
-		self::$parent->template->date_box( compact( $from, $to ) );
+		self::$parent->template->date_box( compact( 'from', 'to' ) );
 		
 	}
 
@@ -412,7 +414,7 @@ class WP_Resume_Admin {
 
 	$user_options = self::$parent->options->get_user_options( (int) $current_author );
 	
-	self::$parent->template->options( compact( $user_options, $authors, $current_author, $options ) );
+	self::$parent->template->options( compact( 'user_options', 'authors', 'current_author', 'options' ) );
 	
 	}
 	
@@ -435,7 +437,7 @@ class WP_Resume_Admin {
 	?>
 		<ul id="sections">
 			<?php //loop through the user's non-empty section
-				foreach ( $this->get_sections( true, $current_author ) as $section )	
+				foreach ( self::$parent->get_sections( true, $current_author ) as $section )	
 					$this->dragdrop_section ( $current_author, $section );
 			?>
 		</ul><!-- #sections -->
@@ -538,15 +540,14 @@ class WP_Resume_Admin {
 	 */
 	function link_field( $term, $taxonomy = '' ) {
 
-		$options = $this->get_options( ); 
 		$tax = get_taxonomy( $taxonomy );
 	
 		$edit = ( $taxonomy != '' );
 		$value = '';
-		if ( $edit && $this->get_org_link( $term->term_id ) )
-			$value = $this->get_org_link( $term->term_id );
+		if ( $edit && self::$parent->get_org_link( $term->term_id ) )
+			$value = self::$parent->get_org_link( $term->term_id );
 
-		self::$parent->template->link_field( compact( $edit, $value, $taxonomy ) );
+		self::$parent->template->link_field( compact( 'edit', 'value', 'taxonomy' ) );
 	}
 	
 	/**
@@ -561,7 +562,7 @@ class WP_Resume_Admin {
 		if ( !current_user_can( $tax->cap->edit_terms ) )
 			return;
 						
-		$this->set_org_link( $termID, $_REQUEST['org_link'] );
+		self::$parent->set_org_link( $termID, $_REQUEST['org_link'] );
 				
 	}	
 	
@@ -592,20 +593,13 @@ class WP_Resume_Admin {
 	
 		$suffix = ( WP_DEBUG ) ? 'dev.' : '';
 	
-		$post = false;
-		if ( !empty( $_GET['post'] ) )
-			$post = get_post( $_GET['post'] );
-	
 		//load javascript with libraries on options page
 		if ( !empty ( $_GET['page'] ) && $_GET['page'] == 'wp_resume_options' ) { 
-			wp_enqueue_script( 'wp_resume', plugins_url('/js/wp_resume.' . $suffix . 'js', __FILE__), array("jquery", "jquery-ui-core", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable"), $this->version );		
-		//if on the org, section, or edit page, load the script without all the libraries
-		} else if ( ( !empty( $_GET['post_type'] ) && $_GET['post_type'] == 'wp_resume_position' ) ||
-			 ( !empty( $_GET['post'] ) && $post && $post->post_type == 'wp_resume_position' ) ) { 
-			wp_enqueue_script( 'wp_resume', plugins_url('/js/wp_resume.' . $suffix . 'js', __FILE__), array("jquery"), $this->version );		
-		}
+			foreach ( array("jquery", "jquery-ui-core", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable" ) as $script ) 
+				wp_enqueue_script( $script );
+		} 
 		
-		$data = array( 
+		self::$parent->enqueue->admin_data = array( 
 			'more' => __('More', 'wp-resume'),
 			'less' => __('less', 'wp-resume'),
 			'yes' => __('Yes!', 'wp-resume'),
@@ -616,9 +610,43 @@ class WP_Resume_Admin {
 			'orgLoc' => __('Traditionally the location of the organization (optional)', 'wp-resume'),
 			'missingTaxMsg' => __( 'Please make sure that the position is associated with a section before saving', 'wp-resume'),
 		);
-		wp_localize_script( 'wp_resume', 'wp_resume', $data );
-	
-	}
 
+	}
+	
+	/**
+	 * Helper function to load contact_info_row template
+	 * @since 3.0
+	 */
+	function contact_info_row( $value, $field_id ) {
+		self::$parent->template->contact_info_row( compact( 'field_id', 'value' ) );
+	}
+	
+	/**
+	 * Only load javscript on resume pages
+	 * @since 3.0
+	 */
+	function maybe_enqueue( $default, $file, $name ) {
+		
+		$screen = get_current_screen();
+		
+		if ( $screen->post_type == 'wp_resume_position' )
+			return true;
+			
+		return $default;		
+	}
+	
+	/**
+	 * Only load css on resume pages and always on front end
+	 * @since 3.0
+	 */
+	function maybe_enqueue_css( $default, $file, $name ) {
+	
+		//only filter admin
+		if ( $name != 'admin' )
+			return $default;
+			
+		return $this->maybe_enqueue( $default, $file, $name );
+		 
+	}
 
 }

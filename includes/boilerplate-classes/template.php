@@ -22,7 +22,11 @@ class Plugin_Boilerplate_Template {
 	/**
 	 * Allow templates to be loaded in the form of $object->templates->{template_name}();
 	 */
-	function __call( $template, $args = null ) {
+	function __call( $template, $args = array() ) {
+		
+		if ( !empty( $args ) )
+			$args = $args[0];
+			
 		return $this->load( $template, $args );
 	}
 	
@@ -33,32 +37,35 @@ class Plugin_Boilerplate_Template {
 	 * 
 	 * To pass arguments to the template, pass an array or compact
 	 *
+	 * Variables in this function are prefixed to avoid collision
+	 *
 	 */
-	function load( $template, $args = null ) {
+	function load( $_pb_template, $args = null ) {
 
 		if ( is_array( $args ) )
-			extract( $args );
+			 extract( $args );
+			
+		$_pb_template = self::$parent->api->apply_filters( 'template', $_pb_template );
 		
-		$template = self::$parent->api->apply_filters( 'template', $template );
-		
-		$file = false;
+		$_pb_file = false;
 		
 		//if in overrides or set by filter look in child then parent folder for the file
 		//before looking in plugin's template folder
 		//note: by default, this functionality is disabled
-		if ( 	in_array( $template, $this->overrides ) 	||
-				self::$parent->api->apply_filters( 'allow_template_override', false, $template ) )
-			$file = locate_template( $template );
+		if ( 	in_array( $_pb_template, $this->overrides ) 	||
+				self::$parent->api->apply_filters( 'allow_template_override', false, $_pb_template ) )
+			$_pb_file = locate_template( $_pb_template );
 		
-		if ( !$file )
-			$file = self::$parent->directory . $this->path . $template . '.php';
+		if ( !$_pb_file )
+			$_pb_file = self::$parent->directory . $this->path . $_pb_template . '.php';
 
-		if ( !file_exists( $file ) ) {
-			trigger_error( "{self::$parent->name} -- cannot locate template $file" );
+		if ( !file_exists( $_pb_file ) ) {
+			$backtrace = debug_backtrace();	
+			trigger_error( self::$parent->name . " -- cannot locate template $_pb_file called on line {$backtrace[1]['line']} of {$backtrace[1]['file']}" );
 			return false;	
 		}
 			
-		include( $file );
+		include( $_pb_file );
 		
 		return true;
 		

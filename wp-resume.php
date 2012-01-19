@@ -25,8 +25,8 @@ class WP_Resume extends Plugin_Boilerplate {
 	public $name = 'WP Resume';
 	public $slug = 'wp-resume';
 	public $slug_ = 'wp_resume';
-	public $prefix = 'wp_resume';
-	public $version = '2.2.3';
+	public $prefix = 'wp_resume_';
+	public $version = '3.0';
 
 	static $instance;
 	public $author = '';
@@ -57,17 +57,26 @@ class WP_Resume extends Plugin_Boilerplate {
 		//i18n
 		add_filter( 'list_terms_exclusions', array( &$this, 'exclude_the_terms' ) );
 		
+		add_action( 'plugins_loaded', array( &$this, 'init' ) );
+
+	}
+
+	function init() { 
+
 		//default fields and values
 		$this->options->defaults = array(	'fix_ie' => true, 
 											'rewrite' => false, 
 											'hide-title' => false 
 										);
+		
 		$this->options->user_defaults = array(	'name'=> '', 
 												'summary' => '', 
 												'contact_info'=> array(), 
 												'order'=>array(), 
 												'hide-donate' => false 
 											);
+		//user overridable templates								
+		$this->template->overrides = array( 'resume', 'resume-text', 'resume-json' );
 
 	}
 	 
@@ -102,13 +111,13 @@ class WP_Resume extends Plugin_Boilerplate {
 		  'public' => true,
 		  'publicly_queryable' => true,
 		  'show_ui' => true, 
-		  'menu_icon' => plugins_url( '/menu-icon.png', __FILE__ ),
+		  'menu_icon' => plugins_url( '/img/menu-icon.png', __FILE__ ),
 		  'query_var' => true,
 		  'rewrite' => ( isset( $options['rewrite'] ) && $options['rewrite'] ),
 		  'capability_type' => 'post',
 		  'hierarchical' => false,
 		  'menu_position' => null,
-		  'register_meta_box_cb' => array( &$this, 'meta_callback' ),
+		  'register_meta_box_cb' => array( &$this->admin, 'meta_callback' ),
 		  'supports' => array( 'title', 'editor', 'revisions', 'custom-fields', 'page-attributes', 'author'),
 		  'taxonomies' => array('wp_resume_section', 'wp_resume_organization'),
 		); 

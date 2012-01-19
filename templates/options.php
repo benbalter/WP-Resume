@@ -51,11 +51,11 @@
     		<th scope="row"><?php _e('Contact Information', 'wp-resume'); ?></th>
     		<td>
     			<ul class="contact_info_blank" style="display:none;">
-    				<?php self::$parent->template->contact_info_row(); ?>
+    				<?php self::$parent->template->contact_info_row( array( 'field_id' => '', 'value' => '' ) ); ?>
     			</ul>
     			<ul id="contact_info">
     				<?php if ( isset($user_options['contact_info'] ) && is_array( $user_options['contact_info'] ) ) 
-    					array_walk_recursive($user_options['contact_info'], array( &$this, 'contact_info_row' ) ); ?>
+    					array_walk_recursive($user_options['contact_info'], array( &self::$parent->admin, 'contact_info_row' ) ); ?>
     			</ul>
     			<a href="#" id="add_contact_field">+ <?php _e('Add Field', 'wp-resume'); ?></a><br />
     			<span class="description"><?php _e('(optional) Add any contact info you would like included in your resume', 'wp-resume'); ?>.</span>
@@ -73,7 +73,7 @@
     	<tr valign="top">
     		<th scope="row"><?php _e('Resume Order', 'wp-resume'); ?></th>
     		<td>
-    		<?php $this->order_dragdrop( (int) $current_author ); ?>
+    		<?php self::$parent->admin->order_dragdrop( (int) $current_author ); ?>
     		<span class="description"><?php _e('New positions are automatically displayed in reverse chronological order, but you can fine tune that order by rearranging the elements in the list above', 'wp-resume'); ?>.</span>
     		</td>
     	</tr>

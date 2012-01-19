@@ -125,7 +125,7 @@ class Plugin_Boilerplate_Options {
 	 * @return array the options
 	 */
 	function get_options( ) {
-		
+			
 		if ( !$options = self::$parent->cache->get( 'options' ) ) { 
 			$options = (array) get_option( self::$parent->slug_ );
 			$options = wp_parse_args( $options, $this->defaults ); 
