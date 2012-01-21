@@ -16,7 +16,7 @@ class Plugin_Boilerplate_Donate {
 		else
 			self::$parent = &$instance;
 			
-		add_action( 'wp_ajax_' . self::$parent->slug_ . '_hide_donate', array( &$this, 'hide_donate') );
+		add_action( 'wp_ajax_' . self::$parent->slug_ . '_hide_donate', array( &$this, 'hide') );
 
 	}
 	
@@ -37,7 +37,7 @@ class Plugin_Boilerplate_Donate {
 	 * Stores user's preference to hide the donate message via AJAX
 	 */
 	function hide() {
-		
+	
 		check_ajax_referer( self::$parent->slug_ . '_hide_donate' , '_ajax_nonce-' . self::$parent->slug . '-hide-donate' );
 		
 		self::$parent->options->set_user_option( 'hide-donate', true );

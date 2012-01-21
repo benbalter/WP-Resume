@@ -28,9 +28,22 @@ class Plugin_Boilerplate_Debug {
 		if ( !current_user_can( 'manage_options' ) || !WP_DEBUG )
 	    	return;
 
+		//add_filter('debug_bar_panels', array( &$this, 'maybe_hide' ), 0 );	
 		add_filter('debug_bar_panels', array( &$this, 'init_panel' ) );	
 		add_filter('debug_bar_panels',  array( &$this, 'register_panel' ), 20 );
 
+	}
+	
+	/**
+	 * Removes debug bar panel if there's no debug info to display
+	 */
+	function maybe_hide( $panels ) {
+			
+		if ( empty( $this->history ) )
+			remove_filter('debug_bar_panels',  array( &$this, 'register_panel' ), 20 );
+	
+		return $panels;
+		
 	}
 	
 	/**
@@ -87,7 +100,7 @@ class Plugin_Boilerplate_Debug {
 	/**
 	 * Renders history for debug bar panel
 	 */
-	function render() {
+	function render() {	
 		foreach ( $this->history as $debug )
 			echo "<pre>$debug</pre>";
 	}
@@ -108,6 +121,12 @@ class Plugin_Boilerplate_Debug {
 			function render() { 
 				self::$parent->render(); 
 			} 
+			
+			function prerender() {
+				if ( empty( self::$parent->history ) )
+					$this->set_visible( false );
+			}	
+			
 		}';
 
 		$init = create_function( '', $code );
