@@ -28,22 +28,9 @@ class Plugin_Boilerplate_Debug {
 		if ( !current_user_can( 'manage_options' ) || !WP_DEBUG )
 	    	return;
 
-		//add_filter('debug_bar_panels', array( &$this, 'maybe_hide' ), 0 );	
 		add_filter('debug_bar_panels', array( &$this, 'init_panel' ) );	
 		add_filter('debug_bar_panels',  array( &$this, 'register_panel' ), 20 );
 
-	}
-	
-	/**
-	 * Removes debug bar panel if there's no debug info to display
-	 */
-	function maybe_hide( $panels ) {
-			
-		if ( empty( $this->history ) )
-			remove_filter('debug_bar_panels',  array( &$this, 'register_panel' ), 20 );
-	
-		return $panels;
-		
 	}
 	
 	/**
