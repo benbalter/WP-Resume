@@ -29,7 +29,7 @@ class WP_Resume extends Plugin_Boilerplate {
 	public $version = '3.0';
 
 	static $instance;
-	public $author = '';
+	public $author = null;
 	public $query_obj;
 
 	function __construct() {
@@ -39,6 +39,8 @@ class WP_Resume extends Plugin_Boilerplate {
 						
 		//cpt and CT
 		add_action( 'init', array( &$this, 'register_cpt_and_t' ) );
+		add_filter( 'get_terms', array( &$this, 'section_order_filter' ), 10, 3 );
+		add_filter( 'wp_resume_order', array( &$this, 'pad_order' ) );
 		
 		//frontend printstyles
 		add_action( 'wp_print_styles', array( &$this, 'enqueue_styles' ) );
@@ -197,53 +199,62 @@ class WP_Resume extends Plugin_Boilerplate {
 			$author = $user->user_nicename;
 		}
 		
-		$cache_slug = $author . '_sections';
-		if ( $hide_empty )
-			$cache_slug .= '_hide_empty';
-			
-		if ( $cache = $this->cache->get( $cache_slug ) )
-			return $cache;
+		$this->author = $author;
 
 		//get all sections ordered by term_id (order added)
 		$sections = get_terms( 'wp_resume_section', array('hide_empty' => $hide_empty ) );
-		
-		//pull out the order array
-		$user_options = $this->options->get_user_options( $author );
-		
-		//user has not specified any sections, prevents errors on initial activation
-		if ( !isset( $user_options['order'] ) )
-			return $this->api->apply_filters( 'sections', $sections );
 
-		$section_order = $user_options['order'];
-			
-		//Loop through each section
-		foreach( $sections as $ID => $section ) { 
-			
-			//if the term is in our order array
-			if ( is_array($section_order) && array_key_exists( $section->term_id, $section_order ) ) { 
-			
-				//push the term object into the output array keyed to it's order
-				$output[ $section_order[$section->term_id] ] = $section;
-			
-				//pull the term out of the original array
-				unset($sections[$ID]);
-			
-			}
-		}
-		
-		//for those terms that we did not have a user-specified order, stick them at the end of the output array
-		foreach($sections as $section) $output[] = $section;
-		
-		//sort by key
-		ksort($output);
-
-		$output = $this->api->apply_filters( 'sections', $output);
+		$sections = $this->api->apply_filters( 'sections', $sections);
 					
-		$this->cache->set( $cache_slug, $output );
-						
-		//return the new array keyed to order
-		return $output;
+		return $sections;
 		
+	}
+	
+	/**
+	 * Reorders talls to get_terms for the section taxonomy by the user's custom order
+	 * note: because we can't pass an extra arg to this filter, we store it as $this->author
+	 */
+	function section_order_filter( $terms, $taxonomies, $args ) {
+		
+		if ( $taxonomies != array( 'wp_resume_section' ) )
+			return $terms;		
+			
+		if ( $args['fields'] != 'all' )
+			return $terms;
+			
+		$order = $this->options->get_user_option( 'order', $this->author );
+
+		$output = array( );
+		
+		foreach ( $terms as $term )
+			$output[ array_search( $term->term_id, $order ) ] = $term;		
+
+		ksort( $output );
+
+		return $output;
+			
+	}
+	
+	/**
+	 * Ensures requests for section order contains all sections
+	 */
+	function pad_order( $order ) {
+		
+		remove_filter( 'get_terms', array( &$this, 'section_order_filter' ) );
+
+		foreach ( get_terms( 'wp_resume_section', array('hide_empty' => false ) ) as $section ) {
+
+			if ( in_array( $section->term_id, $order ) )
+				continue;
+				
+			$order[] = $section->term_id;
+			
+		}
+
+		add_filter( 'get_terms', array( &$this, 'section_order_filter' ), 10, 3 );
+		
+		return $order;
+
 	}
 
 	/**
@@ -571,9 +582,29 @@ class WP_Resume extends Plugin_Boilerplate {
 			
 		}
 		
+		//3.0 -- flip key and value in order array
+		if ( $from < '3.0' ) { 
+		
+			$users = get_users( array( 'blog_id' => $GLOBALS['blog_id'] , 'fields' => 'ID' ) );
+						
+			foreach ( $users as $user ) {
+			
+				$order = $this->options->get_user_option( 'order', $user );
+								
+				$new = array();
+				
+				foreach ( $order as $k => $v )
+					$new[ $v ] = $k;
+				
+				$order = $this->options->set_user_option( 'order', $new, $user );
+				
+			}
+			
+		}
+		
 		//flush rewrite rules just in case
 		flush_rewrite_rules();
-	  
+			  
 	 }
 
 	/**

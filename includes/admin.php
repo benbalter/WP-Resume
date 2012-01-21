@@ -340,9 +340,13 @@ class WP_Resume_Admin {
 
 		}
 
+
 		//sanitize section order data
+		$order = array();
 		foreach ( (array) $data['order'] as $key=>$value)
-			$user_options['order'][$key] = intval( $value );
+			$order[] = (int) $key ;
+		
+		$user_options['order'] = $order;
 		
 		//store position order data
 		if ( isset($data['position_order'] )  && is_array($data['position_order'] ) ) { 
@@ -408,6 +412,7 @@ class WP_Resume_Admin {
 		$current_user = wp_get_current_user();
 		$current_author = $current_user->ID;
 	}
+	
 
 	$user_options = self::$parent->options->get_user_options( (int) $current_author );
 	
@@ -430,8 +435,7 @@ class WP_Resume_Admin {
 	 *				ul.positions
 	 * 					li.position
 	 */
-	function order_dragdrop( $current_author ) {
-	?>
+	function order_dragdrop( $current_author ) { ?>
 		<ul id="sections">
 			<?php //loop through the user's non-empty section
 				foreach ( self::$parent->get_sections( true, $current_author ) as $section )	
@@ -564,19 +568,13 @@ class WP_Resume_Admin {
 	}	
 	
 	/**
-	 * Checks DB version on admin init and upgrades if necessary
-	 * Used b/c 1) no CPTs on activation hook, 2) no activation hook on multi-update
+	 * Tell WP about our setting
 	 * @since 1.6
 	 */
 	function admin_init() {
 					
 		register_setting( 'wp_resume_options', 'wp_resume_options', array( &$this, 'options_validate' ) );
 		
-		//set default user order to prevent errors		
-		$i = 0;	
-		foreach ( self::$parent->get_sections( false ) as $section)
-				$this->options->user_defaults['order'][$section->term_id] = $i++;
-				
 	}
 	
 	/**

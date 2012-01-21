@@ -109,10 +109,10 @@ class WP_Resume_Templating {
 		$title = '<a href="' . $link . '">' . $object->name . '</a>';
 		
 		
-		$title = self::$parent->api->apply_deprecated_filters( "resume_{$taxonomy}_link", '3.0', "{$taxonomy}_link", $name );
-		$title = self::$parent->api->apply_filters( '{$taxonomy}_link', $name );
-		$title = self::$parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $name );
-		$title = self::$parent->api->apply_filters( '{$taxonomy}_name', $name );
+		$title = self::$parent->api->apply_deprecated_filters( "resume_{$taxonomy}_link", '3.0', "{$taxonomy}_link", $title );
+		$title = self::$parent->api->apply_filters( '{$taxonomy}_link', $title );
+		$title = self::$parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $title );
+		$title = self::$parent->api->apply_filters( '{$taxonomy}_name', $title );
 		
 		return $title;
 		

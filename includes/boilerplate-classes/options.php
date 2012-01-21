@@ -95,7 +95,7 @@ class Plugin_Boilerplate_Options {
 	function set_user_option( $key, $value, $user = null ) {
 		$options = $this->get_user_options( $user );
 		$options[ $key ] = $value;
-		return $this->set_user_options( $options );
+		return $this->set_user_options( $options, $user, null, false );
 	}
 	
 	/**
@@ -141,7 +141,7 @@ class Plugin_Boilerplate_Options {
 	 * @param string $option the unique option key
 	 * @return mixed the value
 	 */
-	function get_option( $option ) {
+	function get_option( $option ) { 
 		$options = $this->get_options( );
 		$value = ( isset( $options[ $option ] ) ) ? $options[ $option ] : false;
 		return self::$parent->api->apply_filters( $option, $value );
@@ -153,10 +153,10 @@ class Plugin_Boilerplate_Options {
 	 * @param mixed $value the value
 	 * @return bool success/fail
 	 */
-	function set_option( $key, $value ) {
-		$options = $this->get_options( );
+	function set_option( $key, $value ) { 
+		$options = $this->get_options( ); 
 		$options[ $key ] = $value;
-		return $this->set_options( $options );
+		return $this->set_options( $options, false );
 	}
 	
 	/**
