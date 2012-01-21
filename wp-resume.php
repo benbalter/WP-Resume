@@ -57,7 +57,8 @@ class WP_Resume extends Plugin_Boilerplate {
 		//i18n
 		add_filter( 'list_terms_exclusions', array( &$this, 'exclude_the_terms' ) );
 		
-		add_action( 'plugins_loaded', array( &$this, 'init' ) );
+		//init
+		add_action( 'wp_resume_init', array( &$this, 'init' ) );
 
 	}
 
@@ -86,7 +87,7 @@ class WP_Resume extends Plugin_Boilerplate {
 	 */
 	function register_cpt_and_t() {
 	  	
-	  	$options = $this->options->get_options();
+	  	$rewrite = $this->options->get_option( 'rewrite' );
 	  		
 	  	//Custom post type labels array
 	  	$labels = array(
@@ -113,7 +114,7 @@ class WP_Resume extends Plugin_Boilerplate {
 		  'show_ui' => true, 
 		  'menu_icon' => plugins_url( '/img/menu-icon.png', __FILE__ ),
 		  'query_var' => true,
-		  'rewrite' => ( isset( $options['rewrite'] ) && $options['rewrite'] ),
+		  'rewrite' => $rewrite,
 		  'capability_type' => 'post',
 		  'hierarchical' => false,
 		  'menu_position' => null,
@@ -141,7 +142,7 @@ class WP_Resume extends Plugin_Boilerplate {
 		   'new_item_name' => __( 'New Section Name', 'wp-resume' ),
 		 ); 	
 		 
-		$args = $this->api->apply_filters( 'section_ct', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => ( isset( $options['rewrite'] ) && $options['rewrite'] ) ? array( 'slug' => 'sections' ) : false ) ); 
+		$args = $this->api->apply_filters( 'section_ct', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => ( $rewrite ) ? array( 'slug' => 'sections' ) : false ) ); 
 		 
 		//Register section taxonomy	
 		register_taxonomy( 'wp_resume_section', 'wp_resume_position', $args );
@@ -160,14 +161,10 @@ class WP_Resume extends Plugin_Boilerplate {
 		   'new_item_name' => __( 'New Organization Name', 'wp-resume' ),
 		 ); 
 		 
-		$args = $this->api->apply_filters( 'organization_ct', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => ( isset( $options['rewrite'] ) && $options['rewrite'] ) ? array( 'slug' => 'organizations' ) : false ) );
+		$args = $this->api->apply_filters( 'organization_ct', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => ( $rewrite ) ? array( 'slug' => 'organizations' ) : false ) );
 		 
 		//Register organization taxonomy
 		register_taxonomy( 'wp_resume_organization', 'wp_resume_position', $args );
-		
-		$i = 0;	
-		foreach ( $this->get_sections( false ) as $section)
-				$this->options->user_defaults['order'][$section->term_id] = $i++;
 		
 	}
 	
@@ -209,9 +206,6 @@ class WP_Resume extends Plugin_Boilerplate {
 
 		//get all sections ordered by term_id (order added)
 		$sections = get_terms( 'wp_resume_section', array('hide_empty' => $hide_empty ) );
-		
-		//get the plugin options array to pull the user-specified order
-		$options = $this->options->get_options();
 		
 		//pull out the order array
 		$user_options = $this->options->get_user_options( $author );
@@ -301,7 +295,7 @@ class WP_Resume extends Plugin_Boilerplate {
 		if ( is_wp_error( $organization ) || !isset( $organization[0] ) ) 
 			return false;
 		
-		$org = $this->api->apply_deprecated_filters( 'organization', '3.0', 'resume_organization', $organization[0] );
+		$org = $this->api->apply_deprecated_filters( 'resume_organization', '3.0', 'organization', $organization[0] );
 		$org = $this->api->apply_filters( 'organization', $organization[0] );
 		
 		$this->cache->set( $postID . '_organization', $org );
@@ -524,9 +518,6 @@ class WP_Resume extends Plugin_Boilerplate {
 	 * @since 1.2
 	 */
 	function upgrade( $from, $to ) {
-	
-		//get our options
-		$options = $this->options->get_options();
 		
 		//check to see if we have any sections, if not add the sections
 		if ( sizeof( $this->get_sections( false ) ) == 0 ) {
@@ -535,67 +526,55 @@ class WP_Resume extends Plugin_Boilerplate {
 			wp_insert_term( 'Awards', 'wp_resume_section' );
 		}
 			
-		//add multi-user support (v. 1.6)
-		if ( !isset( $options['db_version'] ) || substr( $options['db_version'], 0, 2 ) < '1.6' ) {
+		//1.6 -- add multi-user support (v. 1.6)
+		if ( $from && substr( $from, 0, 2 ) < '1.6' ) {
 			
+			$options = $this->options->get_options();
 			$usermeta = array();
-			$current_user = wp_get_current_user();
 			
 			//migrate $options[field] to (usermeta) [wp_resume][field] and kill original
-			foreach ($fields['user'] as $field=>$value) {
+			foreach ( $this->options->user_defaults as $field=>$value ) {
 				if ( isset( $options[$field] ) ) {
 					$usermeta[$field] = $options[$field];
-					unset($options[$field]);
+					unset( $options[$field] );
 				} 
 			}
 
 			//store usermeta to current user
 			//(assumption: user upgrading is author of resume)
-			update_user_meta( $current_user->ID, 'wp_resume', $usermeta );
+			update_user_meta( get_current_user_id(), 'wp_resume', $usermeta );
+			
+			//store updated options
+			$this->options->set_options( $options );
 
 		}
+
+		// 2.2 -- move from user_meta to user_option
+		if ( $from && $from < '2.2' ) {
 		
-		//if global fields are null, set to default
-		foreach ( $fields['global'] as $key=>$value ) {
-			if ( !isset( $options[$key] ) )
-				$options[$key] = $value;
-		}
+			$users = get_users( array( 'blog_id' => $GLOBALS['blog_id'] , 'fields' => 'ID' ) );
+			foreach ($users as $user) {
 		
-		//if user fields are null for any user, set to default
-		global $wpdb;
-		$users = $wpdb->get_col( $wpdb->prepare("SELECT $wpdb->users.ID FROM $wpdb->users") );
-		foreach ($users as $user) {
-		
-			if ( isset( $options['db_version'] ) && $options['db_version'] < '2.2' ) {
-				//move from user_meta to user_option
 				$user_options = get_user_meta( $user, 'wp_resume', true );
 				delete_user_meta( $user, 'wp_resume' );
-			} else {		
-				//get current options
-				$user_options = $this->options->get_user_options( (int) $user );
-			}
+					
+			} 
+			
+			$user_options = array();
 			
 			//loop default fields
-			foreach ( $fields['user'] as $key=>$value ) {
-			
-				//check they exist, if not set
-				if ( !isset( $user_options[$key] ) )
-					$user_options[$key] = $value;
+			foreach ( $this->options->user_defaults as $key => $value )
+				$user_options[ $key ] = $value;
 
-				//update
-				$this->options->set_user_options( $user, $user_options );
-			}	
+			//update
+			$this->options->set_user_options( $user, $user_options );	
 			
 		}
-			
-		//store updated options
-		$this->options->set_options( $options );
 		
 		//flush rewrite rules just in case
 		flush_rewrite_rules();
 	  
-		return $options;
-	}
+	 }
 
 	/**
 	 * Includes resume template on shortcode use 
@@ -609,7 +588,7 @@ class WP_Resume extends Plugin_Boilerplate {
 		ob_start();
 		$this->api->do_action( 'shortcode_pre' );
 
-		if ( !( $resume = $this->cache-get( $this->author . '_resume' ) ) ) {
+		if ( !( $resume = $this->cache->get( $this->author . '_resume' ) ) ) {
 			$this->template->resume( );
 			$resume = ob_get_contents();
 			$this->cache->set( $this->author . '_resume', $resume );
@@ -655,7 +634,6 @@ class WP_Resume extends Plugin_Boilerplate {
 		if ( !$this->resume_in_query() )
 			return;
 
-		$options = $this->options->get_options();
 		$this->template->header();
 		
 	 }

@@ -22,7 +22,7 @@ class WP_Resume_Admin {
 		add_action( 'admin_menu', array( &$this, 'menu' ) );
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
 		add_action( 'wp_resume_organization_add_form', array( &$this, 'org_helptext' ) );
-		add_action( 'admin_init', array( &$this, 'enqueue_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 		add_filter( 'option_page_capability_wp_resume_options', array( &$this, 'cap_filter' ), 10, 1 );
 		add_filter( 'wp_resume_enqueue_js', array( &$this, 'maybe_enqueue' ), 10, 3 );
 		add_filter( 'wp_resume_enqueue_css', array( &$this, 'maybe_enqueue_css' ), 10, 3 );
@@ -257,7 +257,7 @@ class WP_Resume_Admin {
 		$user = wp_get_current_user();
 		self::$parent->cache->delete(  $user->user_nicename . '_resume' );
 		self::$parent->cache->delete(  $post_id . '_organization' );
-		$this->flush_cache();
+		self::$parent->flush_cache();
 
 	}
 
@@ -461,13 +461,13 @@ class WP_Resume_Admin {
 				<?php 
 				
 				//get all positions in this section and loop
-				$posts = $this->query( $section->slug, $current_author );
+				$posts = self::$parent->query( $section->slug, $current_author );
 				if ( $posts->have_posts() ) : while ( $posts->have_posts() ) : $posts->the_post();
 					
 					//grab the current position's organization and compare to last
 					//if different or this is the first position, output org label and UL
-					$org = $this->get_org( get_the_ID() );
-					if ( $org && $this->get_previous_org( ) != $org )
+					$org = self::$parent->get_org( get_the_ID() );
+					if ( $org && self::$parent->get_previous_org( ) != $org )
 						$this->dragdrop_org_start( $org );
 					
 					//main position li	 
@@ -475,7 +475,7 @@ class WP_Resume_Admin {
 					
 					//next position's organization is not the same as this 
 					//or this is the last position in the query
-					if ( $org && $this->get_next_org() != $org )
+					if ( $org && self::$parent->get_next_org() != $org )
 						$this->dragdrop_org_end();
 					
 				endwhile; endif; ?>
@@ -494,7 +494,7 @@ class WP_Resume_Admin {
 			<a href="<?php echo admin_url( 'post.php?post=' . get_the_ID() . '&action=edit' ); ?>">
 				<?php echo the_title(); ?> 
 			</a>
-			<?php if ($date = $this->format_date( get_the_ID() ) ) echo "($date)"; ?>
+			<?php if ($date = self::$parent->templating->get_date( get_the_ID() ) ) echo "($date)"; ?>
 		</li><!-- .position -->
 	<?php
 	}
@@ -572,30 +572,38 @@ class WP_Resume_Admin {
 					
 		register_setting( 'wp_resume_options', 'wp_resume_options', array( &$this, 'options_validate' ) );
 		
-		if ( empty ($_GET['page'] ) || $_GET['page'] != 'wp_resume_options' )
-			return;
-			
-		//If we are on the wp_resume_options page, enque the tinyMCE editor
-		wp_enqueue_script('editor');
-		add_thickbox();
-		wp_enqueue_script('media-upload');
-		wp_enqueue_script('post');
-		
+		//set default user order to prevent errors		
+		$i = 0;	
+		foreach ( self::$parent->get_sections( false ) as $section)
+				$this->options->user_defaults['order'][$section->term_id] = $i++;
+				
 	}
 	
 	/**
 	 * Tells WP to load our javascript files
 	 */
 	function enqueue_scripts() {
-	
-		$suffix = ( WP_DEBUG ) ? 'dev.' : '';
-	
-		//load javascript with libraries on options page
-		if ( !empty ( $_GET['page'] ) && $_GET['page'] == 'wp_resume_options' ) { 
-			foreach ( array("jquery", "jquery-ui-core", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable" ) as $script ) 
-				wp_enqueue_script( $script );
-		} 
+
+		$screen = get_current_screen();
 		
+		if ( $screen->post_type != 'wp_resume_position' )
+			return;
+		
+		//If we are on the wp_resume_options page
+		if ( $screen->id == 'wp_resume_position_page_wp_resume_options' ) { 
+		
+			//load js libraries	
+			foreach ( array( "jquery", "jquery-ui-core", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable" ) as $script ) 
+				wp_enqueue_script( $script );
+				
+			// enque the tinyMCE editor
+			wp_enqueue_script('editor');
+			add_thickbox();
+			wp_enqueue_script('media-upload');
+			wp_enqueue_script('post');
+
+		}
+		 		
 		self::$parent->enqueue->admin_data = array( 
 			'more' => __('More', 'wp-resume'),
 			'less' => __('less', 'wp-resume'),
@@ -606,6 +614,7 @@ class WP_Resume_Admin {
 			'orgName' => __('The name of the organization as you want it to appear', 'wp-resume'),
 			'orgLoc' => __('Traditionally the location of the organization (optional)', 'wp-resume'),
 			'missingTaxMsg' => __( 'Please make sure that the position is associated with a section before saving', 'wp-resume'),
+			
 		);
 
 	}

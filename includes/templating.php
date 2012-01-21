@@ -26,7 +26,7 @@ class WP_Resume_Templating {
 		
 		$name = self::$parent->options->get_user_option( 'name', $this->author );
 		
-		$name = self::$parent->api->apply_deprecated_filters( 'name', '3.0', 'resume_name', $name );
+		$name = self::$parent->api->apply_deprecated_filters( 'resume_name', '3.0', 'name', $name );
 		return self::$parent->api->apply_filters( 'name', $name );
 		
 	}
@@ -38,15 +38,15 @@ class WP_Resume_Templating {
 	 */
 	function get_title( $ID ) {
 			
-		if ( !$this->options->get_option( 'rewrite' ) ) {
+		if ( !self::$parent->options->get_option( 'rewrite' ) ) {
 			$title = get_the_title();
 		} else {
 			$title = '<a href="' . get_permalink() . '">' . get_the_title() . '</a>';
-			$title = self::$parent->api->apply_deprecated_filters( 'title_link', '3.0', 'resume_title_link', $title );
+			$title = self::$parent->api->apply_deprecated_filters( 'resume_title_link', '3.0', 'title_link', $title );
 			$title = self::$parent->api->apply_filters( 'title_link', $title );
 		}
 		
-		$title = self::$parent->api->apply_deprecated_filters( 'position_title', '3.0', 'resume_position_title', $title );
+		$title = self::$parent->api->apply_deprecated_filters( 'resume_position_title', '3.0', 'position_title', $title );
 		return self::$parent->api->apply_filters( 'position_title', $title );
 		 
 	}
@@ -85,33 +85,33 @@ class WP_Resume_Templating {
 	function get_taxonomy_name( $object, $taxonomy, $link ) {
 		global $post;
 		
-		$options = $this->get_options();
+		$rewrite = self::$parent->options->get_option( 'rewrite' );
 		
 		if ( !$link ) {
-			$name = self::$parent->api->apply_deprecated_filters( '{$taxonomy}_name', '3.0', 'resume_{$taxonomy}_name', $object->name );
-			return self::$parent->api->apply_filters( '{$taxonomy}_name', $name );
+			$name = self::$parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $object->name );
+			return self::$parent->api->apply_filters( "{$taxonomy}_name", $name );
 		}
 		
 		//org link
-		if ( $taxonomy == 'organization' && $this->get_org_link( $object->term_id ) ) {
-			$link = $this->get_org_link( $object->term_id );
+		if ( $taxonomy == 'organization' && self::$parent->get_org_link( $object->term_id ) ) {
+			$link = self::$parent->get_org_link( $object->term_id );
 		
 		//rewrite links
-		} else if ( isset( $options['rewrite'] ) && $options['rewrite'] ) {
+		} else if ( $rewrite ) {
 			$link = get_term_link( $object, "resume_{$taxonomy}" );
 		
 		//no link
 		} else {
-			$name = self::$parent->api->apply_deprecated_filters( '{$taxonomy}_name', '3.0', 'resume_{$taxonomy}_name', $object->name );
-			return self::$parent->api->apply_filters( '{$taxonomy}_name', $name );
+			$name = self::$parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $object->name );
+			return self::$parent->api->apply_filters( "{$taxonomy}_name", $name );
 		}
 
 		$title = '<a href="' . $link . '">' . $object->name . '</a>';
 		
 		
-		$title = self::$parent->api->apply_deprecated_filters( '{$taxonomy}_link', '3.0', 'resume_{$taxonomy}_link', $name );
+		$title = self::$parent->api->apply_deprecated_filters( "resume_{$taxonomy}_link", '3.0', "{$taxonomy}_link", $name );
 		$title = self::$parent->api->apply_filters( '{$taxonomy}_link', $name );
-		$title = self::$parent->api->apply_deprecated_filters( '{$taxonomy}_name', '3.0', 'resume_{$taxonomy}_name', $name );
+		$title = self::$parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $name );
 		$title = self::$parent->api->apply_filters( '{$taxonomy}_name', $name );
 		
 		return $title;
@@ -126,7 +126,7 @@ class WP_Resume_Templating {
 	function get_contact_info() {
 	
 		$contact_info = self::$parent->options->get_user_option( 'contact_info', $this->author );
-		$contact_info = self::$parent->api->apply_deprecated_filters( 'contact_info', '3.0', 'resume_contact_info', $contact_info );	
+		$contact_info = self::$parent->api->apply_deprecated_filters( 'resume_contact_info', '3.0', 'contact_info', $contact_info );	
 		return self::$parent->api->apply_filters( 'contact_info', $contact_info );	
 
 	}
@@ -139,7 +139,7 @@ class WP_Resume_Templating {
 	function get_summary() {
 
 		$summary = self::$parent->options->get_user_option( 'summary', $this->author );
-		$summary = self::$parent->api->apply_deprecated_filters( 'summary', '3.0', 'resume_summary', $summary );
+		$summary = self::$parent->api->apply_deprecated_filters( 'resume_summary', '3.0', 'summary', $summary );
 		return self::$parent->api->apply_filters( 'summary', $summary );
 
 	}

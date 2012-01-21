@@ -3,6 +3,7 @@
 class Plugin_Boilerplate_Api {
 	
 	static $parent;
+	public $history = array();
 	
 	function __construct( $instance ) {
 	
@@ -29,14 +30,18 @@ class Plugin_Boilerplate_Api {
 	
 	/**
 	 * Provides mechanism to deprecate action hooks
-	 * @param string $replacement the proper hook to use
-	 * @param int $version the version the hook was deprecated
 	 * @param string $name the name of the hook called
+	 * @param int $version the version the hook was deprecated
+	 * @param string $replacement the proper hook to use
 	 * @uses do_action
 	 */
-	function do_deprecated_action ( $replacement, $version, $name ) {
+	function do_deprecated_action ( $name, $version, $replacement ) {
 	
-		_doing_it_wrong( $name, sprintf( __( '%1$s of %2$s' ), $version, $self::$parent->name ), sprintf( __( 'Use the action hook "%s" instead'), self::$parent->prefix . "_$replacement" ) );
+		//there are no callbacks for this action
+		if ( !has_action( $name ) )
+			return false;
+	
+		_doing_it_wrong( $name, sprintf( __( 'Use the action hook "%s" instead.'), self::$parent->prefix . $replacement ), sprintf( __( '%1$s of %2$s' ), $version, $self::$parent->name ) );
 		
 		//remove replacement and version arguments
 		$args = array_slice( func_get_args(), 2 );
@@ -60,14 +65,18 @@ class Plugin_Boilerplate_Api {
 	
 	/**
 	 * Provides mechanism to deprecate filters
-	 * @param string $replacement the proper hook to use
-	 * @param int $version the version the filter was deprecated
 	 * @param string $name the name of the filter called
+	 * @param int $version the version the filter was deprecated
+	 * @param string $replacement the proper hook to use
 	 * @uses apply_filters
 	 */	
-	function apply_deprecated_filters( $replacement, $version, $name ) {	
-	
-		_doing_it_wrong( $name, sprintf( __( '%1$s of %2$s'), $version, $self::$parent->name ), sprintf( __( 'Use the filter "%s" instead'), self::$parent->prefix . "_$replacement" ) );	
+	function apply_deprecated_filters( $name, $version, $replacement, $value = null ) {	
+				
+		//there are no callbacks for this filter
+		if ( !has_filter( $name ) )
+			return $value;
+		
+		_doing_it_wrong( $name, sprintf( __( 'Use the filter "%s" instead.'), self::$parent->prefix . $replacement ), sprintf( __( '%1$s of %2$s'), $version, self::$parent->name ) );	
 		
 		//remove replacement and version arguments
 		$args = array_slice( func_get_args(), 2 );
@@ -92,6 +101,9 @@ class Plugin_Boilerplate_Api {
 		array_shift( $args );
 		$prefix = self::$parent->prefix;
 		$args[0] = $prefix . $name;
+		
+		if ( current_user_can( 'manage_options') && WP_DEBUG )
+			$this->history[] = $args;
 			
 		return call_user_func_array( $function, $args );
 

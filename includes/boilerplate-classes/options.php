@@ -131,7 +131,7 @@ class Plugin_Boilerplate_Options {
 			$options = wp_parse_args( $options, $this->defaults ); 
 			self::$parent->cache->set( 'options', $options );
 		}
-
+		
 		return self::$parent->api->apply_filters( 'options', $options );
 
 	}

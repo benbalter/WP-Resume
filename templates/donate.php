@@ -1,21 +1,23 @@
 <?php
 /**
  * Simple, unobtrusive prompt to solicit donations
+ * Only displays to admins who have not clicked hide
  * @package Plugin_Boilerplate
  */
 ?>
+<?php if ( current_user_can( 'manage_options' ) && !self::$parent->options->get_user_option( 'hide-donate' ) ) : ?>
 <tr valign="top" id="donate">
 	<th scope="row">
 		<?php _e( 'Support' ); ?>
 	</th>
 	<td>
-		<em><?php sprintf( __( 'Enjoy using %1$s? Please consider <a href="%2$s">making a small donation</a> to support the software\'s continued development.' ), self::$parent->name, $this->link ); ?></em>
+		<em><?php echo sprintf( __( 'Enjoy using %1$s? Please consider <a href="%2$s">making a small donation</a> to support the software\'s continued development.' ), self::$parent->name, self::$parent->donate->link ); ?></em>
 		<span style="font-size: 10px;">(<a href="#" id="hide-donate"><?php _e( 'hide this message' ); ?></a>)</span>
 		<?php wp_nonce_field( self::$parent->slug_ . '_hide_donate' , '_ajax_nonce-' . self::$parent->slug . '-hide-donate' ); ?>
 		<?php $data = array( 'action' => self::$parent->slug_ . '_hide_donate', 'nonce' => '_ajax_nonce-' . self::$parent->slug . '-hide-donate' ); ?>
 		<script>
 		var donate = <?php echo json_encode( $data ); ?>;
-		jQuery(document).ready( function() {
+		jQuery(document).ready( function($) {
 			$('#hide-donate').click( function(event){
 				event.preventDefault();
 				$.ajax({
@@ -28,3 +30,4 @@
 		</script>
 	</td>
 </tr>
+<?php endif; ?>
