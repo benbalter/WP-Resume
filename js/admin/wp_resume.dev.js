@@ -29,7 +29,7 @@ jQuery(document).ready(function($){
 	} 
 
 	$('#publish').click( function( e ) {	
-		
+		 
 		//verify that position has a section
 		if ( pagenow == 'wp_resume_position' && 
 			 $('input:radio[name=wp_resume_section]:checked').val() == '' ) {
