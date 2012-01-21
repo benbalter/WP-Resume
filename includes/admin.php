@@ -586,7 +586,7 @@ class WP_Resume_Admin {
 
 		$screen = get_current_screen();
 		
-		if ( $screen->post_type != 'wp_resume_position' )
+		if ( !$this->maybe_enqueue( false, null, null ) )
 			return;
 		
 		//If we are on the wp_resume_options page
@@ -635,10 +635,16 @@ class WP_Resume_Admin {
 		
 		$screen = get_current_screen();
 		
-		if ( $screen->post_type == 'wp_resume_position' )
+		//3.3
+		if ( isset( $screen->post_type ) && $screen->post_type == 'wp_resume_position' )
 			return true;
-			
+					
+		//3.2
+		if ( strpos( $screen->base, 'wp_resume_position' ) !== false )
+			return true;
+		
 		return $default;		
+		
 	}
 	
 	/**
