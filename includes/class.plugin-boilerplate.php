@@ -10,30 +10,26 @@ class Plugin_Boilerplate {
 	public $prefix = 'plugin_boilerplate_'; //prefix to append to all options, API calls, etc. w/ trailing underscore
 	public $directory = null;
 	public $version = '1.0';
+	public $boilerplate_version = '1';
 	public $min_wp = '3.2';
 	public $classes = array();
-	static $child;
 	
-	function __construct( &$instance ) {
+	function __construct( &$child ) {
 		
 		//don't let this fire twice
 		if ( get_class( &$this )  == 'Plugin_Boilerplate' )
 			return;
-			
-		self::$child = &$instance;
-		
-		$this->directory = &$instance->directory;
-	
+					
 		//verify minimum WP version, and shutdown if insufficient
 		if ( !$this->_verify_wp_version() )
 			return false;
 		
 		//upgrade db
-		//add_action( 'admin_init', array( &$this, '_upgrade_check' ) );
+		add_action( 'admin_init', array( &$this, '_upgrade_check' ) );
 		
 		//i18n
-		//add_action( 'init', array( &$this, '_i18n' ) ); 
-		
+		add_action( 'init', array( &$this, '_i18n' ) ); 
+
 		//load subclasses on init, allowing other plugins or self to override
 		add_action( 'plugins_loaded', array( &$this, '_init' ), 5 );
 
@@ -45,9 +41,9 @@ class Plugin_Boilerplate {
 	 * Other plugins and child plugins can override default behavior
 	 */
 	function _init() { 
-		
+
 		$this->_load_subclasses();
-		
+
 		$this->api->do_action( 'init' );
 		
 	}
@@ -61,37 +57,38 @@ class Plugin_Boilerplate {
 	function _load_subclasses() {
 			
 		//load all boilerplate core classes, followed by and child plugin classes
-		$files = glob( $this->directory . '/includes/boilerplate-classes/*.php' ) ;
-		$files = array_merge( $files, glob( dirname( __FILE__ ) . '/*.php' ) );
+		$files = glob( dirname( __FILE__ ). '/boilerplate-classes/*.php' ) ;
+		$files = array_merge( $files, glob( $this->directory . '/includes/*.php' ) );
 		
-		//don't include self
-		unset( $files[ array_search( __FILE__, $files ) ] );
-
 		foreach ( $files as $file ) {
-					
-			$name = str_replace( '-', ' ', basename( $file, '.php' ) );
-			$base = ( dirname( __FILE__ ) == dirname( $file ) ) ? get_class( &$this ) : get_parent_class( &$this );
-			$class = $base . '_' . str_replace( ' ', '_', ucwords( $name ) );
-			$name = str_replace( ' ', '_', $name );
-						
-			if ( !apply_filters( "{$this->prefix}_load_{$name}", true ) )
+		
+			//don't include self
+			if ( basename( $file ) == basename( __FILE__ ) )
+				continue;
+			
+			//the name of this particular class, e.g., API or Options		
+			$include = $this->_get_include_object( $file );
+								
+			if ( !apply_filters( "{$this->prefix}_load_{$include->object_name}", true, $include ) )
 				continue;
 
-			if ( !class_exists( $class ) )
-				@require_once( $file );
+			if ( !class_exists( $include->class ) )
+				@require_once( $include->file );
 			
-			if ( !class_exists( $class ) ) {
-				trigger_error( "{$this->name} -- Unable to load class {$class}. see the readme for class and file naming conventions" );
+			if ( !class_exists( $include->class ) ) {
+				trigger_error( "{$this->name} -- Unable to load class {$include->class}. see the readme for class and file naming conventions" );
 				continue;
 			}
 			
-			$this->$name = new $class( &$this );
-			$this->classes[ $name ] = $class;
-			
-			$this->api->do_action( "{$name}_init" );
-			
+			$this->{$include->object_name} = new $include->class( &$this );
+			$this->classes[ $include->object_name ] = $include->class;
+						
 		}
-		
+
+		//do this after all modules have loaded so we know API exists
+		foreach ( $this->classes as $name=>$class)
+			$this->api->do_action( "{$name}_init" );
+	
 	}
 	
 	/**
@@ -121,9 +118,7 @@ class Plugin_Boilerplate {
 	/**
 	 * Default upgrade procedure, to be overridden by child class
 	 */
-	function upgrade( $from_version, $to_version ) {
-	
-	}
+	function upgrade( $from_version, $to_version ) { }
 	
 	/**
 	 * Verifies WordPress version meets the necessary minimum
@@ -145,6 +140,49 @@ class Plugin_Boilerplate {
 	 */
 	function update_wp() {
 		$this->template->update_wp();
+	}
+	
+	/**
+	 * Returns an object with all information about a file to include
+	 * 
+	 * Fields:
+	 *	file - path to file
+	 *	name - Title case name of class
+	 *	object_name - lowercase name that will become $this->{object_name}
+	 *	native - whether this is a native boilerplate class
+	 * 	base - the base of the class name (either Plugin_Boilerplate or the parent class name)
+	 * 	class - The name of the class
+	 *
+	 */
+	function _get_include_object( $file ) {
+	
+		$class = new stdClass();
+		$class->file = $file;
+		$name = basename( $file, '.php' );
+		$name = str_replace( '-', '_', $name );
+		$name = str_replace( '_', ' ', $name );
+		$class->name = str_replace( ' ', '_', ucwords( $name ) );
+		$class->object_name = str_replace( ' ', '_', $name );
+		
+		//base, either Plugin class or Plugin_Boilerplate
+		$class->native = ( dirname( $file ) == dirname( __FILE__ ) . '/boilerplate-classes' );
+		$class->base = ( $class->native ) ? get_parent_class( &$this ) : get_class( &$this );
+		$class->class = $class->base . '_' . $class->name;
+
+		//if this is a PB native class, append a version # to prevent collision
+		if ( $class->native )
+			$class->class .= '_v_' . $this->boilerplate_version;
+		
+		return $class;
+
+	}
+	
+	/**
+	 * Returns Array of all loaded classes
+	 * Format: Object Name => Class Name
+	 */
+	function get_classes() {
+		return $this->classes;
 	}
 	
 }

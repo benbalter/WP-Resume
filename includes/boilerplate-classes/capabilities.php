@@ -3,9 +3,9 @@
  * Interface to allow plugins to define custom capabilities
  * @package Plugin_Boilerplate
  */
-class Plugin_Boilerplate_Capabilities {
+class Plugin_Boilerplate_Capabilities_v_1 {
 
-	static $parent;
+	private $parent;
 	
 	/* An array of arrays to define default capabilities which can then be overridden by 3d party plugins like Members
 	 * 
@@ -27,13 +27,9 @@ class Plugin_Boilerplate_Capabilities {
 	 */
 	public $defaults = array(); 
 
-	function __construct( &$instance ) {
-		
-		//create or store parent instance
-		if ( $instance === null ) 
-			self::$parent = new Plugin_Boilerplate;
-		else
-			self::$parent = &$instance;
+	function __construct( $parent ) {
+	
+		$this->parent = &$parent;
 
 		add_action( 'init', array( &$this, 'add_caps' ) );
 	
@@ -56,7 +52,7 @@ class Plugin_Boilerplate_Capabilities {
 			//if the role is a standard role, map the default caps, otherwise, map as a subscriber
 			$caps = ( array_key_exists( $role, $this->defaults ) ) ? $this->defaults[$role] : $this->defaults['subscriber'];
 		
-			$caps = self::$parent->api->apply_filters( 'caps', $caps, $role );
+			$caps = $this->parent->api->apply_filters( 'caps', $caps, $role );
 					
 			//loop and assign
 			foreach ( $caps as $cap=>$grant ) {	

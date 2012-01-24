@@ -3,20 +3,16 @@
  * Creates unobstrusive donation plea
  * @package Plugin_Boilerplate
  */
-class Plugin_Boilerplate_Donate {
+class Plugin_Boilerplate_Donate_v_1 {
 
-	static $parent;
+	private $parent;
 	public $link = 'http://ben.balter.com/donate/'; //donation link
 		
-	function __construct( &$instance ) {
-
-		//create or store parent instance
-		if ( $instance === null ) 
-			self::$parent = new Plugin_Boilerplate;
-		else
-			self::$parent = &$instance;
+	function __construct( $parent ) {
+	
+		$this->parent = &$parent;
 			
-		add_action( 'wp_ajax_' . self::$parent->slug_ . '_hide_donate', array( &$this, 'hide') );
+		add_action( 'wp_ajax_' . $this->parent->slug_ . '_hide_donate', array( &$this, 'hide') );
 
 	}
 	
@@ -26,11 +22,11 @@ class Plugin_Boilerplate_Donate {
 	function form() {
 	
 		//user has asked to hide the donate message
-		if ( self::$parent->ge_user_option( 'hide-donate' ) )
+		if ( $this->parent->ge_user_option( 'hide-donate' ) )
 			return;
 		
 		//render form
-		self::$parent->template->donate();
+		$this->parent->template->donate();
 	}
 	
 	/**
@@ -38,9 +34,9 @@ class Plugin_Boilerplate_Donate {
 	 */
 	function hide() {
 	
-		check_ajax_referer( self::$parent->slug_ . '_hide_donate' , '_ajax_nonce-' . self::$parent->slug . '-hide-donate' );
+		check_ajax_referer( $this->parent->slug_ . '_hide_donate' , '_ajax_nonce-' . $this->parent->slug . '-hide-donate' );
 		
-		self::$parent->options->set_user_option( 'hide-donate', true );
+		$this->parent->options->set_user_option( 'hide-donate', true );
 		
 		die( 1 );
 		

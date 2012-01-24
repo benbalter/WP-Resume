@@ -3,21 +3,17 @@
  * Provides interface to store and retrieve cache entries
  * @package Plugin_Boilerplate
  */
-class Plugin_Boilerplate_Cache {
+class Plugin_Boilerplate_Cache_v_1 {
 
 	public $ttl = 3600;	
-	static $parent;
+	private $parent;
 	
 	/**
 	 * Stores parent class as static
 	 */
-	function __construct( $instance ) {
-		
-		//create or store parent instance
-		if ( $instance === null ) 
-			self::$parent = new Plugin_Boilerplate;
-		else
-			self::$parent = &$instance;
+	function __construct( $parent ) {
+	
+		$this->parent = &$parent;
 			
 	}
 	
@@ -38,7 +34,7 @@ class Plugin_Boilerplate_Cache {
 	 */
 	function get( $key ) {
 
-		return wp_cache_get( $key, self::$parent->slug_ );
+		return wp_cache_get( $key, $this->parent->slug_ );
 
 	}
 	
@@ -65,7 +61,7 @@ class Plugin_Boilerplate_Cache {
 		if ( $ttl == null )
 			$ttl = $this->ttl;
 			
-		return wp_cache_set( $key, $value, self::$parent->slug_, $ttl );
+		return wp_cache_set( $key, $value, $this->parent->slug_, $ttl );
 		
 	}
 	
@@ -76,7 +72,7 @@ class Plugin_Boilerplate_Cache {
 	 */
  	function delete( $key ) {
  		
- 		return wp_cache_delete( $key, self::$parent->slug_ );
+ 		return wp_cache_delete( $key, $this->parent->slug_ );
  		
  	}
 }

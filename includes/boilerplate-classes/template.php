@@ -1,22 +1,18 @@
 <?php
 
-class Plugin_Boilerplate_Template {
+class Plugin_Boilerplate_Template_v_1 {
 
-	static $parent;
+	private $parent;
 	public $path = '/templates/'; //path to templates folder relative to plugin root
 	public $overrides = array(); //array of template slugs to allow themes to override by default
 	
 	/**
 	 * Store parent and init template directory
 	 */
-	function __construct( $instance ) {
-
-		//create or store parent instance
-		if ( $instance === null ) 
-			self::$parent = new Plugin_Boilerplate;
-		else
-			self::$parent = &$instance;
-			
+	function __construct( $parent ) {
+	
+		$this->parent = &$parent;
+		
 	}
 	
 	/**
@@ -27,7 +23,7 @@ class Plugin_Boilerplate_Template {
 		if ( !empty( $args ) )
 			$args = $args[0];
 			
-		return self::$parent->template->load( $template, $args );
+		return $this->load( $template, $args );
 	}
 	
 	/**
@@ -45,7 +41,7 @@ class Plugin_Boilerplate_Template {
 		if ( is_array( $args ) )
 			 extract( $args );
 			
-		$_pb_template = self::$parent->api->apply_filters( 'template', $_pb_template );
+		$_pb_template = $this->parent->api->apply_filters( 'template', $_pb_template );
 		
 		$_pb_file = false;
 		
@@ -53,15 +49,15 @@ class Plugin_Boilerplate_Template {
 		//before looking in plugin's template folder
 		//note: by default, this functionality is disabled
 		if ( 	in_array( $_pb_template, $this->overrides ) 	||
-				self::$parent->api->apply_filters( 'allow_template_override', false, $_pb_template ) )
+				$this->parent->api->apply_filters( 'allow_template_override', false, $_pb_template ) )
 			$_pb_file = locate_template( $_pb_template );
 		
 		if ( !$_pb_file )
-			$_pb_file = self::$parent->directory . $this->path . $_pb_template . '.php';
+			$_pb_file = $this->parent->directory . $this->path . $_pb_template . '.php';
 
 		if ( !file_exists( $_pb_file ) ) {
 			$backtrace = debug_backtrace();	
-			trigger_error( self::$parent->name . " -- cannot locate template $_pb_file called on line {$backtrace[1]['line']} of {$backtrace[1]['file']}" );
+			trigger_error( $this->parent->name . " -- cannot locate template $_pb_file called on line {$backtrace[1]['line']} of {$backtrace[1]['file']}" );
 			return false;	
 		}
 			
@@ -82,7 +78,7 @@ class Plugin_Boilerplate_Template {
 		
 		ob_start();
 		
-		self::$parent->template->load( $template, $args );
+		$this->parent->template->load( $template, $args );
 		
 		return ob_get_clean();
 		

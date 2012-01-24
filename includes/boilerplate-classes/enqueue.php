@@ -3,9 +3,9 @@
  * Provides interface to enqueue front end and back end css and javascript files
  * @package Plugin_Boilerplate
  */
-class Plugin_Boilerplate_Enqueue {
+class Plugin_Boilerplate_Enqueue_v_1 {
 	
-	static $parent;
+	private $parent;
 	public $js_path = '/js/'; //path to javascript directory relative to plugin base
 	public $css_path = '/css/'; //path to css directory relative to plugin base
 	public $front_end_data = array(); //array of script localication data for front-end
@@ -14,13 +14,9 @@ class Plugin_Boilerplate_Enqueue {
 	/**
 	 * Register hooks with WP API
 	 */
-	function __construct( $instance ) {
+	function __construct( $parent ) {
 	
-		//create or store parent instance
-		if ( $instance === null ) 
-			self::$parent = new Plugin_Boilerplate;
-		else
-			self::$parent = &$instance;
+		$this->parent = &$parent;
 				
 		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_admin_js' ), 50 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_admin_css' ), 50 );
@@ -49,7 +45,7 @@ class Plugin_Boilerplate_Enqueue {
 	 */	
 	function enqueue_js( $name ) {
 								
-		$directory = self::$parent->directory . $this->js_path . $name . '/';
+		$directory = $this->parent->directory . $this->js_path . $name . '/';
 
 		$i = 0;
 		foreach ( glob( $directory . '*.js' ) as $file ) {
@@ -64,12 +60,12 @@ class Plugin_Boilerplate_Enqueue {
 			$file = basename( $file );
 			
 			//allow child plugins to control when js is enqueued
-			if ( !self::$parent->api->apply_filters( 'enqueue_js', true, $file, $name ) )
+			if ( !$this->parent->api->apply_filters( 'enqueue_js', true, $file, $name ) )
 				continue;
 
-			$slug = ( $i === 0 ) ? self::$parent->slug : self::$parent->slug . "-$i";
+			$slug = ( $i === 0 ) ? $this->parent->slug : $this->parent->slug . "-$i";
 			
-			wp_enqueue_script( $slug, plugins_url( $this->js_path . $name . '/' . $file, self::$parent->directory . '/readme.txt' ), array( 'jquery' ), filemtime( $directory . $file ), true );
+			wp_enqueue_script( $slug, plugins_url( $this->js_path . $name . '/' . $file, $this->parent->directory . '/readme.txt' ), array( 'jquery' ), filemtime( $directory . $file ), true );
 			
 			$i++;
 			
@@ -81,7 +77,7 @@ class Plugin_Boilerplate_Enqueue {
 		if ( empty( $this->$data ) )
 			return;
 			
-		wp_localize_script( self::$parent->slug, self::$parent->slug_, $this->$data );
+		wp_localize_script( $this->parent->slug, $this->parent->slug_, $this->$data );
 				
 	}
 	
@@ -105,7 +101,7 @@ class Plugin_Boilerplate_Enqueue {
 	 */	
 	function enqueue_css( $name ) {
 		
-		$directory = self::$parent->directory . $this->css_path . $name . '/';
+		$directory = $this->parent->directory . $this->css_path . $name . '/';
 
 		foreach ( glob( $directory . '*.css' ) as $file ) {
 
@@ -115,10 +111,10 @@ class Plugin_Boilerplate_Enqueue {
 			$file = basename( $file );
 			
 			//allow child plugins to control when css is enqueued
-			if ( !self::$parent->api->apply_filters( 'enqueue_css', true, $file, $name ) )
+			if ( !$this->parent->api->apply_filters( 'enqueue_css', true, $file, $name ) )
 				continue;
 	
-		 	wp_enqueue_style( self::$parent->slug, plugins_url( $this->css_path . $name . '/' . $file , self::$parent->directory . '/readme.txt' ), null, filemtime( $directory . $file ) );
+		 	wp_enqueue_style( $this->parent->slug, plugins_url( $this->css_path . $name . '/' . $file , $this->parent->directory . '/readme.txt' ), null, filemtime( $directory . $file ) );
 	
 		}			
 				

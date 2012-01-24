@@ -1,17 +1,13 @@
 <?php
 
-class Plugin_Boilerplate_Api {
+class Plugin_Boilerplate_Api_v_1 {
 	
-	static $parent;
+	private $parent;
 	public $history = array();
 	
-	function __construct( $instance ) {
+	function __construct( $parent ) {
 	
-		//create or store parent instance
-		if ( $instance === null ) 
-			self::$parent = new Plugin_Boilerplate;
-		else
-			self::$parent = &$instance;
+		$this->parent = &$parent;
 
 	}
 	
@@ -41,7 +37,7 @@ class Plugin_Boilerplate_Api {
 		if ( !has_action( $name ) )
 			return false;
 	
-		_doing_it_wrong( $name, sprintf( __( 'Use the action hook "%s" instead.'), self::$parent->prefix . $replacement ), sprintf( __( '%1$s of %2$s' ), $version, $self::$parent->name ) );
+		_doing_it_wrong( $name, sprintf( __( 'Use the action hook "%s" instead.'), $this->parent->prefix . $replacement ), sprintf( __( '%1$s of %2$s' ), $version, $$this->parent->name ) );
 		
 		//remove replacement and version arguments
 		$args = array_slice( func_get_args(), 2 );
@@ -76,7 +72,7 @@ class Plugin_Boilerplate_Api {
 		if ( !has_filter( $name ) )
 			return $value;
 		
-		_doing_it_wrong( $name, sprintf( __( 'Use the filter "%s" instead.'), self::$parent->prefix . $replacement ), sprintf( __( '%1$s of %2$s'), $version, self::$parent->name ) );	
+		_doing_it_wrong( $name, sprintf( __( 'Use the filter "%s" instead.'), $this->parent->prefix . $replacement ), sprintf( __( '%1$s of %2$s'), $version, $this->parent->name ) );	
 		
 		//remove replacement and version arguments
 		$args = array_slice( func_get_args(), 2 );
@@ -99,7 +95,7 @@ class Plugin_Boilerplate_Api {
 
 		$args = func_get_args();
 		array_shift( $args );
-		$prefix = self::$parent->prefix;
+		$prefix = $this->parent->prefix;
 		$args[0] = $prefix . $name;
 		
 		if ( current_user_can( 'manage_options') && WP_DEBUG )
@@ -107,6 +103,13 @@ class Plugin_Boilerplate_Api {
 			
 		return call_user_func_array( $function, $args );
 
+	}
+	
+	/**
+	 * Returns all filters fired on the given page
+	 */
+	function get_history() {
+		return $this->history;
 	}
 	
 }

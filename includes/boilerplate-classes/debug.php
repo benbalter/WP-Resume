@@ -3,20 +3,16 @@
  * Provides interface for debugging variables
  * @package Plugin_Boilerplate
  */
-class Plugin_Boilerplate_Debug {
+class Plugin_Boilerplate_Debug_v_1 {
 
 	public $history = array();
-	static $parent;
+	private $parent;
 
-	function __construct( $instance ) {
+	function __construct( $parent ) {
 	
-		//create or store parent instance
-		if ( $instance === null ) 
-			self::$parent = new Plugin_Boilerplate;
-		else
-			self::$parent = &$instance;
+		$this->parent = &$parent;
 			
-		//add_action( 'init', array( &$this, 'init' ), 5 );
+		add_action( 'init', array( &$this, 'init' ), 5 );
 	
 	}
 	
@@ -76,9 +72,9 @@ class Plugin_Boilerplate_Debug {
 	 * Registers panel with debug bar
 	 */	
 	function register_panel( $panels ) {
-		$slug = self::$parent->slug_;
+		$slug = $this->parent->slug_;
 		$class = "{$slug}_Debug_Panel";
-		$panels[] = new $class( self::$parent->name . ' Debug', &$this );
+		$panels[] = new $class( $this->parent->name . ' Debug', &$this );
 		
 		return $panels;
 			
@@ -97,20 +93,20 @@ class Plugin_Boilerplate_Debug {
 	 */
 	function init_panel( $panels ) {
 
-		$code = 'class ' . self::$parent->slug_ . '_Debug_Panel extends Debug_Bar_Panel { 
+		$code = 'class ' . $this->parent->slug_ . '_Debug_Panel extends Debug_Bar_Panel { 
 			static $parent; 
 			
 			function __construct( $name, &$instance ) { 
-				self::$parent = &$instance; 
+				$this->parent = &$instance; 
 				parent::__construct( $name ); 
 			} 
 			
 			function render() { 
-				self::$parent->render(); 
+				$this->parent->render(); 
 			} 
 			
 			function prerender() {
-				if ( empty( self::$parent->history ) )
+				if ( empty( $this->parent->history ) )
 					$this->set_visible( false );
 			}	
 			

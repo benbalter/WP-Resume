@@ -3,25 +3,21 @@
  * Provides interface to store and retrieve plugin and user options
  * @package Plugin_Boilerplate
  */
-class Plugin_Boilerplate_Options {
+class Plugin_Boilerplate_Options_v_1 {
 
 	//default scope for options when called directly,
 	//choices: site, user, or global (user option across sites)
 	public $scope = 'site'; 
 	public $defaults = array();
 	public $user_defaults = array();
-	static $parent;
+	private $parent;
 	
 	/**
 	 * Stores parent class as static
 	 */
-	function __construct( $instance ) {
-		
-		//create or store parent instance
-		if ( $instance === null ) 
-			self::$parent = new Plugin_Boilerplate;
-		else
-			self::$parent = &$instance;
+	function __construct( $parent ) {
+	
+		$this->parent = &$parent;
 		
 		add_action( 'admin_init', array( &$this, 'options_init' ) );
 		
@@ -32,10 +28,10 @@ class Plugin_Boilerplate_Options {
 	 */
 	function options_init() {
 	 	
-	 	if ( empty( self::$parent->options->defaults ) )
+	 	if ( empty( $this->parent->options->defaults ) )
 	 		return;
 	 		  
-	    register_setting( self::$parent->slug_, self::$parent->slug_, array( &$this, 'validate' ) );
+	    register_setting( $this->parent->slug_, $this->parent->slug_, array( &$this, 'validate' ) );
 	
 	}
 	
@@ -44,7 +40,7 @@ class Plugin_Boilerplate_Options {
 	 */
 	function validate( $options ) {
 			
-		return self::$parent->api->apply_filters( 'options_validate', $options );
+		return $this->parent->api->apply_filters( 'options_validate', $options );
 	
 	}
 	
@@ -85,14 +81,14 @@ class Plugin_Boilerplate_Options {
 	
 		if ( $user == null )
 			$user = get_current_user_id();
-		
-		if ( !$options = self::$parent->cache->get( "{$user}_options" ) ) {
-			$options = (array) get_user_option( self::$parent->slug_, $user );
+			
+		if ( !$options = $this->parent->cache->get( "{$user}_options" ) ) {
+			$options = (array) get_user_option( $this->parent->slug_, $user );
 			$options = wp_parse_args( $options, $this->user_defaults );
-			self::$parent->cache->set( "{$user}_options", $options );
+			$this->parent->cache->set( "{$user}_options", $options );
 		}
 		
-		return self::$parent->api->apply_filters( 'user_options', $options, $user );
+		return $this->parent->api->apply_filters( 'user_options', $options, $user );
 
 	}
 	
@@ -105,7 +101,7 @@ class Plugin_Boilerplate_Options {
 	function get_user_option( $option, $user = null ) {
 		$options = $this->get_user_options( $user );
 		$value = ( isset( $options[ $option ] ) ) ? $options[ $option ] : false;
-		return self::$parent->api->apply_filters( $option, $value );
+		return $this->parent->api->apply_filters( $option, $value );
 	}
 	
 	/**
@@ -138,9 +134,9 @@ class Plugin_Boilerplate_Options {
 			$options = wp_parse_args( $options, $defaults );	
 		}
 
-		self::$parent->cache->set( "{$user}_options", $options );
+		$this->parent->cache->set( "{$user}_options", $options );
 
-		return update_user_option( $user, self::$parent->slug_, $options, $global );
+		return update_user_option( $user, $this->parent->slug_, $options, $global );
 	}
 	
 	/**
@@ -148,14 +144,15 @@ class Plugin_Boilerplate_Options {
 	 * @return array the options
 	 */
 	function get_options( ) {
-		if ( !$options = self::$parent->cache->get( 'options' ) ) { 
-			$options = (array) get_option( self::$parent->slug_ );
-			$this->defaults[ 'db_version' ] = null;
+	
+		if ( !$options = $this->parent->cache->get( 'options' ) ) { 
+			$options = get_option( $this->parent->slug_ ); 
+			$this->defaults[ 'db_version' ] = $this->parent->version;
 			$options = wp_parse_args( $options, $this->defaults ); 
-			self::$parent->cache->set( 'options', $options );
+			$this->parent->cache->set( 'options', $options );
 		}
 		
-		return self::$parent->api->apply_filters( 'options', $options );
+		return $this->parent->api->apply_filters( 'options', $options );
 
 	}
 	
@@ -167,7 +164,7 @@ class Plugin_Boilerplate_Options {
 	function get_option( $option ) { 
 		$options = $this->get_options( );
 		$value = ( isset( $options[ $option ] ) ) ? $options[ $option ] : false;
-		return self::$parent->api->apply_filters( $option, $value );
+		return $this->parent->api->apply_filters( $option, $value );
 	}
 	
 	/**
@@ -177,9 +174,9 @@ class Plugin_Boilerplate_Options {
 	 * @return bool success/fail
 	 */
 	function set_option( $key, $value ) { 
-		$options = $this->get_options( ); 
+		$options = $this->parent->options->get_options( ); 
 		$options[ $key ] = $value;
-		return $this->set_options( $options, false );
+		return $this->parent->options->set_options( $options, false );
 	}
 	
 	/**
@@ -190,13 +187,13 @@ class Plugin_Boilerplate_Options {
 	function set_options( $options, $merge = true ) {
 		
 		if ( $merge ) {
-			$defaults = $this->get_options();
+			$defaults = $this->parent->options->get_options();
 			$options = wp_parse_args( $options, $defaults );	
 		}
-		
-		self::$parent->cache->set( 'options', $options );
 
-		return update_option( self::$parent->slug_, $options );
+		$this->parent->cache->set( 'options', $options );
+
+		return update_option( $this->parent->slug_, $options );
 		
 	}
 
