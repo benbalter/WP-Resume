@@ -2,15 +2,11 @@
 
 class WP_Resume_Plaintext {
 
-	static $parent;
+	private $parent;
+	
+	function __construct( &$parent ) {
 
-	function __construct( &$instance ) {
-		
-		//create or store parent instance
-		if ( $instance === null ) 
-			self::$parent = new Plugin_Boilerplate;
-		else
-			self::$parent = &$instance;
+		$this->parent = &$parent;
 
 		add_action( 'init', array( &$this, 'init' ) );
 	}
@@ -44,12 +40,12 @@ class WP_Resume_Plaintext {
 	 */
 	function plaintext_contact_info( $author = null ) {
 	
-		$author = self::$parent->get_author( $author );
-		$contact_info = self::$parent->options->get_user_option( 'contact_info', $author );
+		$author = $this->parent->get_author( $author );
+		$contact_info = $this->parent->options->get_user_option( 'contact_info', $author );
 		
 		array_walk_recursive( &$contact_info, array( &$this, 'plaintext_contact_info_walker' ) );
 		
-		$contact_info = self::$parent->api->apply_filters( 'plaintext_contact_info', $contact_info );
+		$contact_info = $this->parent->api->apply_filters( 'plaintext_contact_info', $contact_info );
 				
 		return $contact_info;
 	
@@ -69,7 +65,7 @@ class WP_Resume_Plaintext {
 	 * @uses resume_plaintext_bullet
 	 */
 	function bulletit( $text ) {
-		$bullet = self::$parent->api->apply_filters( 'plaintext_bullet', '&bull; ' ); 
+		$bullet = $this->parent->api->apply_filters( 'plaintext_bullet', '&bull; ' ); 
 		return preg_replace( "#<li[^>]*>#", $bullet, $text );
 	}
 	

@@ -5,18 +5,14 @@
  */
 class WP_Resume_Admin {
 
-	static $parent;
+	private $parent;
 
-	function __construct( &$instance ) {
+	function __construct( &$parent ) {
 	
 		if ( !is_admin() )
 			return;
 		
-		//create or store parent instance
-		if ( $instance === null ) 
-			self::$parent = new Plugin_Boilerplate;
-		else
-			self::$parent = &$instance;
+		$this->parent = &$parent;
 		
 		//admin UI
 		add_action( 'admin_menu', array( &$this, 'menu' ) );
@@ -41,7 +37,7 @@ class WP_Resume_Admin {
 		add_action( 'create_wp_resume_organization', array( &$this, 'save_link_field' ) );
 		add_action( 'edited_wp_resume_organization', array( &$this, 'save_link_field' ) );
 		
-		self::$parent->capabilities->defaults = array( 
+		$this->parent->capabilities->defaults = array( 
 										'administrator' => array( 'edit_others_resume' => true, 'edit_resume' => true ),
 										'editor' => array( 'edit_others_resume' => true, 'edit_resume' => true ),
 										'author' => array( 'edit_others_resume' => false, 'edit_resume' => true ),
@@ -111,9 +107,9 @@ class WP_Resume_Admin {
 		if ( $type == 'section' ) {
 			$user = wp_get_current_user();
 			$author = $user->user_nicename;
-			self::$parent->cache->delete( $author . '_sections' );
-			self::$parent->cache->delete( $author . '_sections_hide_empty' );
-			self::$parent->flush_cache();
+			$this->parent->cache->delete( $author . '_sections' );
+			$this->parent->cache->delete( $author . '_sections_hide_empty' );
+			$this->parent->flush_cache();
 		}
 		
 		//get updated post to send to taxonomy box
@@ -130,7 +126,7 @@ class WP_Resume_Admin {
 	 * @param obj $post the post object
 	 */
 	function order_box($post) {
-		self::$parent->template->order_box( compact( 'post' ) );
+		$this->parent->template->order_box( compact( 'post' ) );
 	}
 
 	/**
@@ -154,7 +150,7 @@ class WP_Resume_Admin {
 		//garb the current selected term where applicable so we can select it
 		$current = wp_get_object_terms( $post->ID, $type );
 		
-		self::$parent->template->taxonomy_box( compact( 'taxonomy', 'type', 'terms', 'current' ) );
+		$this->parent->template->taxonomy_box( compact( 'taxonomy', 'type', 'terms', 'current' ) );
 
 	}
 
@@ -169,7 +165,7 @@ class WP_Resume_Admin {
 		$from = get_post_meta( $post->ID, 'wp_resume_from', true );
 		$to = get_post_meta( $post->ID, 'wp_resume_to', true );
 		
-		self::$parent->template->date_box( compact( 'from', 'to' ) );
+		$this->parent->template->date_box( compact( 'from', 'to' ) );
 		
 	}
 
@@ -255,9 +251,9 @@ class WP_Resume_Admin {
 		}
 
 		$user = wp_get_current_user();
-		self::$parent->cache->delete(  $user->user_nicename . '_resume' );
-		self::$parent->cache->delete(  $post_id . '_organization' );
-		self::$parent->flush_cache();
+		$this->parent->cache->delete(  $user->user_nicename . '_resume' );
+		$this->parent->cache->delete(  $post_id . '_organization' );
+		$this->parent->flush_cache();
 
 	}
 
@@ -283,7 +279,7 @@ class WP_Resume_Admin {
 			return $data;
 				
 		//grab the existing options, we must hand WP back a complete option array
-		$options = self::$parent->options->get_options();
+		$options = $this->parent->options->get_options();
 		
 		//figure out what user we are acting on
 		global $wpdb;
@@ -316,7 +312,7 @@ class WP_Resume_Admin {
 		
 		}
 
-		$user_options = self::$parent->options->get_user_options( (int) $current_author );
+		$user_options = $this->parent->options->get_user_options( (int) $current_author );
 
 		//start with a blank array to remove empty fields
 		$user_options['contact_info'] = array();
@@ -363,20 +359,20 @@ class WP_Resume_Admin {
 			foreach ($fields as $field)
 				$options[$field] = (int) $data[$field];
 
-			$options = self::$parent->api->apply_filters( 'options', $options );
-			self::$parent->options->set_options( $options );
+			$options = $this->parent->api->apply_filters( 'options', $options );
+			$this->parent->options->set_options( $options );
 			
 			flush_rewrite_rules();
 		}
 
 		//store usermeta
 		$user = get_userdata( $current_author );
-		self::$parent->options->set_user_options( $user_options,  $user->ID );
+		$this->parent->options->set_user_options( $user_options,  $user->ID );
 	
-		self::$parent->cache->delete(  $user->user_nicename . '_sections');
-		self::$parent->cache->delete(  $user->user_nicename . '_sections_hide_empty' );
-		self::$parent->cache->delete(  $user->user_nicename . '_resume', 'wp_resume' );
-		self::$parent->flush_cache();
+		$this->parent->cache->delete(  $user->user_nicename . '_sections');
+		$this->parent->cache->delete(  $user->user_nicename . '_sections_hide_empty' );
+		$this->parent->cache->delete(  $user->user_nicename . '_resume', 'wp_resume' );
+		$this->parent->flush_cache();
 		
 
 
@@ -392,7 +388,7 @@ class WP_Resume_Admin {
 		global $wpdb; 
 
 	//Pull the existing options from the DB
-	$options = self::$parent->options->get_options();
+	$options = $this->parent->options->get_options();
 
 	//set up the current author
 	$authors = get_users( array( 'blog_id' => $GLOBALS['blog_id'] ) );
@@ -413,9 +409,9 @@ class WP_Resume_Admin {
 	}
 	
 
-	$user_options = self::$parent->options->get_user_options( (int) $current_author );
+	$user_options = $this->parent->options->get_user_options( (int) $current_author );
 	
-	self::$parent->template->options( compact( 'user_options', 'authors', 'current_author', 'options' ) );
+	$this->parent->template->options( compact( 'user_options', 'authors', 'current_author', 'options' ) );
 	
 	}
 	
@@ -437,7 +433,7 @@ class WP_Resume_Admin {
 	function order_dragdrop( $current_author ) { ?>
 		<ul id="sections">
 			<?php //loop through the user's non-empty section
-				foreach ( self::$parent->get_sections( true, $current_author ) as $section )	
+				foreach ( $this->parent->get_sections( true, $current_author ) as $section )	
 					$this->dragdrop_section ( $current_author, $section );
 			?>
 		</ul><!-- #sections -->
@@ -464,13 +460,13 @@ class WP_Resume_Admin {
 				<?php 
 				
 				//get all positions in this section and loop
-				$posts = self::$parent->query( $section->slug, $current_author );
+				$posts = $this->parent->query( $section->slug, $current_author );
 				if ( $posts->have_posts() ) : while ( $posts->have_posts() ) : $posts->the_post();
 					
 					//grab the current position's organization and compare to last
 					//if different or this is the first position, output org label and UL
-					$org = self::$parent->get_org( get_the_ID() );
-					if ( $org && self::$parent->get_previous_org( ) != $org )
+					$org = $this->parent->get_org( get_the_ID() );
+					if ( $org && $this->parent->get_previous_org( ) != $org )
 						$this->dragdrop_org_start( $org );
 					
 					//main position li	 
@@ -478,7 +474,7 @@ class WP_Resume_Admin {
 					
 					//next position's organization is not the same as this 
 					//or this is the last position in the query
-					if ( $org && self::$parent->get_next_org() != $org )
+					if ( $org && $this->parent->get_next_org() != $org )
 						$this->dragdrop_org_end();
 					
 				endwhile; endif; ?>
@@ -497,7 +493,7 @@ class WP_Resume_Admin {
 			<a href="<?php echo admin_url( 'post.php?post=' . get_the_ID() . '&action=edit' ); ?>">
 				<?php echo the_title(); ?> 
 			</a>
-			<?php if ($date = self::$parent->templating->get_date( get_the_ID() ) ) echo "($date)"; ?>
+			<?php if ($date = $this->parent->templating->get_date( get_the_ID() ) ) echo "($date)"; ?>
 		</li><!-- .position -->
 	<?php
 	}
@@ -532,7 +528,7 @@ class WP_Resume_Admin {
 	 * @disclaimer it's not pretty, but it get's the job done.
 	 */
 	function org_helptext() { 
-		self::$parent->template->org_helptext();
+		$this->parent->template->org_helptext();
 	}
 	
 	/**
@@ -544,10 +540,10 @@ class WP_Resume_Admin {
 	
 		$edit = ( $taxonomy != '' );
 		$value = '';
-		if ( $edit && self::$parent->get_org_link( $term->term_id ) )
-			$value = self::$parent->get_org_link( $term->term_id );
+		if ( $edit && $this->parent->get_org_link( $term->term_id ) )
+			$value = $this->parent->get_org_link( $term->term_id );
 
-		self::$parent->template->link_field( compact( 'edit', 'value', 'taxonomy' ) );
+		$this->parent->template->link_field( compact( 'edit', 'value', 'taxonomy' ) );
 	}
 	
 	/**
@@ -562,7 +558,7 @@ class WP_Resume_Admin {
 		if ( !current_user_can( $tax->cap->edit_terms ) )
 			return;
 						
-		self::$parent->set_org_link( $termID, $_REQUEST['org_link'] );
+		$this->parent->set_org_link( $termID, $_REQUEST['org_link'] );
 				
 	}	
 	
@@ -601,7 +597,7 @@ class WP_Resume_Admin {
 
 		}
 		 		
-		self::$parent->enqueue->admin_data = array( 
+		$this->parent->enqueue->admin_data = array( 
 			'more' => __('More', 'wp-resume'),
 			'less' => __('less', 'wp-resume'),
 			'yes' => __('Yes!', 'wp-resume'),
@@ -621,7 +617,7 @@ class WP_Resume_Admin {
 	 * @since 3.0
 	 */
 	function contact_info_row( $value, $field_id ) {
-		self::$parent->template->contact_info_row( compact( 'field_id', 'value' ) );
+		$this->parent->template->contact_info_row( compact( 'field_id', 'value' ) );
 	}
 	
 	/**

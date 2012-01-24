@@ -2,18 +2,14 @@
 
 class WP_Resume_Templating {
 
-	static $parent;
 	public $author;
+	private $parent;
+	
+	function __construct( &$parent ) {
 
-	function __construct( &$instance ) {
-		
-		//create or store parent instance
-		if ( $instance === null ) 
-			self::$parent = new Plugin_Boilerplate;
-		else
-			self::$parent = &$instance;
+		$this->parent = &$parent;
 			
-		$this->author = &$instance->author;
+		$this->author = &$parent->author;
 		
 	}
 	
@@ -24,10 +20,10 @@ class WP_Resume_Templating {
 	 */
 	function get_name() {
 		
-		$name = self::$parent->options->get_user_option( 'name', $this->author );
+		$name = $this->parent->options->get_user_option( 'name', $this->author );
 		
-		$name = self::$parent->api->apply_deprecated_filters( 'resume_name', '3.0', 'name', $name );
-		return self::$parent->api->apply_filters( 'name', $name );
+		$name = $this->parent->api->apply_deprecated_filters( 'resume_name', '3.0', 'name', $name );
+		return $this->parent->api->apply_filters( 'name', $name );
 		
 	}
 	
@@ -38,16 +34,16 @@ class WP_Resume_Templating {
 	 */
 	function get_title( $ID ) {
 			
-		if ( !self::$parent->options->get_option( 'rewrite' ) ) {
+		if ( !$this->parent->options->get_option( 'rewrite' ) ) {
 			$title = get_the_title();
 		} else {
 			$title = '<a href="' . get_permalink() . '">' . get_the_title() . '</a>';
-			$title = self::$parent->api->apply_deprecated_filters( 'resume_title_link', '3.0', 'title_link', $title );
-			$title = self::$parent->api->apply_filters( 'title_link', $title );
+			$title = $this->parent->api->apply_deprecated_filters( 'resume_title_link', '3.0', 'title_link', $title );
+			$title = $this->parent->api->apply_filters( 'title_link', $title );
 		}
 		
-		$title = self::$parent->api->apply_deprecated_filters( 'resume_position_title', '3.0', 'position_title', $title );
-		return self::$parent->api->apply_filters( 'position_title', $title );
+		$title = $this->parent->api->apply_deprecated_filters( 'resume_position_title', '3.0', 'position_title', $title );
+		return $this->parent->api->apply_filters( 'position_title', $title );
 		 
 	}
 	
@@ -85,16 +81,16 @@ class WP_Resume_Templating {
 	function get_taxonomy_name( $object, $taxonomy, $link ) {
 		global $post;
 		
-		$rewrite = self::$parent->options->get_option( 'rewrite' );
+		$rewrite = $this->parent->options->get_option( 'rewrite' );
 		
 		if ( !$link ) {
-			$name = self::$parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $object->name );
-			return self::$parent->api->apply_filters( "{$taxonomy}_name", $name );
+			$name = $this->parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $object->name );
+			return $this->parent->api->apply_filters( "{$taxonomy}_name", $name );
 		}
 		
 		//org link
-		if ( $taxonomy == 'organization' && self::$parent->get_org_link( $object->term_id ) ) {
-			$link = self::$parent->get_org_link( $object->term_id );
+		if ( $taxonomy == 'organization' && $this->parent->get_org_link( $object->term_id ) ) {
+			$link = $this->parent->get_org_link( $object->term_id );
 		
 		//rewrite links
 		} else if ( $rewrite ) {
@@ -102,17 +98,17 @@ class WP_Resume_Templating {
 		
 		//no link
 		} else {
-			$name = self::$parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $object->name );
-			return self::$parent->api->apply_filters( "{$taxonomy}_name", $name );
+			$name = $this->parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $object->name );
+			return $this->parent->api->apply_filters( "{$taxonomy}_name", $name );
 		}
 
 		$title = '<a href="' . $link . '">' . $object->name . '</a>';
 		
 		
-		$title = self::$parent->api->apply_deprecated_filters( "resume_{$taxonomy}_link", '3.0', "{$taxonomy}_link", $title );
-		$title = self::$parent->api->apply_filters( '{$taxonomy}_link', $title );
-		$title = self::$parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $title );
-		$title = self::$parent->api->apply_filters( '{$taxonomy}_name', $title );
+		$title = $this->parent->api->apply_deprecated_filters( "resume_{$taxonomy}_link", '3.0', "{$taxonomy}_link", $title );
+		$title = $this->parent->api->apply_filters( '{$taxonomy}_link', $title );
+		$title = $this->parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $title );
+		$title = $this->parent->api->apply_filters( '{$taxonomy}_name', $title );
 		
 		return $title;
 		
@@ -125,9 +121,9 @@ class WP_Resume_Templating {
 	 */
 	function get_contact_info() {
 	
-		$contact_info = self::$parent->options->get_user_option( 'contact_info', $this->author );
-		$contact_info = self::$parent->api->apply_deprecated_filters( 'resume_contact_info', '3.0', 'contact_info', $contact_info );	
-		return self::$parent->api->apply_filters( 'contact_info', $contact_info );	
+		$contact_info = $this->parent->options->get_user_option( 'contact_info', $this->author );
+		$contact_info = $this->parent->api->apply_deprecated_filters( 'resume_contact_info', '3.0', 'contact_info', $contact_info );	
+		return $this->parent->api->apply_filters( 'contact_info', $contact_info );	
 
 	}
 	
@@ -138,9 +134,9 @@ class WP_Resume_Templating {
 	 */
 	function get_summary() {
 
-		$summary = self::$parent->options->get_user_option( 'summary', $this->author );
-		$summary = self::$parent->api->apply_deprecated_filters( 'resume_summary', '3.0', 'summary', $summary );
-		return self::$parent->api->apply_filters( 'summary', $summary );
+		$summary = $this->parent->options->get_user_option( 'summary', $this->author );
+		$summary = $this->parent->api->apply_deprecated_filters( 'resume_summary', '3.0', 'summary', $summary );
+		return $this->parent->api->apply_filters( 'summary', $summary );
 
 	}
 	
@@ -167,7 +163,7 @@ class WP_Resume_Templating {
 		else 
 			$date = '';
 			
-		return self::$parent->api->apply_filters( 'wp_resume_date', $date, $ID, $from, $to );
+		return $this->parent->api->apply_filters( 'wp_resume_date', $date, $ID, $from, $to );
 		
 	}	
 
