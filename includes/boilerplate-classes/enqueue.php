@@ -48,7 +48,7 @@ class Plugin_Boilerplate_Enqueue {
 	 * @param string $name the name of the script to enqueue
 	 */	
 	function enqueue_js( $name ) {
-
+								
 		$directory = self::$parent->directory . $this->js_path . $name . '/';
 
 		$i = 0;

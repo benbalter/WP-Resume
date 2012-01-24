@@ -27,7 +27,7 @@ class Plugin_Boilerplate_Template {
 		if ( !empty( $args ) )
 			$args = $args[0];
 			
-		return $this->load( $template, $args );
+		return self::$parent->template->load( $template, $args );
 	}
 	
 	/**
@@ -82,7 +82,7 @@ class Plugin_Boilerplate_Template {
 		
 		ob_start();
 		
-		$this->load( $template, $args );
+		self::$parent->template->load( $template, $args );
 		
 		return ob_get_clean();
 		

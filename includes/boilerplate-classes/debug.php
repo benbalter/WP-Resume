@@ -16,7 +16,7 @@ class Plugin_Boilerplate_Debug {
 		else
 			self::$parent = &$instance;
 			
-		add_action( 'init', array( &$this, 'init' ), 5 );
+		//add_action( 'init', array( &$this, 'init' ), 5 );
 	
 	}
 	

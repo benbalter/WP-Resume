@@ -4,7 +4,6 @@ if ( !class_exists( 'Plugin_Boilerplate' ) ):
 
 class Plugin_Boilerplate {
 	
-	static $instance;
 	public $name = 'Plugin Boilerplate'; //Human-readable name of plugin
 	public $slug = 'plugin-boilerplate'; //plugin slug, generally base filename and in url on wordpress.org
 	public $slug_ = 'plugin_boilerplate'; //slug with underscores (PHP/JS safe)
@@ -13,23 +12,27 @@ class Plugin_Boilerplate {
 	public $version = '1.0';
 	public $min_wp = '3.2';
 	public $classes = array();
+	static $child;
 	
-	function __construct() {
-
-		self::$instance = &$this;
+	function __construct( &$instance ) {
 		
+		//don't let this fire twice
+		if ( get_class( &$this )  == 'Plugin_Boilerplate' )
+			return;
+			
+		self::$child = &$instance;
+		
+		$this->directory = &$instance->directory;
+	
 		//verify minimum WP version, and shutdown if insufficient
 		if ( !$this->_verify_wp_version() )
 			return false;
 		
-		//assume plugin base is one directory up
-		$this->directory = dirname( dirname( __FILE__ ) );
-
 		//upgrade db
-		add_action( 'admin_init', array( &$this, '_upgrade_check' ) );
+		//add_action( 'admin_init', array( &$this, '_upgrade_check' ) );
 		
 		//i18n
-		add_action( 'init', array( &$this, '_i18n' ) ); 
+		//add_action( 'init', array( &$this, '_i18n' ) ); 
 		
 		//load subclasses on init, allowing other plugins or self to override
 		add_action( 'plugins_loaded', array( &$this, '_init' ), 5 );
@@ -49,10 +52,6 @@ class Plugin_Boilerplate {
 		
 	}
 	
-	function _get_plugin_basename() {
-		return plugin_basename( __FILE__ );	
-	}
-	
 	/**
 	 * Loads and substantiates all classes in the includes and boilerplate-classes folders
 	 * Classes should be named in the form of Plugin_Boilerplate_{Class_Name}
@@ -62,7 +61,7 @@ class Plugin_Boilerplate {
 	function _load_subclasses() {
 			
 		//load all boilerplate core classes, followed by and child plugin classes
-		$files = glob( dirname( __FILE__ ) . '/boilerplate-classes/*.php' ) ;
+		$files = glob( $this->directory . '/includes/boilerplate-classes/*.php' ) ;
 		$files = array_merge( $files, glob( dirname( __FILE__ ) . '/*.php' ) );
 		
 		//don't include self
@@ -77,7 +76,7 @@ class Plugin_Boilerplate {
 						
 			if ( !apply_filters( "{$this->prefix}_load_{$name}", true ) )
 				continue;
-			
+
 			if ( !class_exists( $class ) )
 				@require_once( $file );
 			
@@ -90,7 +89,6 @@ class Plugin_Boilerplate {
 			$this->classes[ $name ] = $class;
 			
 			$this->api->do_action( "{$name}_init" );
-			
 			
 		}
 		
@@ -108,11 +106,12 @@ class Plugin_Boilerplate {
 	 * Fires on admin init to support SVN
 	 */
 	function _upgrade_check() {
-	
+
 		if ( $this->options->db_version == $this->version )
 			return;
-		
+
 		$this->upgrade( $this->options->db_version, $this->version );
+		
 		$this->api->do_action( 'upgrade', $this->version, $this->options->db_version );
 			
 		$this->options->db_version = $this->version;

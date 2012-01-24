@@ -268,7 +268,6 @@ class WP_Resume_Admin {
 	function menu() {
 		
 		add_submenu_page( 'edit.php?post_type=wp_resume_position', __('Resume Options', 'wp-resume'), __('Options', 'wp-resume'), 'edit_posts', 'wp_resume_options', array( &$this, 'options' ) );
-
 	}
 
 	/**

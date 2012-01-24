@@ -26,6 +26,7 @@ class WP_Resume extends Plugin_Boilerplate {
 	public $slug = 'wp-resume';
 	public $slug_ = 'wp_resume';
 	public $prefix = 'wp_resume_';
+	public $directory = null;
 	public $version = '3.0';
 
 	static $instance;
@@ -35,8 +36,9 @@ class WP_Resume extends Plugin_Boilerplate {
 	function __construct() {
 		
 		self::$instance = &$this;
-		parent::__construct(); 
-						
+		$this->directory = dirname( __FILE__ );
+		parent::__construct( &$this ); 						
+		
 		//cpt and CT
 		add_action( 'init', array( &$this, 'register_cpt_and_t' ) );
 		add_filter( 'get_terms', array( &$this, 'section_order_filter' ), 10, 3 );
@@ -529,7 +531,7 @@ class WP_Resume extends Plugin_Boilerplate {
 	 * @since 1.2
 	 */
 	function upgrade( $from, $to ) {
-		
+
 		//check to see if we have any sections, if not add the sections
 		if ( sizeof( $this->get_sections( false ) ) == 0 ) {
 			wp_insert_term( 'Education', 'wp_resume_section');
@@ -538,11 +540,11 @@ class WP_Resume extends Plugin_Boilerplate {
 		}
 			
 		//1.6 -- add multi-user support (v. 1.6)
-		if ( $from && substr( $from, 0, 2 ) < '1.6' ) {
-			
+		if ( $from && substr( $from, 0, 3 ) < '1.6' ) {
+
 			$options = $this->options->get_options();
 			$usermeta = array();
-			
+
 			//migrate $options[field] to (usermeta) [wp_resume][field] and kill original
 			foreach ( $this->options->user_defaults as $field=>$value ) {
 				if ( isset( $options[$field] ) ) {
@@ -562,29 +564,30 @@ class WP_Resume extends Plugin_Boilerplate {
 
 		// 2.2 -- move from user_meta to user_option
 		if ( $from && $from < '2.2' ) {
-		
+
 			$users = get_users( array( 'blog_id' => $GLOBALS['blog_id'] , 'fields' => 'ID' ) );
 			foreach ($users as $user) {
 		
 				$user_options = get_user_meta( $user, 'wp_resume', true );
 				delete_user_meta( $user, 'wp_resume' );
 					
-			} 
 			
-			$user_options = array();
+				$user_options = array();
 			
-			//loop default fields
-			foreach ( $this->options->user_defaults as $key => $value )
-				$user_options[ $key ] = $value;
+				//loop default fields
+				foreach ( $this->options->user_defaults as $key => $value )
+					$user_options[ $key ] = $value;
 
-			//update
-			$this->options->set_user_options( $user, $user_options );	
+				//update
+				$this->options->set_user_options( $user_options, $user );	
 			
+			}
+			 
 		}
 		
 		//3.0 -- flip key and value in order array
 		if ( $from < '3.0' ) { 
-		
+
 			$users = get_users( array( 'blog_id' => $GLOBALS['blog_id'] , 'fields' => 'ID' ) );
 						
 			foreach ( $users as $user ) {
@@ -601,7 +604,7 @@ class WP_Resume extends Plugin_Boilerplate {
 			}
 			
 		}
-		
+	
 		//flush rewrite rules just in case
 		flush_rewrite_rules();
 			  

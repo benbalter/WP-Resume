@@ -9,7 +9,7 @@
  * @since 1.0a
  */
 
-$resume = &self::$parent;
+$resume = &$this->parent;
 
 //grab templating class
 $template = &$resume->templating;

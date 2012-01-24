@@ -22,7 +22,30 @@ class Plugin_Boilerplate_Options {
 			self::$parent = new Plugin_Boilerplate;
 		else
 			self::$parent = &$instance;
-
+		
+		add_action( 'admin_init', array( &$this, 'options_init' ) );
+		
+	}
+	
+	/**
+	 * Tells WP that we're using a custom settings field
+	 */
+	function options_init() {
+	 	
+	 	if ( empty( self::$parent->options->defaults ) )
+	 		return;
+	 		  
+	    register_setting( self::$parent->slug_, self::$parent->slug_, array( &$this, 'validate' ) );
+	
+	}
+	
+	/**
+	 * Runs options through filter prior to saving
+	 */
+	function validate( $options ) {
+			
+		return self::$parent->api->apply_filters( 'options_validate', $options );
+	
 	}
 	
 	/**
@@ -125,9 +148,9 @@ class Plugin_Boilerplate_Options {
 	 * @return array the options
 	 */
 	function get_options( ) {
-			
 		if ( !$options = self::$parent->cache->get( 'options' ) ) { 
 			$options = (array) get_option( self::$parent->slug_ );
+			$this->defaults[ 'db_version' ] = null;
 			$options = wp_parse_args( $options, $this->defaults ); 
 			self::$parent->cache->set( 'options', $options );
 		}
