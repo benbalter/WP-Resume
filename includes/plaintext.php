@@ -26,7 +26,7 @@ class WP_Resume_Plaintext {
 		add_filter( 'resume_plaintext_content', array( &$this, 'html_entity_decode' ) );
 		add_filter( 'resume_plaintext_title', array( &$this, 'html_entity_decode' ) );
 		add_filter( 'resume_plaintext_title', 'stripslashes' );
-		add_filter( 'resume_plaintext_location', array( &$this, 'format_plaintext_location' ) );
+		add_filter( 'resume_plaintext_location', array( &$this, 'format_location' ) );
 		add_filter( 'resume_plaintext_location', array( &$this, 'html_entity_decode' ) );
 		add_filter( 'resume_plaintext_date', array( &$this, 'html_entity_decode' ) );
 		add_filter( 'resume_plaintext_date', 'wp_filter_nohtml_kses' );
@@ -38,12 +38,12 @@ class WP_Resume_Plaintext {
 	 * Filters HTML from contact info array recursively
 	 * @uses plaintext_contact_info_walker
 	 */
-	function plaintext_contact_info( $author = null ) {
+	function contact_info( $author = null ) {
 	
 		$author = $this->parent->get_author( $author );
 		$contact_info = $this->parent->options->get_user_option( 'contact_info', $author );
 		
-		array_walk_recursive( &$contact_info, array( &$this, 'plaintext_contact_info_walker' ) );
+		array_walk_recursive( &$contact_info, array( &$this, 'contact_info_walker' ) );
 		
 		$contact_info = $this->parent->api->apply_filters( 'plaintext_contact_info', $contact_info );
 				
@@ -54,7 +54,7 @@ class WP_Resume_Plaintext {
 	/**
 	 * Helper function to parse contact info array from HTML to plaintext
 	 */
-	function plaintext_contact_info_walker( &$info ) {
+	function contact_info_walker( &$info ) {
 		$info = wp_filter_nohtml_kses( $info );
 	}
 	
@@ -97,7 +97,7 @@ class WP_Resume_Plaintext {
 	 * @param string $location the location
 	 * @return string the formatted location
 	 */
-	function format_plaintext_location( $location ) {
+	function format_location( $location ) {
 	
 		if ( strlen( trim( $location ) ) == 0 )
 			return '';

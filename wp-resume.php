@@ -177,7 +177,7 @@ class WP_Resume extends Plugin_Boilerplate {
 	 */
 	function format_date( $ID ) {
 		_deprecated_function( __FUNCTION__, '2.0.4 of WP Resume', 'get_date' );
-		return $this->get_date( $ID );
+		return $this->templating->get_date( $ID );
 	}
 
 	/**

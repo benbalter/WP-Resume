@@ -23,18 +23,15 @@ function _spacer( $num, $char = '=' ) {
 		echo "$char";
 }
 
-$wp_resume = WP_Resume::$instance;
-
 //Retrieve plugin options for later use
-$options = $wp_resume->get_options();
-$author_options = $wp_resume->get_user_options( $wp_resume->author );
+$author_options = $this->parent->options->get_user_options( $this->parent->author );
 
 //output name
 echo $author_options['name']; _rn();
 _spacer( strlen( $author_options['name'] ), '=' ); _rn();
 	
 $spacer = apply_filters( 'resume_plaintext_contact_info_spacer', ' | ' );
-echo implode( $spacer, $wp_resume->plaintext_contact_info( $author_options['contact_info'] ) );
+echo implode( $spacer, $this->parent->plaintext->contact_info( $author_options['contact_info'] ) );
 
 _rn();
 
@@ -44,13 +41,13 @@ if (! empty( $author_options['summary'] ) ) {
 }
 
 //Loop through each resume section
-foreach ( $wp_resume->get_sections(null, $wp_resume->author) as $section) {
+foreach ( $this->parent->get_sections(null, $this->parent->author) as $section) {
 	
 	//Initialize our org. variable 
 	$current_org = ''; 
 	
 	//retrieve all posts in the current section using our custom loop query
-	$positions = $wp_resume->query( $section->slug, $wp_resume->author);
+	$positions = $this->parent->query( $section->slug, $this->parent->author);
 
 	//loop through all posts in the current section using the standard WP loop
 	if ( $positions->have_posts() ) : 
@@ -63,7 +60,7 @@ foreach ( $wp_resume->get_sections(null, $wp_resume->author) as $section) {
 	while ( $positions->have_posts() ) : $positions->the_post();
 
 		//Retrieve details on the current position's organization
-		$organization = $wp_resume->get_org( get_the_ID() ); 
+		$organization = $this->parent->get_org( get_the_ID() ); 
 				
 		//If this is the first organization, or if this org. is different from the previous, format output acordingly
 		if ($organization && $organization->term_id != $current_org) {
@@ -79,7 +76,7 @@ foreach ( $wp_resume->get_sections(null, $wp_resume->author) as $section) {
 		} //end if new org.	
 		
 		_rn(); 	echo apply_filters( 'resume_plaintext_title', get_the_title() );
-				echo apply_filters( 'resume_plaintext_date', $wp_resume->format_date( get_the_ID() ) );
+				echo apply_filters( 'resume_plaintext_date', $this->parent->templating->get_date( get_the_ID() ) );
 		_rn();	echo apply_filters( 'resume_plaintext_content', get_the_content() ); _rn(1);
 	
 	//loop		

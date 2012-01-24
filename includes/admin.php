@@ -17,7 +17,7 @@ class WP_Resume_Admin {
 		//admin UI
 		add_action( 'admin_menu', array( &$this, 'menu' ) );
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
-		add_action( 'wp_resume_organization_add_form', array( &$this, 'org_helptext' ) );
+		add_action( '55', array( &$this, 'org_helptext' ) );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 		add_filter( 'option_page_capability_wp_resume_options', array( &$this, 'cap_filter' ), 10, 1 );
 		add_filter( 'wp_resume_enqueue_js', array( &$this, 'maybe_enqueue' ), 10, 3 );
@@ -273,7 +273,7 @@ class WP_Resume_Admin {
 	 * @returns array of validated data (without position order)
 	 */
 	function options_validate($data) {
-	
+
 		//make sure we're POSTing
 		if ( empty($_POST) )
 			return $data;
@@ -550,6 +550,9 @@ class WP_Resume_Admin {
 	 * Saves organization link
 	 */
 	function save_link_field( $termID ) {
+	
+		if ( !isset( $_REQUEST['wp_resume_nonce'] ) )
+			return;
 		
 		wp_verify_nonce( 'wp_resume_org_link', $_REQUEST['wp_resume_nonce'] );
 	
