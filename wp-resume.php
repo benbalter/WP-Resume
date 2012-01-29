@@ -9,16 +9,16 @@ Author URI: http://ben.balter.com/
 License: GPL3
 */
 
-/*	WP Resume
+/*  WP Resume
  *
  *  An out-of-the-box solution to get your resume online and keep it updated.
  *  Built on WordPress 3.0's custom post type functionality, it offers a
  *  uniquely familiar approach to publishing. If you've got a WordPress site,
  *  you already know how to use WP Resume.
  *
- *	Copyright (C) 2011-2012  Benjamin J. Balter  ( ben@balter.com -- http://ben.balter.com )
+ *  Copyright (C) 2011-2012  Benjamin J. Balter  ( ben@balter.com -- http://ben.balter.com )
  *
- *	This program is free software: you can redistribute it and/or modify
+ *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
