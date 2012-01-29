@@ -67,6 +67,7 @@ class WP_Resume extends Plugin_Boilerplate {
 
 		//frontend printstyles
 		add_action( 'wp_print_styles', array( &$this, 'enqueue_styles' ) );
+		add_filter( 'wp_resume_enqueue_js', array( &$this, 'html5_enqueue_filter' ), 10, 3 );
 
 		//admin bar
 		add_action( 'admin_bar_menu', array( &$this, 'admin_bar' ), 100 );
@@ -480,6 +481,26 @@ class WP_Resume extends Plugin_Boilerplate {
 
 		add_filter( 'post_class', array( &$this, 'add_post_class' ) );
 
+	}
+	
+	/**
+	 * Filter to conditionally enqueue HTML5 shiv if enabled
+	 */
+	function html5_enqueue_filter( $default, $file, $name) {
+	
+		if ( $name != 'front-end' )
+			return $default;
+			
+		if ( $file != 'html5.js' )
+			return $default;
+	
+		if ( !$this->options->fix_ie )
+			return $default;
+			
+		if ( !$this->resume_in_query() )
+			return false;
+			
+		return true;		
 	}
 
 
