@@ -366,7 +366,7 @@ class WP_Resume extends Plugin_Boilerplate {
 		$link = $cache = $this->cache->get( $slug );
 
 		if ( !$link ) {
-			$link = $this->options->get_option( $slug );
+			$link = get_option( $slug );
 			$this->cache->set( $slug, $link );
 		}
 

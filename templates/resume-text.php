@@ -18,7 +18,7 @@ function _rn( $num = 1 ) { _spacer( $num, "\r\n"); }
  * @param string $char the charecter to use
  */
 function _spacer( $num, $char = '=' ) { 
-	$char = apply_filters( 'resume_spacer_char', $char, $num );
+	$char = apply_filters( 'wp_resume_spacer_char', $char, $num );
 	for( $i=0; $i<$num; $i++)
 		echo "$char";
 }
@@ -30,7 +30,7 @@ $author_options = $this->parent->options->get_user_options( $this->parent->autho
 echo $author_options['name']; _rn();
 _spacer( strlen( $author_options['name'] ), '=' ); _rn();
 	
-$spacer = apply_filters( 'resume_plaintext_contact_info_spacer', ' | ' );
+$spacer = $this->parent->api->apply_filters( 'plaintext_contact_info_spacer', ' | ' );
 echo implode( $spacer, $this->parent->plaintext->contact_info( $author_options['contact_info'] ) );
 
 _rn();
@@ -71,13 +71,13 @@ foreach ( $this->parent->get_sections(null, $this->parent->author) as $section) 
 			//Format organization header output
 			_rn();
 			echo strtoupper( $organization->name );
-			echo apply_filters( 'resume_plaintext_location', $organization->description );
+			echo $this->parent->api->apply_filters( 'plaintext_location', $organization->description );
 		
 		} //end if new org.	
 		
-		_rn(); 	echo apply_filters( 'resume_plaintext_title', get_the_title() );
-				echo apply_filters( 'resume_plaintext_date', $this->parent->templating->get_date( get_the_ID() ) );
-		_rn();	echo apply_filters( 'resume_plaintext_content', get_the_content() ); _rn(1);
+		_rn(); 	echo $this->parent->api->apply_filters( 'plaintext_title', get_the_title() );
+				echo $this->parent->api->apply_filters( 'plaintext_date', $this->parent->templating->get_date( get_the_ID() ) );
+		_rn();	echo $this->parent->api->apply_filters( 'plaintext_content', get_the_content() ); _rn(1);
 	
 	//loop		
 	endwhile; endif;

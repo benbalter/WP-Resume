@@ -17,7 +17,7 @@ class WP_Resume_Plaintext {
 
 		$this->parent = &$parent;
 
-		add_action( 'init', array( &$this, 'init' ) );
+		add_action( 'parse_query', array( &$this, 'init' ) );
 	}
 
 
@@ -30,17 +30,17 @@ class WP_Resume_Plaintext {
 		if ( !is_feed() )
 			return;
 
-		add_filter( 'resume_plaintext_content', array( &$this, 'bulletit'), 5 );
-		add_filter( 'resume_plaintext_content', 'wp_filter_nohtml_kses' );
-		add_filter( 'resume_plaintext_content', 'stripslashes' );
-		add_filter( 'resume_plaintext_content', array( &$this, 'html_entity_decode' ) );
-		add_filter( 'resume_plaintext_title', array( &$this, 'html_entity_decode' ) );
-		add_filter( 'resume_plaintext_title', 'stripslashes' );
-		add_filter( 'resume_plaintext_location', array( &$this, 'format_location' ) );
-		add_filter( 'resume_plaintext_location', array( &$this, 'html_entity_decode' ) );
-		add_filter( 'resume_plaintext_date', array( &$this, 'html_entity_decode' ) );
-		add_filter( 'resume_plaintext_date', 'wp_filter_nohtml_kses' );
-		add_filter( 'resume_plaintext_date', array( &$this, 'format_date_plaintext' ) );
+		add_filter( 'wp_resume_plaintext_content', array( &$this, 'bulletit'), 5 );
+		add_filter( 'wp_resume_plaintext_content', 'wp_filter_nohtml_kses' );
+		add_filter( 'wp_resume_plaintext_content', 'stripslashes' );
+		add_filter( 'wp_resume_plaintext_content', array( &$this, 'html_entity_decode' ) );
+		add_filter( 'wp_resume_plaintext_title', array( &$this, 'html_entity_decode' ) );
+		add_filter( 'wp_resume_plaintext_title', 'stripslashes' );
+		add_filter( 'wp_resume_plaintext_location', array( &$this, 'format_location' ) );
+		add_filter( 'wp_resume_plaintext_location', array( &$this, 'html_entity_decode' ) );
+		add_filter( 'wp_resume_plaintext_date', array( &$this, 'html_entity_decode' ) );
+		add_filter( 'wp_resume_plaintext_date', 'wp_filter_nohtml_kses' );
+		add_filter( 'wp_resume_plaintext_date', array( &$this, 'format_date_plaintext' ) );
 
 	}
 

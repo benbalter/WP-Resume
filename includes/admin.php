@@ -575,7 +575,7 @@ class WP_Resume_Admin {
 	 * Saves organization link
 	 * @param unknown $termID
 	 */
-	function save_link_field( $termID ) {
+	function save_link_field( $termID ) { 
 
 		if ( !isset( $_REQUEST['wp_resume_nonce'] ) )
 			return;
