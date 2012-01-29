@@ -10,7 +10,7 @@ class Plugin_Boilerplate_Template_v_1 {
 	 * Store parent and init template directory
 	 */
 	function __construct( $parent ) {
-	
+
 		$this->parent = &$parent;
 		
 	}
@@ -51,7 +51,7 @@ class Plugin_Boilerplate_Template_v_1 {
 		if ( 	in_array( $_pb_template, $this->overrides ) 	||
 				$this->parent->api->apply_filters( 'allow_template_override', false, $_pb_template ) )
 			$_pb_file = locate_template( $_pb_template );
-		
+
 		if ( !$_pb_file )
 			$_pb_file = $this->parent->directory . $this->path . $_pb_template . '.php';
 

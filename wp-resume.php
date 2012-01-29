@@ -66,7 +66,7 @@ class WP_Resume extends Plugin_Boilerplate {
 		add_filter( 'wp_resume_order', array( &$this, 'pad_order' ) );
 
 		//frontend printstyles
-		add_action( 'wp_print_styles', array( &$this, 'enqueue_styles' ) );
+		add_action( 'wp_print_styles', array( &$this, 'enqueue_styles' ), 5 );
 		add_filter( 'wp_resume_enqueue_js', array( &$this, 'html5_enqueue_filter' ), 10, 3 );
 
 		//admin bar
@@ -478,9 +478,29 @@ class WP_Resume extends Plugin_Boilerplate {
 
 		if ( !$this->resume_in_query() )
 			return;
+			
+		if ( file_exists ( get_stylesheet_directory() . '/resume-style.css' ) ) {
+			wp_enqueue_style('wp-resume-custom-stylesheet', get_stylesheet_directory_uri() . '/resume-style.css' );
+			add_filter( 'wp_resume_enqueue_css', array( &$this, 'dont_enqueue_default_css' ), 10, 3 );
+		}
 
 		add_filter( 'post_class', array( &$this, 'add_post_class' ) );
 
+	}
+	
+	/**
+	 * If user has a custom css file, enqueue that, instead of our own
+	 */
+	function dont_enqueue_default_css( $default, $file, $type ) {
+	
+		if ( $type != 'front-end' )
+			return $default;
+			
+		if ( $file == 'resume-style.css' )
+			return false;
+			
+		return $default;
+		
 	}
 	
 	/**
