@@ -12,9 +12,9 @@ License: GPL3
 /*	WP Resume
  *
  *  An out-of-the-box solution to get your resume online and keep it updated.
- *	Built on WordPress 3.0's custom post type functionality, it offers a
- *	uniquely familiar approach to publishing. If you've got a WordPress site,
- *	you already know how to use WP Resume.
+ *  Built on WordPress 3.0's custom post type functionality, it offers a
+ *  uniquely familiar approach to publishing. If you've got a WordPress site,
+ *  you already know how to use WP Resume.
  *
  *	Copyright (C) 2011-2012  Benjamin J. Balter  ( ben@balter.com -- http://ben.balter.com )
  *
@@ -31,11 +31,11 @@ License: GPL3
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * 	@copyright 2011-2012
- *	@license GPL v3
- * 	@version 3.0
- * 	@package WP_Resume
- * 	@author Benjamin J. Balter <ben@balter.com>
+ *  @copyright 2011-2012
+ *  @license GPL v3
+ *  @version 3.0
+ *  @package WP_Resume
+ *  @author Benjamin J. Balter <ben@balter.com>
  */
 
 require_once dirname( __FILE__ ) . '/includes/class.plugin-boilerplate.php';
