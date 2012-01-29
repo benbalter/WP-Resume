@@ -674,7 +674,7 @@ class WP_Resume_Admin {
 		if ( strpos( $screen->base, 'wp_resume_position' ) !== false )
 			return true;
 
-		return $default;
+		return false;
 
 	}
 
