@@ -30,6 +30,12 @@ License: GPL3
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * 	@copyright 2011-2012
+ *	@license GPL v3
+ * 	@version 3.0
+ * 	@package WP_Resume
+ * 	@author Benjamin J. Balter <ben@balter.com>
  */
 
 require_once dirname( __FILE__ ) . '/includes/class.plugin-boilerplate.php';
