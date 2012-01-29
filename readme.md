@@ -14,7 +14,7 @@ WP Resume is an out-of-the-box solution to get your resume online and keep it up
 
 You can [see it in action](http://ben.balter.com/resume/) or for information and troubleshooting, check out the [Plugin Homepage](http://ben.balter.com/2010/09/12/wordpress-resume-plugin/).
 
-**### Features include:** ###  
+### Features include: ###
 
 * Support for sections (e.g., education, experience), organizations (e.g., somewhere state university, Cogs, Inc.), positions (e.g., bachelor of arts, chief widget specialist), and details (e.g., grew bottom line by 15%, president of the sustainability club)
 * Supports multiple resumes, on the same page, or on their own
@@ -30,7 +30,7 @@ You can [see it in action](http://ben.balter.com/resume/) or for information and
 * Does not use pretentious accents on the word "resume"
 * Extremely original title
 
-**### Under the hood:** ###  
+### Under the hood: ###
 
 * Built on existing WordPress code, utilizing a single custom post type and two custom taxonomies
 * JSON API so you can use the data anywhere
