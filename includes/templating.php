@@ -33,7 +33,7 @@ class WP_Resume_Templating {
 
 		$name = $this->parent->options->get_user_option( 'name', $this->author );
 
-		$name = $this->parent->api->apply_deprecated_filters( 'resume_name', '3.0', 'name', $name );
+		$name = $this->parent->api->apply_deprecated_filters( 'resume_name', '2.5', 'name', $name );
 		return $this->parent->api->apply_filters( 'name', $name );
 
 	}
@@ -50,11 +50,11 @@ class WP_Resume_Templating {
 			$title = get_the_title();
 		} else {
 			$title = '<a href="' . get_permalink() . '">' . get_the_title() . '</a>';
-			$title = $this->parent->api->apply_deprecated_filters( 'resume_title_link', '3.0', 'title_link', $title );
+			$title = $this->parent->api->apply_deprecated_filters( 'resume_title_link', '2.5', 'title_link', $title );
 			$title = $this->parent->api->apply_filters( 'title_link', $title );
 		}
 
-		$title = $this->parent->api->apply_deprecated_filters( 'resume_position_title', '3.0', 'position_title', $title );
+		$title = $this->parent->api->apply_deprecated_filters( 'resume_position_title', '2.5', 'position_title', $title );
 		return $this->parent->api->apply_filters( 'position_title', $title );
 
 	}
@@ -99,7 +99,7 @@ class WP_Resume_Templating {
 		$rewrite = $this->parent->options->get_option( 'rewrite' );
 
 		if ( !$link ) {
-			$name = $this->parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $object->name );
+			$name = $this->parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '2.5', "{$taxonomy}_name", $object->name );
 			return $this->parent->api->apply_filters( "{$taxonomy}_name", $name );
 		}
 
@@ -113,16 +113,16 @@ class WP_Resume_Templating {
 
 				//no link
 			} else {
-			$name = $this->parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $object->name );
+			$name = $this->parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '2.5', "{$taxonomy}_name", $object->name );
 			return $this->parent->api->apply_filters( "{$taxonomy}_name", $name );
 		}
 
 		$title = '<a href="' . $link . '">' . $object->name . '</a>';
 
 
-		$title = $this->parent->api->apply_deprecated_filters( "resume_{$taxonomy}_link", '3.0', "{$taxonomy}_link", $title );
+		$title = $this->parent->api->apply_deprecated_filters( "resume_{$taxonomy}_link", '2.5', "{$taxonomy}_link", $title );
 		$title = $this->parent->api->apply_filters( '{$taxonomy}_link', $title );
-		$title = $this->parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '3.0', "{$taxonomy}_name", $title );
+		$title = $this->parent->api->apply_deprecated_filters( "resume_{$taxonomy}_name", '2.5', "{$taxonomy}_name", $title );
 		$title = $this->parent->api->apply_filters( '{$taxonomy}_name', $title );
 
 		return $title;
@@ -138,7 +138,7 @@ class WP_Resume_Templating {
 	function get_contact_info() {
 
 		$contact_info = $this->parent->options->get_user_option( 'contact_info', $this->author );
-		$contact_info = $this->parent->api->apply_deprecated_filters( 'resume_contact_info', '3.0', 'contact_info', $contact_info );
+		$contact_info = $this->parent->api->apply_deprecated_filters( 'resume_contact_info', '2.5', 'contact_info', $contact_info );
 		return $this->parent->api->apply_filters( 'contact_info', $contact_info );
 
 	}
@@ -152,7 +152,7 @@ class WP_Resume_Templating {
 	function get_summary() {
 
 		$summary = $this->parent->options->get_user_option( 'summary', $this->author );
-		$summary = $this->parent->api->apply_deprecated_filters( 'resume_summary', '3.0', 'summary', $summary );
+		$summary = $this->parent->api->apply_deprecated_filters( 'resume_summary', '2.5', 'summary', $summary );
 		return $this->parent->api->apply_filters( 'summary', $summary );
 
 	}

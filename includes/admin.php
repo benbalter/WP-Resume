@@ -645,7 +645,7 @@ class WP_Resume_Admin {
 
 	/**
 	 * Helper function to load contact_info_row template
-	 * @since 3.0
+	 * @since 2.5
 	 * @param unknown $value
 	 * @param unknown $field_id
 	 */
@@ -656,7 +656,7 @@ class WP_Resume_Admin {
 
 	/**
 	 * Only load javscript on resume pages
-	 * @since 3.0
+	 * @since 2.5
 	 * @param unknown $default
 	 * @param unknown $file
 	 * @param unknown $name
@@ -681,7 +681,7 @@ class WP_Resume_Admin {
 
 	/**
 	 * Only load css on resume pages and always on front end
-	 * @since 3.0
+	 * @since 2.5
 	 * @param unknown $default
 	 * @param unknown $file
 	 * @param unknown $name
