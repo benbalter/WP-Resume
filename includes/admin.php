@@ -49,6 +49,15 @@ class WP_Resume_Admin {
 			'contributor'   => array( 'edit_others_resume' => false, 'edit_resume' => true ),
 			'subscriber'    => array( 'edit_others_resume' => false, 'edit_resume' => false ),
 		);
+		
+		//Qtranslate support
+		if ( function_exists( 'qtrans_modifyTermFormFor' ) ) {
+			add_action( 'wp_resume_section_add_form', 'qtrans_modifyTermFormFor' );
+			add_action( 'wp_resume_section_edit_form', 'qtrans_modifyTermFormFor' );
+			add_action( 'wp_resume_organization_add_form', 'qtrans_modifyTermFormFor' );
+			add_action( 'wp_resume_organization_edit_form', 'qtrans_modifyTermFormFor' );
+		}
+			
 	}
 
 
