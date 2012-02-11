@@ -67,7 +67,7 @@
     		<th scope="row"><label for="wp_resume_options[summary]"><?php _e('Summary', 'wp-resume'); ?></label></th>
     		<td id="poststuff">
     		<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
-    			<?php the_editor( ( isset($user_options['summary'] ) ) ? $user_options['summary'] : '', "wp_resume_options[summary]" ); ?>	
+    			<?php wp_editor( ( isset($user_options['summary'] ) ) ? $user_options['summary'] : '', "wp_resume_options[summary]" ); ?>	
     		</div>
     		<span class="description"><?php _e('(optional) Plain-text summary of your resume, professional goals, etc. Will appear on your resume below your contact information before the body', 'wp-resume'); ?>.</span>	
     		</td>
