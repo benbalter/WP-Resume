@@ -118,9 +118,14 @@ Make sure all your positions are associated with sections.
 
 ## Changelog ##
 
-### 2.2.4 ###
-* Significant enhancements to json and plain text versions
+### 2.5 ###
+* **NOTE: you may need to manually reactivate the plugin after upgrading to this version**
+* Complete codebase overhaul for stability, scalability, and performance
 * Added project to [Github](https://github.com/benbalter/WP-Resume/)
+* Added Qtranslate Support (Special thanks to [Fabio A Locati](http://fabiolocati.com/))
+* Significant enhancements to json and plain text versions
+* Custom section ordering now honored throughout administrative dashboard
+* Additional API hooks added to allow developers to modify and adapt the plugin's functionality
 
 ### 2.2.3 ###
 * Fix for organization links not properly saving in certain cases
