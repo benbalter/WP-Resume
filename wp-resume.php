@@ -40,7 +40,7 @@ License: GPL3
 
 require_once dirname( __FILE__ ) . '/includes/class.plugin-boilerplate.php';
 
-class WP_Resume extends Plugin_Boilerplate {
+class WP_Resume extends Plugin_Boilerplate_v_1 {
 
 	//plugin boilerplate config
 	public $name      = 'WP Resume';
