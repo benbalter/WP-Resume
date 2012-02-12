@@ -72,8 +72,11 @@ class Plugin_Boilerplate_Enqueue_v_1 {
 				continue;
 
 			$slug = ( $i === 0 ) ? $this->parent->slug : $this->parent->slug . "-$i";
+			
+			//if debugging, use filemtime, otherwise use plugin version as script version 
+			$version = ( WP_DEBUG ) ? filemtime( $directory . $file ) : $this->parent->version;
 
-			wp_enqueue_script( $slug, plugins_url( $this->js_path . $name . '/' . $file, $this->parent->directory . '/readme.txt' ), array( 'jquery' ), filemtime( $directory . $file ), true );
+			wp_enqueue_script( $slug, plugins_url( $this->js_path . $name . '/' . $file, $this->parent->directory . '/readme.txt' ), array( 'jquery' ), $version, true );
 
 			$i++;
 
@@ -126,8 +129,11 @@ class Plugin_Boilerplate_Enqueue_v_1 {
 			//allow child plugins to control when css is enqueued
 			if ( !$this->parent->api->apply_filters( 'enqueue_css', true, $file, $name ) )
 				continue;
+				
+			//if debugging, use filemtime, otherwise use plugin version as stylesheet version 
+			$version = ( WP_DEBUG ) ? filemtime( $directory . $file ) : $this->parent->version;
 
-			wp_enqueue_style( $this->parent->slug, plugins_url( $this->css_path . $name . '/' . $file , $this->parent->directory . '/readme.txt' ), null, filemtime( $directory . $file ) );
+			wp_enqueue_style( $this->parent->slug, plugins_url( $this->css_path . $name . '/' . $file , $this->parent->directory . '/readme.txt' ), null, $version );
 
 		}
 

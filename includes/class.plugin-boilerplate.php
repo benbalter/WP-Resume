@@ -3,7 +3,7 @@
  *
  *  Provides common boilerplate for creating object-oriented WordPress plugins.
  *
- *..Copyright (C) 2011-2012  Benjamin J. Balter  ( ben@balter.com -- http://ben.balter.com )
+ *  Copyright (C) 2011-2012  Benjamin J. Balter  ( ben@balter.com -- http://ben.balter.com )
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,11 +23,12 @@
  *  @version 1.0
  *  @package Plugin_Boilerplate
  *  @author Benjamin J. Balter <ben@balter.com>
+ *  @link https://github.com/benbalter/Plugin-Boilerplate/
  */
 
-if ( !class_exists( 'Plugin_Boilerplate' ) ):
+if ( !class_exists( 'Plugin_Boilerplate_v_1' ) ):
 
-	class Plugin_Boilerplate {
+	class Plugin_Boilerplate_v_1 {
 
 	public $name                = 'Plugin Boilerplate'; //Human-readable name of plugin
 	public $slug                = 'plugin-boilerplate'; //plugin slug, generally base filename and in url on wordpress.org
@@ -208,7 +209,7 @@ if ( !class_exists( 'Plugin_Boilerplate' ) ):
 
 		//base, either Plugin class or Plugin_Boilerplate
 		$class->native = ( dirname( $file ) == dirname( __FILE__ ) . '/boilerplate-classes' );
-		$class->base = ( $class->native ) ? get_parent_class( &$this ) : get_class( &$this );
+		$class->base = ( $class->native ) ? 'Plugin_Boilerplate' : get_class( &$this );
 		$class->class = $class->base . '_' . $class->name;
 
 		//if this is a PB native class, append a version # to prevent collision

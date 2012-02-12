@@ -23,7 +23,8 @@ class Plugin_Boilerplate_Options_v_1 {
 		$this->parent = &$parent;
 
 		add_action( 'admin_init', array( &$this, 'options_init' ) );
-
+		add_action( $this->parent->prefix . 'options', array( &$this, 'default_options_filter' ), 20 );
+		
 	}
 
 
@@ -129,9 +130,9 @@ class Plugin_Boilerplate_Options_v_1 {
 	 * @return bool success/fail
 	 */
 	function set_user_option( $key, $value, $user = null ) {
-		$options = $this->get_user_options( $user );
-		$options[ $key ] = $value;
-		return $this->set_user_options( $options, $user, null, false );
+		$options = array( $key => $value );
+		$this->set_options( $options );
+		return $this->set_user_options( $options, $user );
 	}
 
 
@@ -167,12 +168,24 @@ class Plugin_Boilerplate_Options_v_1 {
 
 		if ( !$options = $this->parent->cache->get( 'options' ) ) {
 			$options = get_option( $this->parent->slug_ );
-			$this->defaults[ 'db_version' ] = $this->parent->version;
-			$options = wp_parse_args( $options, $this->defaults );
 			$this->parent->cache->set( 'options', $options );
 		}
 
 		return $this->parent->api->apply_filters( 'options', $options );
+
+	}
+
+	/**
+	 * If any options are not set, merge with defaults
+	 * @param array $options the saved options
+	 * @return array the merged options with defaults
+	 */
+	function default_options_filter( $options ) {
+
+		$this->defaults[ 'db_version' ] = $this->parent->version;
+		$options = wp_parse_args( $options, $this->defaults );
+		$this->parent->cache->set( 'options', $options );
+		return $options;
 
 	}
 
@@ -182,7 +195,7 @@ class Plugin_Boilerplate_Options_v_1 {
 	 * @param string $option the unique option key
 	 * @return mixed the value
 	 */
-	function get_option( $option ) { 
+	function get_option( $option ) {
 		$options = $this->get_options( );
 		$value = ( isset( $options[ $option ] ) ) ? $options[ $option ] : false;
 		return $this->parent->api->apply_filters( $option, $value );
@@ -196,9 +209,8 @@ class Plugin_Boilerplate_Options_v_1 {
 	 * @return bool success/fail
 	 */
 	function set_option( $key, $value ) {
-		$options = $this->parent->options->get_options( );
-		$options[ $key ] = $value;
-		return $this->parent->options->set_options( $options, false );
+		$options = array( $key => $value );
+		$this->set_options( $options );
 	}
 
 
