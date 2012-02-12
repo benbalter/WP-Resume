@@ -100,6 +100,10 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 
 Make sure all your positions are associated with sections.
 
+= How do Permissions work? =
+
+Default permissions are automatically mapped to any standard WordPress roles (e.g., administrator, author, etc.) The ability to edit a positions is defined by `edit_resume_position`, to delete is `delete_resume_position`, etc., following the standard syntax and roles as for posts. Additionally, `edit_resume` allows access to the Resume->Options settings panel, and `edit_others_resume` allows access to other users' Resume->Options settings panel. To modify the default permissions, take a look at permissions plugins such as [Members](http://wordpress.org/extend/plugins/members/).
+
 == Planned Features ==
  
 * Import from LinkedIn via API
@@ -119,6 +123,7 @@ Make sure all your positions are associated with sections.
 * Added Qtranslate Support (Special thanks to [Fabio A Locati](http://fabiolocati.com/))
 * Significant enhancements to json and plain text versions
 * Custom section ordering now honored throughout administrative dashboard
+* Plugin now relies on 22 custom capabilities, allowing administrators more granular control of user permissions, customizable through plugin such as [Members](http://wordpress.org/extend/plugins/members/).
 * Additional API hooks added to allow developers to modify and adapt the plugin's functionality
 
 = 2.2.3 =

@@ -144,7 +144,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 			'menu_icon'            => plugins_url( '/img/menu-icon.png', __FILE__ ),
 			'query_var'            => true,
 			'rewrite'              => $rewrite,
-			'capability_type'      => 'post',
+			'capability_type'      => array( 'resume_position', 'resume_positions'),
 			'hierarchical'         => false,
 			'menu_position'        => null,
 			'register_meta_box_cb' => array( &$this->admin, 'meta_callback' ),
@@ -171,7 +171,19 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 			'new_item_name'     => __( 'New Section Name', 'wp-resume' ),
 		);
 
-		$args = $this->api->apply_filters( 'section_ct', array( 'hierarchical' => true, 'labels' => $labels,  'query_var' => true, 'rewrite' => ( $rewrite ) ? array( 'slug' => 'sections' ) : false ) );
+		$args = $this->api->apply_filters( 'section_ct', array( 
+			'hierarchical' => true, 
+			'labels' => $labels,  
+			'query_var' => true, 
+			'rewrite' => ( $rewrite ) ? array( 'slug' => 'sections' ) : false, 
+			'capabilities' => array( 
+				'manage_terms'  => 'manage_resume_sections',
+				'edit_terms'    => 'edit_resume_sections',
+				'delete_terms'  => 'delete_resume_sections',
+				'assign_terms ' => 'assign_resume_sections',
+				),
+			) 
+		);
 
 		//Register section taxonomy
 		register_taxonomy( 'wp_resume_section', 'wp_resume_position', $args );
@@ -194,7 +206,13 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 					'hierarchical' => true, 
 					'labels'       => $labels,  
 					'query_var'    => true, 
-					'rewrite'      => ( $rewrite ) ? array( 'slug' => 'organizations' ) : false, 
+					'rewrite'      => ( $rewrite ) ? array( 'slug' => 'organizations' ) : false,
+					'capabilities' => array( 
+						'manage_terms'  => 'manage_resume_organizations',
+						'edit_terms'    => 'edit_resume_organizations',
+						'delete_terms'  => 'delete_resume_organizations',
+						'assign_terms ' => 'assign_resume_organizations',
+					),
 				) 
 			);
 

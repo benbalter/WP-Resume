@@ -41,14 +41,6 @@ class WP_Resume_Admin {
 		add_action( 'wp_resume_organization_edit_form_fields', array( &$this, 'link_field' ), 10, 2 );
 		add_action( 'create_wp_resume_organization', array( &$this, 'save_link_field' ) );
 		add_action( 'edited_wp_resume_organization', array( &$this, 'save_link_field' ) );
-
-		$this->parent->capabilities->defaults = array(
-			'administrator' => array( 'edit_others_resume' => true, 'edit_resume' => true ),
-			'editor'        => array( 'edit_others_resume' => true, 'edit_resume' => true ),
-			'author'        => array( 'edit_others_resume' => false, 'edit_resume' => true ),
-			'contributor'   => array( 'edit_others_resume' => false, 'edit_resume' => true ),
-			'subscriber'    => array( 'edit_others_resume' => false, 'edit_resume' => false ),
-		);
 		
 		//Qtranslate support
 		if ( function_exists( 'qtrans_modifyTermFormFor' ) ) {
@@ -57,9 +49,135 @@ class WP_Resume_Admin {
 			add_action( 'wp_resume_organization_add_form', 'qtrans_modifyTermFormFor' );
 			add_action( 'wp_resume_organization_edit_form', 'qtrans_modifyTermFormFor' );
 		}
+		
+		$this->init_caps();
 			
 	}
+	
+	/**
+	 * Map custom capabilities to default roles
+	 * Can be overridden by third party plugins
+	 */
+	function init_caps() {
+		$this->parent->capabilities->defaults = array(
+			'administrator' => array( 
+				'edit_resume'                       => true, //ability to view resume->options
+				'edit_others_resume'                => true, //ability to view other's resume->options
+				'edit_resume_positions'             => true, //ability to edit individual position...
+				'edit_others_resume_positions'      => true,
+				'edit_private_resume_positions'     => true,
+				'edit_published_resume_positions'   => true,
+				'read_resume_positions'             => true, 
+				'read_private_resume_positions'     => true,
+				'delete_resume_positions'           => true,
+				'delete_others_resume_positions'    => true,
+				'delete_private_resume_positions'   => true,
+				'delete_published_resume_positions' => true,
+				'publish_resume_positions'          => true,
+				'manage_resume_sections'            => true,
+				'manage_resume_organizations'       => true,
+				'edit_resume_sections'              => true,
+				'edit_resume_organizations'         => true,
+				'delete_resume_sections'            => true,
+				'delete_resume_organizations'       => true,
+				'assign_resume_sections'            => true,
+				'assign_resume_organizations'       => true,
+				),
+			'editor' => array( 
+				'edit_resume'                       => true,
+				'edit_others_resume'                => true, 
+				'edit_resume_positions'             => true,
+				'edit_others_resume_positions'      => true,
+				'edit_private_resume_positions'     => true,
+				'edit_published_resume_positions'   => true,
+				'read_resume_positions'             => true, 
+				'read_private_resume_positions'     => true,
+				'delete_resume_positions'           => true,
+				'delete_others_resume_positions'    => true,
+				'delete_private_resume_positions'   => true,
+				'delete_published_resume_positions' => true,
+				'publish_resume_positions'          => true,
+				'manage_resume_sections'            => true,
+				'manage_resume_organizations'       => true,
+				'edit_resume_sections'              => true,
+				'edit_resume_organizations'         => true,
+				'delete_resume_sections'            => true,
+				'delete_resume_organizations'       => true,
+				'assign_resume_sections'            => true,
+				'assign_resume_organizations'       => true,
+				),
+			'author' => array( 
+				'edit_resume'                       => true,
+				'edit_others_resume'                => false, 
+				'edit_resume_positions'             => true,
+				'edit_others_resume_positions'      => false,
+				'edit_private_resume_positions'     => false,
+				'edit_published_resume_positions'   => true,
+				'read_resume_positions'             => true, 
+				'read_private_resume_positions'     => false,
+				'delete_resume_positions'           => true,
+				'delete_others_resume_positions'    => false,
+				'delete_private_resume_positions'   => false,
+				'delete_published_resume_positions' => true,
+				'publish_resume_positions'          => true,
+				'manage_resume_sections'            => true,
+				'manage_resume_organizations'       => true,
+				'edit_resume_sections'              => true,
+				'edit_resume_organizations'         => true,
+				'delete_resume_sections'            => false,
+				'delete_resume_organizations'       => false,
+				'assign_resume_sections'            => true,
+				'assign_resume_organizations'       => true,
+				),
+			'contributor' => array( 
+				'edit_resume'                       => true, 
+				'edit_others_resume'                => false, 
+				'edit_resume_positions'             => true,
+				'edit_others_resume_positions'      => false,
+				'edit_private_resume_positions'     => false,
+				'edit_published_resume_positions'   => false,
+				'read_resume_positions'             => true, 
+				'read_private_resume_positions'     => false,
+				'delete_resume_positions'           => true,
+				'delete_others_resume_positions'    => false,
+				'delete_private_resume_positions'   => false,
+				'delete_published_resume_positions' => false,
+				'publish_resume_positions'          => false,
+				'manage_resume_sections'            => true,
+				'manage_resume_organizations'       => true,
+				'edit_resume_sections'              => true,
+				'edit_resume_organizations'         => true,
+				'delete_resume_sections'            => false,
+				'delete_resume_organizations'       => false,
+				'assign_resume_sections'            => true,
+				'assign_resume_organizations'       => true,
+				),
+			'subscriber' => array( 
+				'edit_resume'                       => false, 
+				'edit_others_resume'                => false, 
+				'edit_resume_positions'             => false,
+				'edit_others_resume_positions'      => false,
+				'edit_private_resume_positions'     => false,
+				'edit_published_resume_positions'   => false,
+				'read_resume_positions'             => true, 
+				'read_private_resume_positions'     => false,
+				'delete_resume_positions'           => false,
+				'delete_others_resume_positions'    => false,
+				'delete_private_resume_positions'   => false,
+				'delete_published_resume_positions' => false,
+				'publish_resume_positions'          => false,
+				'manage_resume_sections'            => false,
+				'manage_resume_organizations'       => false,
+				'edit_resume_sections'              => false,
+				'edit_resume_organizations'         => false,
+				'delete_resume_sections'            => false,
+				'delete_resume_organizations'       => false,
+				'assign_resume_sections'            => false,
+				'assign_resume_organizations'       => false,
+				),
+		);
 
+	}
 
 	/**
 	 * Customizes the edit screen for our custom post type
