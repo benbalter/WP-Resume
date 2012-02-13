@@ -145,6 +145,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 			'query_var'            => true,
 			'rewrite'              => $rewrite,
 			'capability_type'      => array( 'resume_position', 'resume_positions'),
+			'map_meta_cap'         => true,
 			'hierarchical'         => false,
 			'menu_position'        => null,
 			'register_meta_box_cb' => array( &$this->admin, 'meta_callback' ),
