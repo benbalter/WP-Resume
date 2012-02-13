@@ -124,7 +124,7 @@ Default permissions are automatically mapped to any standard WordPress roles (e.
 * Significant enhancements to json and plain text versions
 * Custom section ordering now honored throughout administrative dashboard
 * Plugin now relies on 22 custom capabilities, allowing administrators more granular control of user permissions, customizable through plugin such as [Members](http://wordpress.org/extend/plugins/members/).
-* Date fields (from, to) now sanitized for HTML prior to saving
+* Better sanitization of position start and end dates
 * Additional API hooks added to allow developers to modify and adapt the plugin's functionality
 
 = 2.2.3 =
