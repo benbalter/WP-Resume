@@ -4,8 +4,8 @@
  * @package WP_Resume
  */
 ?><label for="from"><?php _e( 'From', 'wp-resume' ); ?>
-	<input type="text" name="from" id="from" value="<?php echo $from; ?>" placeholder="<?php _e( 'e.g., May 2011', 'wp-resume' ); ?>"/>
+	<input type="text" name="from" id="from" value="<?php echo $from; ?>" placeholder="<?php esc_attr_e( 'e.g., May 2011', 'wp-resume' ); ?>"/>
 </label>
 <label for="to"><?php _e( 'To', 'wp-resume' ); ?>
-	<input type="text" name="to" id="to" value="<?php echo $to; ?>" placeholder="<?php _e( 'e.g., Present', 'wp-resume' ); ?>t" />
+	<input type="text" name="to" id="to" value="<?php echo $to; ?>" placeholder="<?php esc_attr_e( 'e.g., Present', 'wp-resume' ); ?>t" />
 </label>

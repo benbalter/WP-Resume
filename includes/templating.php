@@ -174,7 +174,6 @@ class WP_Resume_Templating {
 	 * @since 1.0a
 	 * @uses resume_date
 	 * @uses resume_date_formatted
-	 * @todo verify sanitization on save
 	 * @param int $ID post ID to generate date for
 	 * @return string the formatted date(s)
 	 */
