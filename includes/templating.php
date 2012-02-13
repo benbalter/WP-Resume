@@ -186,7 +186,7 @@ class WP_Resume_Templating {
                 if( strtotime( $to ) > time() )
                     $date .= " (" . __("estimated") . ")";
             }
-            elseif( $to == "present" || $to == "Present" )
+            elseif( strtolower( $to ) == "present" )
                 $date .= __("Present");
             else
                 $date .= $to;
@@ -203,7 +203,7 @@ class WP_Resume_Templating {
                 if( strtotime( $to ) > time() )
                     $date .= " (" . __("estimated") . ")";
             }
-            elseif( $to == "present" || $to == "Present" )
+            elseif( strtolower( $to ) == "present" )
                 $date .= __("Present");
             else
                 $date .= $to;
