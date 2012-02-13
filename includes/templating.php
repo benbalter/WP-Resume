@@ -9,6 +9,8 @@
 class WP_Resume_Templating {
 
 	public $author;
+	public $date_format = 'F Y';
+	public $future_signifier;
 	private $parent;
 
 	/**
@@ -20,6 +22,12 @@ class WP_Resume_Templating {
 		$this->parent = &$parent;
 
 		$this->author = &$parent->author;
+
+		//i18n: string appended to future date when translated
+		$this->future_signifier = __( ' (Anticipated)', 'wp-resume' );
+
+		if ( defined('QTRANS_INIT') || $this->parent->api->apply_filters( 'translate_date', false ) )
+			add_filter( 'resume_date', array( &$this, 'translate_date' ), 10, 4 );
 
 	}
 
@@ -160,60 +168,85 @@ class WP_Resume_Templating {
 
 	/**
 	 * Function used to parse the date meta and move to human-readable format
+	 * 
+	 * Both from and to are option, and if both are present, will be joined by an &ndash;
+	 *
 	 * @since 1.0a
+	 * @uses resume_date
+	 * @uses resume_date_formatted
+	 * @todo verify sanitization on save
 	 * @param int $ID post ID to generate date for
-	 * @return unknown
+	 * @return string the formatted date(s)
 	 */
 	function get_date( $ID ) {
 
-		//Grab from and to post meta
-		$from = get_post_meta( $ID, 'wp_resume_from', true );
-		$to = get_post_meta( $ID, 'wp_resume_to', true );
+		$date = '';
+		
+		foreach( array( 'from' => 'dtstart', 'to' => 'dtend' ) as $field => $class ) {
+			
+			$value = get_post_meta( $ID, "wp_resume_{$field}", true );
 
-		//if we have a start date, format as "[from] - [to]" (e.g., May 2005 - May 2006)
-		if ( $from )
-		{
-			$date = '<span class="dtstart" title="' . date( 'Y-m-d', strtotime( $from ) ) . '">';
-            if( date( 'Y-m-d', strtotime( $from ) ) != "1970-01-01" )
-                $date .= date_i18n( 'F Y', strtotime( $from ) );
-			else
-                $date .= $from;
-			$date .=  '</span> &ndash;';
-            $date .= ' <span class="dtend" title="' . date( 'Y-m-d', strtotime( $to ) ) . '">';
-            if( date( 'Y-m-d', strtotime( $to ) ) != "1970-01-01" )
-            {
-                $date .= date_i18n( 'F Y', strtotime( $to ) );
-                if( strtotime( $to ) > time() )
-                    $date .= " (" . __("estimated") . ")";
-            }
-            elseif( strtolower( $to ) == "present" )
-                $date .= __("Present");
-            else
-                $date .= $to;
-            $date .= '</span>';
+			//we don't have this field, skip
+			if ( !$value)
+				continue;
+				
+			$date .= '<span class="' . $class . '" title="' . date( 'Y-m-d', strtotime( $value ) ) . '">';
+			$date .= $this->parent->api->apply_filters( 'date', $value, $field );
+			$date .= '</span>';		
+			
+			//this is the from field and there is a to field, append the dash
+			//it's okay that we're calling get_post_meta twice on "to" because it's cached automatically
+			if ( $field == 'from' && get_post_meta( $ID, 'wp_resume_to', true ) )
+				$date .= ' &ndash; ';
+				
 		}
 
-		//if we only have a to, just pass back the to (e.g., "May 2015")
-        else if ( $to )
-        {
-            $date = '<span class="dtend" title="' . date( 'Y-m-d', strtotime( $to ) ) . '">';
-            if( date( 'Y-m-d', strtotime( $to ) ) != "1970-01-01" )
-            {
-                $date .= date_i18n( 'D Y', strtotime( $to ) );
-                if( strtotime( $to ) > time() )
-                    $date .= " (" . __("estimated") . ")";
-            }
-            elseif( strtolower( $to ) == "present" )
-                $date .= __("Present");
-            else
-                $date .= $to;
-            $date .= '</span>';
-        }
-			//If there's no date meta, just pass back an empty string so we dont generate errors
-			else
-				$date = '';
+		return $this->parent->api->apply_filters( 'date_formatted', $date, $ID );
 
-			return $this->parent->api->apply_filters( 'wp_resume_date', $date, $ID, $from, $to );
+	}
+
+
+	/**
+	 * Always dates to be translated and localized, e.g., by qTranslate
+	 *
+	 * @param string $date the date as stored in post_meta
+	 * @param string $type the type, either "from" or "to"
+	 * @param string $from the from date
+	 * @param string $to the to date
+	 * @return string the i18n'd date
+	 */
+	function translate_date( $date, $type ) {
+
+		//unix timestamp of date, false if not parsable
+		$timestamp = strtotime( $date );
+
+		//default date format
+		$date_format = $this->parent->api->apply_filters( 'date_format', $this->date_format );
+
+		//allow present to be translatable
+		if ( strtolower( trim( $date ) ) == 'Present' )
+			$date = __( 'Present', 'wp-resume' );
+
+		//not parsable, can't translate so return whatever we've got
+		if ( !$timestamp )
+			return $date;
+
+		//i18n date
+		$date = date_i18n( $date_format, strtotime( $from ) );
+
+		//we don't do anything else to start dates, so kick
+		if ( $type == 'from' )
+			return $date;
+
+		//to date is not in the future, again, can't do anything, so kick
+		if ( $timestamp < time() )
+			return $date;
+
+		//append e.g, ' (Anticipated)' to future dates
+		//note: this string won't appear in .POT files, but should still hit qTranslate when run (I hope)
+		$date .= __( $this->parent->api->filters( 'future_signifier', $this->future_signifier ) );
+
+		return $date;
 
 	}
 

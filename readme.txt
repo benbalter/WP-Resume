@@ -120,10 +120,11 @@ Default permissions are automatically mapped to any standard WordPress roles (e.
 * **NOTE: you may need to manually reactivate the plugin after upgrading to this version**
 * Complete codebase overhaul for stability, scalability, and performance
 * Added project to [Github](https://github.com/benbalter/WP-Resume/)
-* Added Qtranslate Support (Special thanks to [Fabio A Locati](http://fabiolocati.com/))
+* Added qTranslate and enhanced i18n support for sections, organizations, and dates (Special thanks to [Fabio A Locati](http://fabiolocati.com/))
 * Significant enhancements to json and plain text versions
 * Custom section ordering now honored throughout administrative dashboard
 * Plugin now relies on 22 custom capabilities, allowing administrators more granular control of user permissions, customizable through plugin such as [Members](http://wordpress.org/extend/plugins/members/).
+* Date fields (from, to) now sanitized for HTML prior to saving
 * Additional API hooks added to allow developers to modify and adapt the plugin's functionality
 
 = 2.2.3 =
