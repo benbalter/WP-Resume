@@ -172,11 +172,23 @@ class WP_Resume_Templating {
 
 		//if we have a start date, format as "[from] - [to]" (e.g., May 2005 - May 2006)
 		if ( $from )
-			$date = '<span class="dtstart" title="' . date( 'Y-m-d', strtotime( $from ) ) . '">' . $from . '</span> &ndash; <span class="dtend" title="' . date( 'Y-m-d', strtotime( $to ) ) . '">' . $to . '</span>';
+		{
+			if( date( 'Y-m-d', strtotime( $from ) ) != "1970-01-01" )
+				$date = '<span class="dtstart" title="' . date( 'Y-m-d', strtotime( $from ) ) . '">' . date_i18n( 'F Y', strtotime( $from ) ) . '</span> &ndash;';
+			else
+                $date = '<span class="dtstart" title="' . date( 'Y-m-d', strtotime( $from ) ) . '">' . $from . '</span> &ndash;';
+            if( date( 'Y-m-d', strtotime( $to ) ) != "1970-01-01" )
+                $date .= ' <span class="dtend" title="' . date( 'Y-m-d', strtotime( $to ) ) . '">' . date_i18n( 'F Y', strtotime( $to ) ) . '</span>';
+            else
+                $date .= ' <span class="dtend" title="' . date( 'Y-m-d', strtotime( $to ) ) . '">' . $to . '</span>';
+		}
 
 		//if we only have a to, just pass back the to (e.g., "May 2015")
-		else if ( $to )
-				$date= '<span class="dtend" title="' . date( 'Y-m-d', strtotime( $to ) ) . '">' . $to . '</span>';
+        else if ( $to )
+            if( date( 'Y-m-d', strtotime( $to ) ) != "1970-01-01" )
+                $date= '<span class="dtend" title="' . date( 'Y-m-d', strtotime( $to ) ) . '">' . date_i18n( 'D Y', strtotime( $to ) ) . '</span>';
+            else
+                $date= '<span class="dtend" title="' . date( 'Y-m-d', strtotime( $to ) ) . '">' . $to . '</span>';
 
 			//If there's no date meta, just pass back an empty string so we dont generate errors
 			else
