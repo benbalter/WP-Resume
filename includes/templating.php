@@ -175,13 +175,21 @@ class WP_Resume_Templating {
 		{
 			$date = '<span class="dtstart" title="' . date( 'Y-m-d', strtotime( $from ) ) . '">';
             if( date( 'Y-m-d', strtotime( $from ) ) != "1970-01-01" )
-				$date .= date_i18n( 'F Y', strtotime( $from ) );
+            {
+                $date .= date_i18n( 'F Y', strtotime( $from ) );
+                if( date( 'Y-m-d', strtotime( $from ) ) > getdate() )
+                    $date .= " (" . __("estimated") . ")";
+            }
 			else
                 $date .= $from;
 			$date .=  '</span> &ndash;';
             $date .= ' <span class="dtend" title="' . date( 'Y-m-d', strtotime( $to ) ) . '">';
             if( date( 'Y-m-d', strtotime( $to ) ) != "1970-01-01" )
+            {
                 $date .= date_i18n( 'F Y', strtotime( $to ) );
+                if( date( 'Y-m-d', strtotime( $to ) ) > getdate() )
+                    $date .= " (" . __("estimated") . ")";
+            }
             else
                 $date .= $to;
             $date .= '</span>';
@@ -192,7 +200,11 @@ class WP_Resume_Templating {
         {
             $date = '<span class="dtend" title="' . date( 'Y-m-d', strtotime( $to ) ) . '">';
             if( date( 'Y-m-d', strtotime( $to ) ) != "1970-01-01" )
+            {
                 $date .= date_i18n( 'D Y', strtotime( $to ) );
+                if( date( 'Y-m-d', strtotime( $to ) ) > getdate() )
+                    $date .= " (" . __("estimated") . ")";
+            }
             else
                 $date .= $to;
             $date .= '</span>';
