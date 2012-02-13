@@ -23,6 +23,14 @@ class WP_Resume_Templating {
 
 		$this->author = &$parent->author;
 
+		add_action( 'plugins_loaded', array( &$this, 'i18n_init' ) );
+	}
+
+	/**
+	 * Delay i18ning until plugins have a chance to load
+	 */
+	function i18n_init() {
+
 		//i18n: string appended to future date when translated
 		$this->future_signifier = __( ' (Anticipated)', 'wp-resume' );
 
