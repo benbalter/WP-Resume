@@ -27,7 +27,7 @@ class WP_Resume_Templating {
 	}
 
 	/**
-	 * Delay i18ning until plugins have a chance to load
+	 * Delay i18ning until all plugins have a chance to load
 	 */
 	function i18n_init() {
 
