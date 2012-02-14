@@ -348,8 +348,8 @@ class WP_Resume_Admin {
 		wp_set_object_terms( $post_id, (int) $_POST['wp_resume_organization'], 'wp_resume_organization' );
 
 		//update the posts date meta
-		update_post_meta( $post_id, 'wp_resume_from', wp_nohtml_kses( $_POST['from'] ) );
-		update_post_meta( $post_id, 'wp_resume_to', wp_nohtml_kses( $_POST['to'] ) );
+		update_post_meta( $post_id, 'wp_resume_from', wp_filter_nohtml_kses( $_POST['from'] ) );
+		update_post_meta( $post_id, 'wp_resume_to', wp_filter_nohtml_kses( $_POST['to'] ) );
 
 		//If they did not set a menu order, calculate a best guess bassed off of chronology
 		//(menu order uses the posts's menu_order field and is 1 bassed by default)
