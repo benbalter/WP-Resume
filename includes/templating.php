@@ -197,6 +197,11 @@ class WP_Resume_Templating {
 			if ( !$value)
 				continue;
 				
+			//if we can't parse the date (e.g., "Present"), do not pass a hResume class to maintain compliance
+			//See https://github.com/benbalter/WP-Resume/issues/7
+			if ( !strtotime( $value ) )
+				$class = 'dt';
+
 			$date .= '<span class="' . $class . '" title="' . date( 'Y-m-d', strtotime( $value ) ) . '">';
 			$date .= $this->parent->api->apply_filters( 'date', $value, $field );
 			$date .= '</span>';		
