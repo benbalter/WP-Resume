@@ -35,7 +35,7 @@ class WP_Resume_Templating {
 		$this->future_signifier = __( ' (Anticipated)', 'wp-resume' );
 
 		if ( defined('QTRANS_INIT') || $this->parent->api->apply_filters( 'translate_date', false ) )
-			add_filter( 'resume_date', array( &$this, 'translate_date' ), 10, 2 );
+			add_filter( 'wp_resume_date', array( &$this, 'translate_date' ), 10, 2 );
 
 	}
 
@@ -198,7 +198,7 @@ class WP_Resume_Templating {
 				continue;
 				
 			$date .= '<span class="' . $class . '" title="' . date( 'Y-m-d', strtotime( $value ) ) . '">';
-			$date .= apply_filters( 'resume_date', $value, $field );
+			$date .= $this->parent->api->apply_filters( 'resume_date', $value, $field );
 			$date .= '</span>';		
 			
 			//this is the from field and there is a to field, append the dash
