@@ -196,14 +196,24 @@ class WP_Resume_Templating {
 			//we don't have this field, skip
 			if ( !$value)
 				continue;
+			
+			//to ensure compliance with hResume format, span should reflect ability to parse date
+			//@link https://github.com/benbalter/WP-Resume/issues/7
+			
+			//if we can parse the date, append the proper class and formatted date to span
+			if ( strtotime( $value ) ) 
+				$date .= '<span class="' . $class . '" title="' . date( 'Y-m-d', strtotime( $value ) ). '">';
+			
+			//if the position is current, append todays date to span
+			else if ( $value == 'Present' )
+				$date .= '<span title="' . date( 'Y-m-d' ) . '">';
 				
-			//if we can't parse the date (e.g., "Present"), do not pass a hResume class to maintain compliance
-			//See https://github.com/benbalter/WP-Resume/issues/7
-			if ( !strtotime( $value ) )
-				$class = 'dt';
-
-			$date .= '<span class="' . $class . '" title="' . date( 'Y-m-d', strtotime( $value ) ) . '">';
+			//if we can't parse the date, just output a standard span
+			else
+				$date .= '<span>';
+	
 			$date .= $this->parent->api->apply_filters( 'date', $value, $field );
+			
 			$date .= '</span>';		
 			
 			//this is the from field and there is a to field, append the dash
