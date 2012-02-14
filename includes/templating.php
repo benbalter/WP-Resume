@@ -23,6 +23,14 @@ class WP_Resume_Templating {
 
 		$this->author = &$parent->author;
 
+		add_action( 'plugins_loaded', array( &$this, 'i18n_init' ) );
+	}
+
+	/**
+	 * Delay i18ning until all plugins have a chance to load
+	 */
+	function i18n_init() {
+
 		//i18n: string appended to future date when translated
 		$this->future_signifier = __( ' (Anticipated)', 'wp-resume' );
 
@@ -174,7 +182,6 @@ class WP_Resume_Templating {
 	 * @since 1.0a
 	 * @uses resume_date
 	 * @uses resume_date_formatted
-	 * @todo verify sanitization on save
 	 * @param int $ID post ID to generate date for
 	 * @return string the formatted date(s)
 	 */
