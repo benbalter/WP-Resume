@@ -198,7 +198,7 @@ class WP_Resume_Templating {
 				continue;
 				
 			$date .= '<span class="' . $class . '" title="' . date( 'Y-m-d', strtotime( $value ) ) . '">';
-			$date .= $this->parent->api->apply_filters( 'resume_date', $value, $field );
+			$date .= $this->parent->api->apply_filters( 'date', $value, $field );
 			$date .= '</span>';		
 			
 			//this is the from field and there is a to field, append the dash
