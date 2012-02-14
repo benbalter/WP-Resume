@@ -35,7 +35,7 @@ class WP_Resume_Templating {
 		$this->future_signifier = __( ' (Anticipated)', 'wp-resume' );
 
 		if ( defined('QTRANS_INIT') || $this->parent->api->apply_filters( 'translate_date', false ) )
-			add_filter( 'resume_date', array( &$this, 'translate_date' ), 10, 4 );
+			add_filter( 'resume_date', array( &$this, 'translate_date' ), 10, 2 );
 
 	}
 
