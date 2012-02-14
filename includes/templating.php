@@ -251,7 +251,8 @@ class WP_Resume_Templating {
 
 		//append e.g, ' (Anticipated)' to future dates
 		//note: this string won't appear in .POT files, but should still hit qTranslate when run (I hope)
-		$date .= __( $this->parent->api->filters( 'future_signifier', $this->future_signifier ) );
+		// TODO: Fix this since right now it does return a Fatal Error
+		//$date .= __( $this->parent->api->filters( 'future_signifier', $this->future_signifier ) );
 
 		return $date;
 
