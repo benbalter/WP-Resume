@@ -104,6 +104,10 @@ Make sure all your positions are associated with sections.
 
 Default permissions are automatically mapped to any standard WordPress roles (e.g., administrator, author, etc.) The ability to edit a positions is defined by `edit_resume_position`, to delete is `delete_resume_position`, etc., following the standard syntax and roles as for posts. Additionally, `edit_resume` allows access to the Resume->Options settings panel, and `edit_others_resume` allows access to other users' Resume->Options settings panel. To modify the default permissions, take a look at permissions plugins such as [Members](http://wordpress.org/extend/plugins/members/).
 
+= Can I display just one section on a page? =
+
+Yes! Simply pass a "section" parameter to the shortcode. You can identify the section by name, by ID, or by slug. Note, if your section has a hyphen in it, you may need to identify the section by ID. Examples: `[wp_resume section="9"]` or `[wp_resume section="experience"]`.  
+
 == Planned Features ==
  
 * Import from LinkedIn via API
@@ -124,6 +128,7 @@ Default permissions are automatically mapped to any standard WordPress roles (e.
 * Significant enhancements to json and plain text versions
 * Custom section ordering now honored throughout administrative dashboard
 * Plugin now relies on 22 custom capabilities, allowing administrators more granular control of user permissions, customizable through plugin such as [Members](http://wordpress.org/extend/plugins/members/).
+* Ability to display individual sections (rather than entire resume) via shortcode. See FAQ for details
 * Better sanitization of position start and end dates
 * Additional API hooks added to allow developers to modify and adapt the plugin's functionality
 * GPL License now distributed with plugin

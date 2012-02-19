@@ -100,6 +100,10 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 
 Make sure all your positions are associated with sections.
 
+### Can I display just one section on a page? ###
+
+Yes! Simply pass a "section" parameter to the shortcode. You can identify the section by name, by ID, or by slug. Note, if your section has a hyphen in it, you may need to identify the section by ID. Examples: `[wp_resume section="9"]` or `[wp_resume section="experience"]`. 
+
 ## Planned Features ##
  
 * Import from LinkedIn via API
@@ -115,7 +119,6 @@ Make sure all your positions are associated with sections.
 ###3. Resume menu in wp-admin sidebar###
 ![Resume menu in wp-admin sidebar](http://s.wordpress.org/extend/plugins/wp-resume/screenshot-3.png)
 
-
 ## Changelog ##
 
 ### 2.5 ###
@@ -126,6 +129,7 @@ Make sure all your positions are associated with sections.
 * Significant enhancements to json and plain text versions
 * Custom section ordering now honored throughout administrative dashboard
 * Plugin now relies on 22 custom capabilities, allowing administrators more granular control of user permissions, customizable through plugin such as [Members](http://wordpress.org/extend/plugins/members/).
+* Ability to display individual sections (rather than entire resume) via shortcode. See FAQ for details
 * Better sanitization of position start and end dates
 * Additional API hooks added to allow developers to modify and adapt the plugin's functionality
 * GPL License now distributed with plugin

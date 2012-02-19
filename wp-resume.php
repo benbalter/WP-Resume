@@ -52,6 +52,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 
 	static $instance;
 	public $author    = null;
+	public $section   = null;
 	public $query_obj;
 
 	function __construct() {
@@ -526,13 +527,13 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 	 * Filter to conditionally enqueue HTML5 shiv if enabled
 	 */
 	function html5_enqueue_filter( $default, $file, $name) {
-	
+
 		if ( $name != 'front-end' )
 			return $default;
 			
 		if ( $file != 'html5.js' )
 			return $default;
-	
+
 		if ( !$this->options->fix_ie )
 			return $default;
 			
@@ -724,27 +725,52 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 	 * @since 1.3
 	 */
 	function shortcode( $atts ) {
+	
+		$defaults = array( 'author' => null, 'section' => null );
+		$atts = shortcode_atts( $defaults, $atts );
 
 		//determine author and set as global so templates can read
 		$this->author = $this->get_author( $atts );
 
+		//allow shortcode to accept section argument
+		$section = $this->get_section( $atts );
+
 		ob_start();
 		$this->api->do_action( 'shortcode_pre' );
 
-		if ( !( $resume = $this->cache->get( $this->author . '_resume' ) ) ) {
+		if ( !( $resume = $this->cache->get( $this->author . '_resume' . $section ) ) ) {
 			$this->template->resume( );
 			$resume = ob_get_contents();
-			$this->cache->set( $this->author . '_resume', $resume );
+			$this->cache->set( $this->author . '_resume' . $section, $resume );
 		}
 
 		$this->api->do_action( 'shortcode_post' );
 		ob_end_clean();
+
+		//reset section incase shortcode called twice on same page
+		remove_filter( 'wp_resume_sections', array( &$this, 'section_shortcode_filter' ) );
+		$this->section = null;
 
 		$this->api->apply_filters( 'shortcode', $resume);
 
 		return $resume;
 	}
 
+	/**
+	 * If section is passed as shortcode arg, filter from sections list
+	 * @param array $sections the original sections array
+	 * @return array the filtered section array
+	 */
+	function section_shortcode_filter( $sections ) {
+		
+		if ( $this->section == null )
+			return $sections;
+		
+		$sections = wp_list_filter( $sections, array( 'term_id' => $this->section ) );
+				
+		return $sections;
+		
+	}
 
 	/**
 	 * Adds feed support to the resume
@@ -827,6 +853,36 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 		global $post;
 		$user = get_userdata($post->post_author);
 		return $user->user_nicename;
+	}
+	
+	/**
+	 * Parses requested section, if any, from shortcode atts
+	 * @param array the shortcode atts
+	 * @return string the slug to suffix the cache with
+	 */
+	function get_section( $atts = array() ) {
+		
+		$this->section = null;
+		
+		if ( $atts['section'] == null )
+			return '';
+		
+		//if section *ID* is passed, must typecast it from string to int 
+		// for term_exists to properly parse
+		if ( $atts['section'] == preg_replace( '([^0-9])', '',  $atts['section'] ) ) 
+			$atts['section'] = (int) $atts['section'];
+
+		//verify section exists
+		if ( !( $section = term_exists( $atts['section'], 'wp_resume_section' ) ) )
+			return '';
+				
+		//store sectionID as property and add filter to get_sections()	
+		$this->section = $section['term_id'];
+		add_filter( 'wp_resume_sections', array( &$this, 'section_shortcode_filter' ) );
+	
+		//return slug to suffix cache with		
+		return '_section_' . $section['term_id'];
+			
 	}
 
 
