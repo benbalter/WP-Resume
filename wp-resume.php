@@ -144,7 +144,8 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 		$args = array(
 			'labels'               => $labels,
 			'public'               => true,
-			'publicly_queryable'   => true,
+			'publicly_queryable'   => (bool) $rewrite,
+			'exclude_from_search'  => !(bool) $rewrite,
 			'show_ui'              => true,
 			'menu_icon'            => plugins_url( '/img/menu-icon.png', __FILE__ ),
 			'query_var'            => true,
