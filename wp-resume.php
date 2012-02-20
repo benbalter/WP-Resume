@@ -89,16 +89,20 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 
 	}
 
-
+	/**
+	 * Init default options and templates
+	 */
 	function init() {
 
 		//default fields and values
-		$this->options->defaults = array( 'fix_ie' => true,
+		$this->options->defaults = array( 
+			'fix_ie'     => true,
 			'rewrite'    => false,
 			'hide-title' => false
 		);
 
-		$this->options->user_defaults = array( 'name'=> '',
+		$this->options->user_defaults = array( 
+			'name'         => '',
 			'summary'      => '',
 			'contact_info' => array(),
 			'order'        => array(),
