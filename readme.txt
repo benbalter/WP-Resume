@@ -129,6 +129,7 @@ Yes! Simply pass a "section" parameter to the shortcode. You can identify the se
 * Custom section ordering now honored throughout administrative dashboard
 * Plugin now relies on 22 custom capabilities, allowing administrators more granular control of user permissions, customizable through plugin such as [Members](http://wordpress.org/extend/plugins/members/).
 * Ability to display individual sections (rather than entire resume) via shortcode. See FAQ for details
+* Fix for resume CSS not properly loading on section and organization listings
 * Better sanitization of position start and end dates
 * Additional API hooks added to allow developers to modify and adapt the plugin's functionality
 * GPL License now distributed with plugin
