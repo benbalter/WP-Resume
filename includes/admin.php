@@ -520,7 +520,7 @@ class WP_Resume_Admin {
 		//store usermeta
 		$user = get_userdata( $current_author );
 		$this->parent->options->set_user_options( $user_options,  $user->ID );
-
+		
 		$this->parent->cache->delete(  $user->user_nicename . '_sections');
 		$this->parent->cache->delete(  $user->user_nicename . '_sections_hide_empty' );
 		$this->parent->cache->delete(  $user->user_nicename . '_resume', 'wp_resume' );
@@ -844,6 +844,23 @@ class WP_Resume_Admin {
 	 */
 	function cap_filter( $cap ) {
 		return 'edit_resume';
+	}
+	
+	/**
+	 * Wrapper function to load the tinyMCE Editor for summary editing
+	 * Used to allow fallback to pre-3.3 function
+	 * @param string $field the field to load the editor for
+	 */
+	function summary_editor( $summary ) {
+	
+		//3.3
+		if ( function_exists( 'wp_editor' ) )
+			wp_editor( $summary, 'wp_resume_options[summary]' );
+		
+		//3.2
+		else
+			the_editor( $summary, 'wp_resume_options[summary]' );
+		
 	}
 
 
