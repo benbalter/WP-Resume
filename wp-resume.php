@@ -434,7 +434,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 		global $post;
 
 		//if post is a position, we should load CSS
-		if ( $post->post_type == 'position' )
+		if ( $post->post_type == 'wp_resume_position' )
 			$enqueue = true;
 
 		//post is a post/page, but has shortcode, so load CSS
