@@ -6,11 +6,10 @@
  * @since 1.5
  */
  
-$wp_resume = WP_Resume::$instance;
+$this->parent = WP_Resume::$instance;
 
 //Retrieve plugin options for later use
-$options = $wp_resume->get_options();
-$author_options = $wp_resume->get_user_options( $wp_resume->author );
+$author_options = $this->parent->options->get_user_options( $this->parent->author );
 
 //output name and url
 $output['name'] = $author_options['name'];
@@ -33,14 +32,14 @@ if (! empty( $author_options['summary'] ) )
 	$output['summary'] = $author_options['summary'];
 
 //Loop through each resume section
-foreach ( $wp_resume->get_sections( null, $wp_resume->author ) as $section) {
+foreach ( $this->parent->get_sections( null, $this->parent->author ) as $section) {
 
 	//Initialize our org. variable and array 
 	$current_org=''; 
 	$org = array();
 	
 	//retrieve all posts in the current section using our custom loop query
-	$positions = $wp_resume->query( $section->slug, $wp_resume->author );
+	$positions = $this->parent->query( $section->slug, $this->parent->author );
 	
 	//loop through all posts in the current section using the standard WP loop
 	if ( $positions->have_posts() ) : while ( $positions->have_posts() ) : $positions->the_post();
@@ -49,7 +48,7 @@ foreach ( $wp_resume->get_sections( null, $wp_resume->author ) as $section) {
 		$pos = array();
 		
 		//Retrieve details on the current position's organization
-		$organization = $wp_resume->get_org( get_the_ID() ); 
+		$organization = $this->parent->get_org( get_the_ID() ); 
 
 		//init org, if necessary
 		if ( $organization && $organization->term_id != $current_org ) {
@@ -60,7 +59,7 @@ foreach ( $wp_resume->get_sections( null, $wp_resume->author ) as $section) {
 			
 		//build pos. data into array
 		$pos['title'] = get_the_title();
-		$pos['dates'] = wp_filter_nohtml_kses( str_replace('&ndash;','-', $wp_resume->format_date( get_the_ID() ) ) );
+		$pos['dates'] = wp_filter_nohtml_kses( str_replace('&ndash;','-', $this->parent->templating->get_date( get_the_ID() ) ) );
 		$pos['details'] = get_the_content();
 		
 		//push array into our org array

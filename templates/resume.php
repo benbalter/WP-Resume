@@ -9,24 +9,25 @@
  * @since 1.0a
  */
 
-global $wp_resume;
-if ( !$wp_resume )
-	$wp_resume = &WP_Resume::$instance;
- 
+$resume = &$this->parent;
+
+//grab templating class
+$template = &$resume->templating;
+
 //Retrieve plugin options for later use
-$options = $wp_resume->get_options();
+$options = $resume->options->get_options();
 ?>
 		<div class="hresume">
 			<div id="bar"> </div>
 			<header class="vcard">
 				<h2 class="fn n url" id="name">
 					<a href="<?php get_permalink(); ?>">
-						<?php echo $wp_resume->get_name(); ?>
+						<?php echo $template->get_name(); ?>
 					</a>
 				</h2>
 				<ul>
 					<?php //loop through contact info fields
-					$contact_info = $wp_resume->get_contact_info();
+					$contact_info = $template->get_contact_info();
 					if ( !empty( $contact_info ) ) {
 						foreach ( $contact_info as $field => $value) { ?>
 						<?php 
@@ -47,7 +48,7 @@ $options = $wp_resume->get_options();
 				</ul>
 			</header>
 			<?php
-				$summary = $wp_resume->get_summary();
+				$summary = $template->get_summary();
 				if ( !empty( $summary ) ) { ?>
 			<summary class="summary">
 				<?php echo $summary; ?>
@@ -55,7 +56,7 @@ $options = $wp_resume->get_options();
 			<?php } ?>
 <?php 		
 			//Loop through each resume section
-			foreach ( $wp_resume->get_sections(null, $wp_resume->author) as $section) { 
+			foreach ( $resume->get_sections(null, $template->author) as $section) { 
 
 ?>
 			<section class="vcalendar" id="<?php echo $section->slug; ?>">
@@ -64,34 +65,34 @@ $options = $wp_resume->get_options();
 				$current_org=''; 
 				
 				//retrieve all posts in the current section using our custom loop query
-				$positions = $wp_resume->query( $section->slug, $wp_resume->author );
+				$positions = $resume->query( $section->slug, $template->author );
 				
 				//loop through all posts in the current section using the standard WP loop
 				if ( $positions->have_posts() ) : ?>
-				<header><?php echo $wp_resume->get_section_name( $section ); ?></header>
+				<header><?php echo $template->get_section_name( $section ); ?></header>
 				<?php while ( $positions->have_posts() ) : $positions->the_post();
 				
 					//Retrieve details on the current position's organization
-					$org = $wp_resume->get_org( get_the_ID() ); 
+					$org = $resume->get_org( get_the_ID() ); 
 
 					// If this is the first organization, 
 					// or if this org. is different from the previous, begin new org
-					if ( $org && $wp_resume->get_previous_org() != $org) { ?>
+					if ( $org && $resume->get_previous_org() != $org) { ?>
 				<article class="organization <?php echo $section->slug; ?> vevent" id="<?php echo $org->slug; ?>">
 					<header>
-						<div class="orgName summary" id="<?php echo $org->slug; ?>-name"><?php echo $wp_resume->get_organization_name( $org ); ?></div>
+						<div class="orgName summary" id="<?php echo $org->slug; ?>-name"><?php echo $template->get_organization_name( $org ); ?></div>
 						<div class="location"><?php echo $org->description; ?></div>
 					</header>
 <?php 			} 	//End if new org ?>
 					<<?php echo ( $org ) ? 'section' : 'article'; ?> class="vcard">
-						<a href="#name" class="include" title="<?php echo $wp_resume->get_name(); ?>"></a>
+						<a href="#name" class="include" title="<?php echo $template->get_name(); ?>"></a>
 						<?php if ( $org ) { ?>
-							<a href="#<?php echo $org->slug; ?>-name" class="include" title="<?php echo $wp_resume->get_organization_name( $org, false ); ?>"></a>
+							<a href="#<?php echo $org->slug; ?>-name" class="include" title="<?php echo $template->get_organization_name( $org, false ); ?>"></a>
 						<?php } else { ?>
 							<header>
 						<?php } ?>
-						<div class="title"><?php echo $wp_resume->get_title( get_the_ID() ); ?></div>
-						<div class="date"><?php echo $wp_resume->get_date( get_the_ID() ); ?></div>
+						<div class="title"><?php echo $template->get_title( get_the_ID() ); ?></div>
+						<div class="date"><?php echo $template->get_date( get_the_ID() ); ?></div>
 						<?php if ( !$org ) { ?>
 							</header>
 						<?php } ?>
@@ -104,7 +105,7 @@ $options = $wp_resume->get_options();
 						</div><!-- .details -->
 					</<?php echo ( $org ) ? 'section' : 'article'; ?>> <!-- .vcard -->
 <?php  
-				if ( $org && $wp_resume->get_next_org() != $org ) { ?>
+				if ( $org && $resume->get_next_org() != $org ) { ?>
 					</article><!-- .organization -->
 				<?php }
 

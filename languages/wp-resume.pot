@@ -1,432 +1,310 @@
-# Copyright (C) 2010 
-# This file is distributed under the same license as the  package.
+# Copyright (C) 2012 WP Resume
+# This file is distributed under the same license as the WP Resume package.
 msgid ""
 msgstr ""
-"Project-Id-Version:  \n"
+"Project-Id-Version: WP Resume 2.5\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-resume\n"
-"POT-Creation-Date: 2011-12-01 17:09:21+00:00\n"
+"POT-Creation-Date: 2012-02-14 16:09:28+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2012-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: wp_resume.php:86
-msgctxt "post type general name"
-msgid "Positions"
-msgstr ""
-
-#: wp_resume.php:87
-msgctxt "post type singular name"
-msgid "Resume Position"
-msgstr ""
-
-#: wp_resume.php:88 wp_resume.php:89
-msgid "Add New Position"
-msgstr ""
-
-#: wp_resume.php:90
-msgid "Edit Position"
-msgstr ""
-
-#: wp_resume.php:91
-msgid "New Position"
-msgstr ""
-
-#: wp_resume.php:92
-msgid "View Position"
-msgstr ""
-
-#: wp_resume.php:93
-msgid "Search Positions"
-msgstr ""
-
-#: wp_resume.php:94
-msgid "No Positions Found"
-msgstr ""
-
-#: wp_resume.php:95
-msgid "No Positions Found in Trash"
-msgstr ""
-
-#: wp_resume.php:97
-msgid "Resume"
-msgstr ""
-
-#: wp_resume.php:124
-msgctxt "taxonomy general name"
-msgid "Sections"
-msgstr ""
-
-#: wp_resume.php:125
-msgctxt "taxonomy singular name"
+#: includes/admin.php:204
 msgid "Section"
 msgstr ""
 
-#: wp_resume.php:126
-msgid "Search Sections"
-msgstr ""
-
-#: wp_resume.php:127
-msgid "All Sections"
-msgstr ""
-
-#: wp_resume.php:128
-msgid "Parent Section"
-msgstr ""
-
-#: wp_resume.php:129
-msgid "Parent Section:"
-msgstr ""
-
-#: wp_resume.php:130
-msgid "Edit Section"
-msgstr ""
-
-#: wp_resume.php:131
-msgid "Update Section"
-msgstr ""
-
-#: wp_resume.php:132
-msgid "Add New Section"
-msgstr ""
-
-#: wp_resume.php:133
-msgid "New Section Name"
-msgstr ""
-
-#: wp_resume.php:143
-msgctxt "taxonomy general name"
-msgid "Organizations"
-msgstr ""
-
-#: wp_resume.php:144
-msgctxt "taxonomy singular name"
+#: includes/admin.php:207
 msgid "Organization"
 msgstr ""
 
-#: wp_resume.php:145
-msgid "Search Organizations"
-msgstr ""
-
-#: wp_resume.php:146
-msgid "All Organizations"
-msgstr ""
-
-#: wp_resume.php:147
-msgid "Parent Organization"
-msgstr ""
-
-#: wp_resume.php:148
-msgid "Parent Organization:"
-msgstr ""
-
-#: wp_resume.php:149
-msgid "Edit Organization"
-msgstr ""
-
-#: wp_resume.php:150
-msgid "Update Organization"
-msgstr ""
-
-#: wp_resume.php:151
-msgid "Add New Organization"
-msgstr ""
-
-#: wp_resume.php:152
-msgid "New Organization Name"
-msgstr ""
-
-#: wp_resume.php:174
-msgid "Section"
-msgstr ""
-
-#: wp_resume.php:177
-msgid "Organization"
-msgstr ""
-
-#: wp_resume.php:180
+#: includes/admin.php:210
 msgid "Date"
 msgstr ""
 
-#: wp_resume.php:183 wp_resume.php:1013
+#: includes/admin.php:213 templates/options.php:76
 msgid "Resume Order"
 msgstr ""
 
-#: wp_resume.php:195
-msgid "Order"
-msgstr ""
-
-#: wp_resume.php:198
-msgid "Your resume will be sorted based on this number (ascending)"
-msgstr ""
-
-#: wp_resume.php:198 wp_resume.php:1295
-msgid "More"
-msgstr ""
-
-#: wp_resume.php:199
-msgid ""
-"When you add a new position, feel free to leave this number at \"0\" and a "
-"best guess will be made based on the position's end date (reverse "
-"chronological order)"
-msgstr ""
-
-#: wp_resume.php:199
-msgid ""
-"Of Course, you can always <a href=\"edit.php?"
-"post_type=wp_resume_position&page=wp_resume_options#sections\">fine tune "
-"your resume order</a> on the options page"
-msgstr ""
-
-#: wp_resume.php:241
-msgid "None"
-msgstr ""
-
-#: wp_resume.php:248
-msgid "Location"
-msgstr ""
-
-#: wp_resume.php:321
-msgid "From"
-msgstr ""
-
-#: wp_resume.php:322
-msgid "To"
-msgstr ""
-
-#: wp_resume.php:682
-msgid "Edit Resume"
-msgstr ""
-
-#: wp_resume.php:689 wp_resume.php:740 wp_resume.php:909
+#: includes/admin.php:417 templates/options.php:2 wp-resume.php:484
 msgid "Resume Options"
 msgstr ""
 
-#: wp_resume.php:740
+#: includes/admin.php:417
 msgid "Options"
 msgstr ""
 
-#: wp_resume.php:858
-msgid "E-Mail"
+#: includes/admin.php:770 templates/order_box.php:4
+msgid "More"
 msgstr ""
 
-#: wp_resume.php:859
-msgid "Phone"
+#: includes/admin.php:771
+msgid "less"
 msgstr ""
 
-#: wp_resume.php:860
-msgid "Other"
+#: includes/admin.php:772 templates/options.php:20
+msgid "Yes!"
 msgstr ""
 
-#: wp_resume.php:862
-msgid "Street Address"
+#: includes/admin.php:773
+msgid "No."
 msgstr ""
 
-#: wp_resume.php:863
-msgid "City/Locality"
+#: includes/admin.php:774
+msgid "Hide Advanced Options"
 msgstr ""
 
-#: wp_resume.php:864
-msgid "State/Region"
+#: includes/admin.php:775 templates/options.php:88
+msgid "Show Advanced Options"
 msgstr ""
 
-#: wp_resume.php:865
-msgid "Zip/Postal Code"
+#: includes/admin.php:776
+msgid "The name of the organization as you want it to appear"
 msgstr ""
 
-#: wp_resume.php:866
-msgid "Country"
+#: includes/admin.php:777
+msgid "Traditionally the location of the organization (optional)"
 msgstr ""
 
-#: wp_resume.php:945
+#: includes/admin.php:778
+msgid ""
+"Please make sure that the position is associated with a section before saving"
+msgstr ""
+
+#: includes/boilerplate-classes/api.php:54
+msgid "Use the action hook \"%s\" instead."
+msgstr ""
+
+#: includes/boilerplate-classes/api.php:54
+#: includes/boilerplate-classes/api.php:93
+msgid "%1$s of %2$s"
+msgstr ""
+
+#: includes/boilerplate-classes/api.php:93
+msgid "Use the filter \"%s\" instead."
+msgstr ""
+
+#: includes/templating.php:35
+msgid " (Anticipated)"
+msgstr ""
+
+#: includes/templating.php:250
+msgid "Present"
+msgstr ""
+
+#: templates/date_box.php:6
+msgid "From"
+msgstr ""
+
+#: templates/date_box.php:7
+msgid "e.g., May 2011"
+msgstr ""
+
+#: templates/date_box.php:9
+msgid "To"
+msgstr ""
+
+#: templates/date_box.php:10
+msgid "e.g., Present"
+msgstr ""
+
+#: templates/donate.php:11
+msgid "Support"
+msgstr ""
+
+#: templates/donate.php:14
+msgid ""
+"Enjoy using %1$s? Please consider <a href=\"%2$s\">making a small donation</"
+"a> to support the software's continued development."
+msgstr ""
+
+#: templates/donate.php:15
+msgid "hide this message"
+msgstr ""
+
+#: templates/options.php:8
 msgid "Usage"
 msgstr ""
 
-#: wp_resume.php:947
+#: templates/options.php:10
 msgid "To use WP Resume..."
 msgstr ""
 
-#: wp_resume.php:949
+#: templates/options.php:12
 msgid "Add content to your resume through the menus on the left"
 msgstr ""
 
-#: wp_resume.php:950
+#: templates/options.php:13
 msgid ""
 "If you wish, add your name, contact information, summary, and order your "
 "resume below"
 msgstr ""
 
-#: wp_resume.php:951
+#: templates/options.php:14
 msgid "Create a new page as you would normally"
 msgstr ""
 
-#: wp_resume.php:952
+#: templates/options.php:15
 msgid "Add the text <code>[wp_resume]</code> to the page's body"
 msgstr ""
 
-#: wp_resume.php:953
+#: templates/options.php:16
 msgid "Your resume will now display on that page"
 msgstr ""
 
-#: wp_resume.php:957
+#: templates/options.php:20
 msgid "Want to have multiple resumes on your site?"
 msgstr ""
 
-#: wp_resume.php:957 wp_resume.php:1297
-msgid "Yes!"
-msgstr ""
-
-#: wp_resume.php:959
+#: templates/options.php:22
 msgid ""
 "WP Resume associates each resume with a user. To create a second resume..."
 msgstr ""
 
-#: wp_resume.php:961
+#: templates/options.php:24
 msgid ""
 "Simply <a href=\"user-new.php\">add a new user</a> (or select an existing "
 "user in step two)"
 msgstr ""
 
-#: wp_resume.php:962
+#: templates/options.php:25
 msgid ""
 "Add positions</a> as you would normally, being sure to select that user as "
 "the position's author. You may need to display the author box by enabling it "
 "in the \"Screen Options\" toggle in the top-right corner of the position page"
 msgstr ""
 
-#: wp_resume.php:963
+#: templates/options.php:26
 msgid ""
 "Select the author from the drop down below and fill in the name, contact "
 "info, and summary fields (optional)"
 msgstr ""
 
-#: wp_resume.php:964
+#: templates/options.php:27
 msgid ""
 "Create a new page</a> and add the <code>[wp_resume]</code> shortcode, "
 "similar to above, but set the page author to the resume's author (the author "
 "from step two). Again, you may need to enable the author box"
 msgstr ""
 
-#: wp_resume.php:966
+#: templates/options.php:29
 msgid "Note"
 msgstr ""
 
-#: wp_resume.php:966
+#: templates/options.php:29
 msgid ""
 "To embed multiple resumes on the same page, you can alternatively use the "
 "syntax <code>[wp_resume user=\"user_nicename\"]</code> where "
 "<code>user_nicename</code> is the username of the resume's author"
 msgstr ""
 
-#: wp_resume.php:975
+#: templates/options.php:38
 msgid "User"
 msgstr ""
 
-#: wp_resume.php:983 wp_resume.php:1410
+#: templates/options.php:46 templates/org_helptext.php:3
 msgid "Name"
 msgstr ""
 
-#: wp_resume.php:986
+#: templates/options.php:49
 msgid "Your name -- displays on the top of your resume"
 msgstr ""
 
-#: wp_resume.php:990
+#: templates/options.php:53
 msgid "Contact Information"
 msgstr ""
 
-#: wp_resume.php:999
+#: templates/options.php:62
 msgid "Add Field"
 msgstr ""
 
-#: wp_resume.php:1000
+#: templates/options.php:63
 msgid "(optional) Add any contact info you would like included in your resume"
 msgstr ""
 
-#: wp_resume.php:1004
+#: templates/options.php:67
 msgid "Summary"
 msgstr ""
 
-#: wp_resume.php:1009
+#: templates/options.php:72
 msgid ""
 "(optional) Plain-text summary of your resume, professional goals, etc. Will "
 "appear on your resume below your contact information before the body"
 msgstr ""
 
-#: wp_resume.php:1016
+#: templates/options.php:79
 msgid ""
 "New positions are automatically displayed in reverse chronological order, "
 "but you can fine tune that order by rearranging the elements in the list "
 "above"
 msgstr ""
 
-#: wp_resume.php:1022
+#: templates/options.php:85
 msgid "Advanced Options"
 msgstr ""
 
-#: wp_resume.php:1025 wp_resume.php:1300
-msgid "Show Advanced Options"
-msgstr ""
-
-#: wp_resume.php:1029
+#: templates/options.php:92
 msgid "Force IE HTML5 Support"
 msgstr ""
 
-#: wp_resume.php:1031 wp_resume.php:1039 wp_resume.php:1047
+#: templates/options.php:94 templates/options.php:102
+#: templates/options.php:110
 msgid "Yes"
 msgstr ""
 
-#: wp_resume.php:1032 wp_resume.php:1040 wp_resume.php:1048
+#: templates/options.php:95 templates/options.php:103
+#: templates/options.php:111
 msgid "No"
 msgstr ""
 
-#: wp_resume.php:1033
+#: templates/options.php:96
 msgid ""
 "If Internet Explorer breaks your resume's formatting, conditionally "
 "including a short Javascript file should force IE to recognize html5 "
 "semantic tags"
 msgstr ""
 
-#: wp_resume.php:1037
+#: templates/options.php:100
 msgid "Hide Page Title"
 msgstr ""
 
-#: wp_resume.php:1041
+#: templates/options.php:104
 msgid ""
 "Hides the standard page title on pages (or posts) containing the <code>"
 "[wp_resume]</code> shortcode by adding a <code>hide-title</code> class"
 msgstr ""
 
-#: wp_resume.php:1045
+#: templates/options.php:108
 msgid "Enable URL Rewriting"
 msgstr ""
 
-#: wp_resume.php:1049
+#: templates/options.php:112
 msgid ""
 "Creates individual pages for each position, and index pages for each section "
 "and organization"
 msgstr ""
 
-#: wp_resume.php:1053
+#: templates/options.php:116
 msgid "Customizing WP Resume"
 msgstr ""
 
-#: wp_resume.php:1055
+#: templates/options.php:118
 msgid "Style Sheets"
 msgstr ""
 
-#: wp_resume.php:1056
+#: templates/options.php:119
 msgid ""
 "Although some styling is included by default, you can customize the layout "
 "by modifying <a href=\"theme-editor.php\">your theme's stylesheet</a>"
 msgstr ""
 
-#: wp_resume.php:1058
+#: templates/options.php:121
 msgid "Templates"
 msgstr ""
 
-#: wp_resume.php:1059
+#: templates/options.php:122
 msgid ""
 "Any WP Resume template file (resume.php, resume-style.css, resume-text.php, "
 "etc.) found in your theme's directory will override the plugin's included "
@@ -434,11 +312,11 @@ msgid ""
 "theme's template directory and modify the file to meet your needs"
 msgstr ""
 
-#: wp_resume.php:1061
+#: templates/options.php:124
 msgid "Feeds"
 msgstr ""
 
-#: wp_resume.php:1062
+#: templates/options.php:125
 msgid ""
 "WP Resume allows you to access your data in three machine-readable formats. "
 "By default, the resume outputs in an <a href=\"http://microformats.org/wiki/"
@@ -448,70 +326,254 @@ msgid ""
 "available by appending <code>?feed=text</code> to your resume page's URL"
 msgstr ""
 
-#: wp_resume.php:1068
-msgid "Support"
-msgstr ""
-
-#: wp_resume.php:1071
-msgid ""
-"Enjoy using WP Resume? Please consider <a href=\"http://ben.balter.com/"
-"donate/\">making a small donation</a> to support the software's continued "
-"development."
-msgstr ""
-
-#: wp_resume.php:1071
-msgid "hide this message"
-msgstr ""
-
-#: wp_resume.php:1080
+#: templates/options.php:132
 msgid "Save Changes"
 msgstr ""
 
-#: wp_resume.php:1296
-msgid "less"
+#: templates/order_box.php:1
+msgid "Order"
 msgstr ""
 
-#: wp_resume.php:1298
-msgid "No."
+#: templates/order_box.php:4
+msgid "Your resume will be sorted based on this number (ascending)"
 msgstr ""
 
-#: wp_resume.php:1299
-msgid "Hide Advanced Options"
-msgstr ""
-
-#: wp_resume.php:1301
-msgid "The name of the organization as you want it to appear"
-msgstr ""
-
-#: wp_resume.php:1302
-msgid "Traditionally the location of the organization (optional)"
-msgstr ""
-
-#: wp_resume.php:1303
+#: templates/order_box.php:5
 msgid ""
-"Please make sure that the position is associated with a section before saving"
+"When you add a new position, feel free to leave this number at \"0\" and a "
+"best guess will be made based on the position's end date (reverse "
+"chronological order)"
 msgstr ""
 
-#: wp_resume.php:1409
+#: templates/order_box.php:5
+msgid ""
+"Of Course, you can always <a href=\"edit.php?"
+"post_type=wp_resume_position&page=wp_resume_options#sections\">fine tune "
+"your resume order</a> on the options page"
+msgstr ""
+
+#: templates/org_helptext.php:2
 msgid "Help"
 msgstr ""
 
-#: wp_resume.php:1410
+#: templates/org_helptext.php:3
 msgid "The name of the organization"
 msgstr ""
 
-#: wp_resume.php:1411
+#: templates/org_helptext.php:4
 msgid "Parent"
 msgstr ""
 
-#: wp_resume.php:1411
+#: templates/org_helptext.php:4
 msgid "Do not add a parent"
 msgstr ""
 
-#: wp_resume.php:1412
+#: templates/org_helptext.php:5
 msgid "Description"
 msgstr ""
 
-#: wp_resume.php:1412
+#: templates/org_helptext.php:5
 msgid "You can put the location of the organization here (optional)"
+msgstr ""
+
+#: templates/taxonomy_box.php:8
+msgid "None"
+msgstr ""
+
+#: templates/taxonomy_box.php:14
+msgid "Location"
+msgstr ""
+
+#: templates/upgrade-wp.php:7
+msgid ""
+"%s requires WordPress version %s or greater. Please disable the plugin or "
+"upgrade your WordPress install."
+msgstr ""
+
+#: wp-resume.php:123
+msgctxt "post type general name"
+msgid "Positions"
+msgstr ""
+
+#: wp-resume.php:124
+msgctxt "post type singular name"
+msgid "Resume Position"
+msgstr ""
+
+#: wp-resume.php:125 wp-resume.php:126
+msgid "Add New Position"
+msgstr ""
+
+#: wp-resume.php:127
+msgid "Edit Position"
+msgstr ""
+
+#: wp-resume.php:128
+msgid "New Position"
+msgstr ""
+
+#: wp-resume.php:129
+msgid "View Position"
+msgstr ""
+
+#: wp-resume.php:130
+msgid "Search Positions"
+msgstr ""
+
+#: wp-resume.php:131
+msgid "No Positions Found"
+msgstr ""
+
+#: wp-resume.php:132
+msgid "No Positions Found in Trash"
+msgstr ""
+
+#: wp-resume.php:134
+msgid "Resume"
+msgstr ""
+
+#: wp-resume.php:135
+msgid "All Positions"
+msgstr ""
+
+#: wp-resume.php:163
+msgctxt "taxonomy general name"
+msgid "Sections"
+msgstr ""
+
+#: wp-resume.php:164
+msgctxt "taxonomy singular name"
+msgid "Section"
+msgstr ""
+
+#: wp-resume.php:165
+msgid "Search Sections"
+msgstr ""
+
+#: wp-resume.php:166
+msgid "All Sections"
+msgstr ""
+
+#: wp-resume.php:167
+msgid "Parent Section"
+msgstr ""
+
+#: wp-resume.php:168
+msgid "Parent Section:"
+msgstr ""
+
+#: wp-resume.php:169
+msgid "Edit Section"
+msgstr ""
+
+#: wp-resume.php:170
+msgid "Update Section"
+msgstr ""
+
+#: wp-resume.php:171
+msgid "Add New Section"
+msgstr ""
+
+#: wp-resume.php:172
+msgid "New Section Name"
+msgstr ""
+
+#: wp-resume.php:194
+msgctxt "taxonomy general name"
+msgid "Organizations"
+msgstr ""
+
+#: wp-resume.php:195
+msgctxt "taxonomy singular name"
+msgid "Organization"
+msgstr ""
+
+#: wp-resume.php:196
+msgid "Search Organizations"
+msgstr ""
+
+#: wp-resume.php:197
+msgid "All Organizations"
+msgstr ""
+
+#: wp-resume.php:198
+msgid "Parent Organization"
+msgstr ""
+
+#: wp-resume.php:199
+msgid "Parent Organization:"
+msgstr ""
+
+#: wp-resume.php:200
+msgid "Edit Organization"
+msgstr ""
+
+#: wp-resume.php:201
+msgid "Update Organization"
+msgstr ""
+
+#: wp-resume.php:202
+msgid "Add New Organization"
+msgstr ""
+
+#: wp-resume.php:203
+msgid "New Organization Name"
+msgstr ""
+
+#: wp-resume.php:477
+msgid "Edit Resume"
+msgstr ""
+
+#: wp-resume.php:574
+msgid "E-Mail"
+msgstr ""
+
+#: wp-resume.php:575
+msgid "Phone"
+msgstr ""
+
+#: wp-resume.php:576
+msgid "Other"
+msgstr ""
+
+#: wp-resume.php:578
+msgid "Street Address"
+msgstr ""
+
+#: wp-resume.php:579
+msgid "City/Locality"
+msgstr ""
+
+#: wp-resume.php:580
+msgid "State/Region"
+msgstr ""
+
+#: wp-resume.php:581
+msgid "Zip/Postal Code"
+msgstr ""
+
+#: wp-resume.php:582
+msgid "Country"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WP Resume"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://ben.balter.com/2010/09/12/wordpress-resume-plugin/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Out-of-the-box plugin which utilizes custom post types and taxonomies to add "
+"a snazzy resume to your personal blog or Web site."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Benjamin J. Balter"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://ben.balter.com/"
 msgstr ""
