@@ -1,4 +1,9 @@
-<noscript>
+<?php 
+/**
+ * Template for organization editing helptext
+ * @package WP_Resume
+ */
+?><noscript>
 	<h4><?php _e('Help', 'wp-resume'); ?></h4>
 	<p><strong><?php _e('Name', 'wp-resume'); ?></strong>: <?php _e('The name of the organization', 'wp-resume'); ?></p>
 	<p><strong><?php _e('Parent', 'wp-resume'); ?></strong>: <?php _e('Do not add a parent', 'wp-resume'); ?></p>

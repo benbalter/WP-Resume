@@ -1,4 +1,9 @@
-<label class="screen-reader-text" for="menu_order"><?php _e('Order', 'wp-resume'); ?></label>
+<?php 
+/**
+ * Template for position order input metabox
+ * @package WP_Resume
+ */
+?><label class="screen-reader-text" for="menu_order"><?php _e('Order', 'wp-resume'); ?></label>
 <input type="text" name="menu_order" size="4" id="menu_order" value="<?php echo $post->menu_order; ?>">
 <p>
 	<?php _e('Your resume will be sorted based on this number (ascending)', 'wp-resume'); ?>. <a href="#" id="wp_resume_help_toggle"><?php _e('More', 'wp-resume'); ?></a><br />

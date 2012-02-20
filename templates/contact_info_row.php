@@ -1,4 +1,9 @@
-<li id="contact_info_row[]" class="contact_info_row">
+<?php 
+/**
+ * Template for contact info inputs
+ * @package WP_Resume
+ */
+?><li id="contact_info_row[]" class="contact_info_row">
 	<select name="wp_resume_options[contact_info_field][]" id="contact_info_field[]">
 	<option></option>
 	<?php foreach ( $this->parent->contact_fields() as $id => $field) { ?>

@@ -1,4 +1,9 @@
-<?php foreach ($terms as $term) { ?>
+<?php 
+/**
+ * Template for exclusive taxonomies metabox (section and organizations)
+ * @package WP_Resume
+ */
+?><?php foreach ($terms as $term) { ?>
 	<input type="radio" name="<?php echo $type; ?>" value="<?php echo $term->term_id; ?>" id="<?php echo $term->slug; ?>"<?php	if ( isset( $current[0]->term_id ) )
 			checked( $term->term_id, $current[0]->term_id );
 ?>>
