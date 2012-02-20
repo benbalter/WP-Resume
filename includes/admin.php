@@ -466,6 +466,10 @@ class WP_Resume_Admin {
 
 		$user_options = $this->parent->options->get_user_options( (int) $current_author );
 
+		//first load would return false
+		if ( !is_array( $user_options ) )
+			$user_options = array();
+			
 		//start with a blank array to remove empty fields
 		$user_options['contact_info'] = array();
 
