@@ -122,7 +122,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 	function register_cpt_and_t() {
 
 		$rewrite = $this->options->get_option( 'rewrite' );
-
+//var_dump( $rewrite );
 		//Custom post type labels array
 		$labels = array(
 			'name'               => _x('Positions', 'post type general name', 'wp-resume'),
@@ -148,7 +148,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 			'show_ui'              => true,
 			'menu_icon'            => plugins_url( '/img/menu-icon.png', __FILE__ ),
 			'query_var'            => true,
-			'rewrite'              => $rewrite,
+			'rewrite'              => ( $rewrite ) ? array( 'slug' => 'positions' ) : false,
 			'capability_type'      => array( 'resume_position', 'resume_positions'),
 			'map_meta_cap'         => true,
 			'hierarchical'         => false,
