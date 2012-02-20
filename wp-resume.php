@@ -227,16 +227,6 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 
 	}
 
-
-	/**
-	 * Depricated for consistency
-	 */
-	function format_date( $ID ) {
-		_deprecated_function( __FUNCTION__, '2.0.4 of WP Resume', 'get_date' );
-		return $this->templating->get_date( $ID );
-	}
-
-
 	/**
 	 * Takes the section term taxonomy and re-keys it to the user specified order
 	 * @returns array of term objects in user-specified order
@@ -271,8 +261,12 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 
 
 	/**
-	 * Reorders talls to get_terms for the section taxonomy by the user's custom order
+	 * Reorders calls to get_terms for the section taxonomy by the user's custom order
 	 * note: because we can't pass an extra arg to this filter, we store it as $this->author
+	 * @param array $terms the terms
+	 * @param array $taxonomies the section taxonomy
+	 * @param array $args user arguments
+	 * @returns array the sections properly keyed
 	 */
 	function section_order_filter( $terms, $taxonomies, $args ) {
 
