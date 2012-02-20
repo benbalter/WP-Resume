@@ -4,7 +4,7 @@ Donate link: http://ben.balter.com/donate/
 Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume
 Requires at least: 3.2
 Tested up to: 3.4
-Stable tag: 2.2.3
+Stable tag: 2.5
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
 
