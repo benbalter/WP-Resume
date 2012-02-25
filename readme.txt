@@ -122,6 +122,7 @@ Yes! Simply pass a "section" parameter to the shortcode. You can identify the se
 
 = 2.5.1 =
 * Fix for sections not appearing in the right order under certain circomstances
+* Organization links now open in a new window
 
 = 2.5 =
 * **NOTE: you may need to manually reactivate the plugin after upgrading to this version**

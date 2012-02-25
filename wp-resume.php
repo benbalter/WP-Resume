@@ -383,7 +383,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 	function get_org_link( $org ) {
 
 		$slug = 'wp_resume_organization_link_' . (int) $org;
-		$link = $cache = $this->cache->get( $slug );
+		$link = $this->cache->get( $slug );
 
 		if ( !$link ) {
 			$link = get_option( $slug );
