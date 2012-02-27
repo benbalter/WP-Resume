@@ -65,7 +65,7 @@ class WP_Resume_Templating {
 		if ( !$this->parent->options->get_option( 'rewrite' ) ) {
 			$title = get_the_title();
 		} else {
-			$title = '<a href="' . get_permalink() . '">' . get_the_title() . '</a>';
+            $title = '<a title="' . get_the_title() . '" href="' . get_permalink() . '">' . get_the_title() . '</a>';
 			$title = $this->parent->api->apply_deprecated_filters( 'resume_title_link', '2.5', 'title_link', $title );
 			$title = $this->parent->api->apply_filters( 'title_link', $title );
 		}
