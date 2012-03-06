@@ -1,6 +1,6 @@
 # WP Resume #
 **Contributors:** benbalter  
-**Donate link:** http://ben.balter.com/donate/  
+**Donate link:** [http://ben.balter.com/donate/](http://ben.balter.com/donate/?utm_source=wp&utm_medium=gh_plugin_page&utm_campaign=wp_resume)  
 **Tags:** resume, online reputation, personal branding, experience, education, awards, cv, hresume  
 **Requires at least:** 3.2  
 **Tested up to:** 3.4  
