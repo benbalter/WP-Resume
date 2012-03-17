@@ -40,7 +40,7 @@
     		if ( sizeof($authors) > 1 && current_user_can( 'edit_others_posts' ) ) {
     		?>
     	<tr valign="top">
-    		<th scope="row"><?php _e('User', 'wp_resume'); ?></label></th>
+ 			<th scope="row"><label for="user"><?php _e('User', 'wp-resume'); ?></label></th>
     		<td>
     			<?php wp_dropdown_users( array( 'selected' => $current_author ) ); ?>
     			<input type="hidden" name="old_user" value="<?php echo $current_author; ?>" />
