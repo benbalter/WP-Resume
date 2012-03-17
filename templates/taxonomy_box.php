@@ -16,7 +16,7 @@
 	<label for="new_<?php echo $type ?>"><?php echo $taxonomy->labels->singular_name; ?>:</label> 
 	<input type="text" name="new_<?php echo $type ?>" id="new_<?php echo $type ?>" /><br />
 	<?php if ($type == 'wp_resume_organization') { ?>
-			<label for="new_<?php echo $type ?>_location" style="padding-right:24px;"><?php _e('Location', 'wp_resume'); ?>:</label> 
+		<label for="new_<?php echo $type ?>_location" style="padding-right:24px;"><?php _e('Location', 'wp-resume'); ?>:</label>
 			<input type="text" name="new_<?php echo $type ?>_location" id="new_<?php echo $type ?>_location" /><br />
 	<?php } ?>
 	<input type="button" value="Add New" id="add_<?php echo $type ?>_button" />
