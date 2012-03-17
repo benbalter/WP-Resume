@@ -120,6 +120,10 @@ Yes! Simply pass a "section" parameter to the shortcode. You can identify the se
 
 == Changelog ==
 
+= 2.5.1 =
+* Enhanced translation support on administrative backend, props phpcore
+*
+
 = 2.5 =
 * **NOTE: you may need to manually reactivate the plugin after upgrading to this version**
 * Complete codebase overhaul for stability, scalability, and performance
