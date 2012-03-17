@@ -125,7 +125,12 @@ class Plugin_Boilerplate_Enqueue_v_1 {
 
 		$directory = $this->parent->directory . $this->css_path . $name . '/';
 
-		foreach ( glob( $directory . '*.css' ) as $file ) {
+		//fix in case glob returns error, see http://ben.balter.com/2010/11/29/twitter-mentions-as-comments/#comment-10226
+		$files = glob( $directory . '*.css' );
+		if ( !$files )
+			return;
+
+		foreach ( $files as $file ) {
 
 			if ( !filesize( $file ) )
 				continue;
