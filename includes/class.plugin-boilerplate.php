@@ -128,7 +128,7 @@ if ( !class_exists( 'Plugin_Boilerplate_v_1' ) ):
 	 * Init i18n files
 	 */
 	function _i18n() {
-		load_plugin_textdomain( $this->slug, false, plugin_basename( dirname( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( $this->slug, false, plugin_basename( $this->directory ) . '/languages/' );
 	}
 
 
