@@ -4,7 +4,7 @@
 **Tags:** resume, online reputation, personal branding, experience, education, awards, cv, hresume  
 **Requires at least:** 3.2  
 **Tested up to:** 3.4  
-**Stable tag:** 2.5.1  
+**Stable tag:** 2.5.2
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
 
@@ -135,7 +135,7 @@ Default permissions are automatically mapped to any standard WordPress roles (e.
 * Organization links now open in a new window
 
 ### 2.5 ###
-*** **NOTE:** you may need to manually reactivate the plugin after upgrading to this version**  
+* **NOTE: you may need to manually reactivate the plugin after upgrading to this version**  
 * Complete codebase overhaul for stability, scalability, and performance
 * Added project to [Github](https://github.com/benbalter/WP-Resume/)
 * Added qTranslate and enhanced i18n support for sections, organizations, and dates (Special thanks to [Fabio A Locati](http://fabiolocati.com/))
