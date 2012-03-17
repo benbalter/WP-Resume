@@ -11,12 +11,12 @@
 <?php } ?>
 <input type="radio" name="<?php echo $type; ?>" value="" id="none" <?php checked( empty($current[0]->term_id) ); ?> />
 <label for="none"><?php _e('None', 'wp-resume'); ?></label><br />
-<a href="#" id="add_<?php echo $type ?>_toggle">+ <?php echo $taxonomy->labels->add_new_item; ?></a>
+<a href="#" id="add_<?php echo $type ?>_toggle">+ <?php _e( $taxonomy->labels->add_new_item, 'wp-resume' ); ?></a>
 <div id="add_<?php echo $type ?>_div" style="display:none">
-	<label for="new_<?php echo $type ?>"><?php echo $taxonomy->labels->singular_name; ?>:</label> 
+	<label for="new_<?php echo $type ?>"><?php _e( $taxonomy->labels->singular_name, 'wp-resume' ); ?>:</label>
 	<input type="text" name="new_<?php echo $type ?>" id="new_<?php echo $type ?>" /><br />
 	<?php if ($type == 'wp_resume_organization') { ?>
-			<label for="new_<?php echo $type ?>_location" style="padding-right:24px;"><?php _e('Location', 'wp_resume'); ?>:</label> 
+		<label for="new_<?php echo $type ?>_location" style="padding-right:24px;"><?php _e('Location', 'wp-resume'); ?>:</label>
 			<input type="text" name="new_<?php echo $type ?>_location" id="new_<?php echo $type ?>_location" /><br />
 	<?php } ?>
 	<input type="button" value="Add New" id="add_<?php echo $type ?>_button" />

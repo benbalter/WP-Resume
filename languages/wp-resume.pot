@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the WP Resume package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Resume 2.5\n"
+"Project-Id-Version: WP Resume 2.5.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-resume\n"
-"POT-Creation-Date: 2012-02-20 17:50:43+00:00\n"
+"POT-Creation-Date: 2012-03-17 18:12:24+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,7 +28,7 @@ msgstr ""
 msgid "Resume Order"
 msgstr ""
 
-#: includes/admin.php:417 templates/options.php:7 wp-resume.php:484
+#: includes/admin.php:417 templates/options.php:7 wp-resume.php:485
 msgid "Resume Options"
 msgstr ""
 
@@ -90,7 +90,7 @@ msgstr ""
 msgid " (Anticipated)"
 msgstr ""
 
-#: includes/templating.php:250
+#: includes/templating.php:249
 msgid "Present"
 msgstr ""
 
@@ -122,6 +122,11 @@ msgstr ""
 
 #: templates/donate.php:15
 msgid "hide this message"
+msgstr ""
+
+
+#: templates/link_field.php:9 templates/link_field.php:14
+msgid "Link"
 msgstr ""
 
 #: templates/link_field.php:18
@@ -524,39 +529,39 @@ msgstr ""
 msgid "New Organization Name"
 msgstr ""
 
-#: wp-resume.php:477
+#: wp-resume.php:478
 msgid "Edit Resume"
 msgstr ""
 
-#: wp-resume.php:574
+#: wp-resume.php:575
 msgid "E-Mail"
 msgstr ""
 
-#: wp-resume.php:575
+#: wp-resume.php:576
 msgid "Phone"
 msgstr ""
 
-#: wp-resume.php:576
+#: wp-resume.php:577
 msgid "Other"
 msgstr ""
 
-#: wp-resume.php:578
+#: wp-resume.php:579
 msgid "Street Address"
 msgstr ""
 
-#: wp-resume.php:579
+#: wp-resume.php:580
 msgid "City/Locality"
 msgstr ""
 
-#: wp-resume.php:580
+#: wp-resume.php:581
 msgid "State/Region"
 msgstr ""
 
-#: wp-resume.php:581
+#: wp-resume.php:582
 msgid "Zip/Postal Code"
 msgstr ""
 
-#: wp-resume.php:582
+#: wp-resume.php:583
 msgid "Country"
 msgstr ""
 

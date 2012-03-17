@@ -1,6 +1,6 @@
 # WP Resume #
 **Contributors:** benbalter  
-**Donate link:** http://ben.balter.com/donate/  
+**Donate link:** http://ben.balter.com/donate/?utm_source=wp&utm_medium=org_plugin_page&utm_campaign=wp_resume  
 **Tags:** resume, online reputation, personal branding, experience, education, awards, cv, hresume  
 **Requires at least:** 3.2  
 **Tested up to:** 3.4  
@@ -26,7 +26,7 @@ You can [see it in action](http://ben.balter.com/resume/) or for information and
 * Automatically saves revisions of every change you make
 * The WYSIWYG editing experience you know and love
 * Integrates with your theme like they were made for each other (via a shortcode)
-* Spanish and Portuguese (BR) Translation Support
+* Spanish, Portuguese (BR), and French Translation Support
 * Does not use pretentious accents on the word "resume"
 * Extremely original title
 
@@ -100,9 +100,13 @@ No.  WP Resume includes a default stylesheet that can easily be overridden by yo
 
 Make sure all your positions are associated with sections.
 
+### How do Permissions work? ###
+
+Default permissions are automatically mapped to any standard WordPress roles (e.g., administrator, author, etc.) The ability to edit a positions is defined by `edit_resume_position`, to delete is `delete_resume_position`, etc., following the standard syntax and roles as for posts. Additionally, `edit_resume` allows access to the Resume->Options settings panel, and `edit_others_resume` allows access to other users' Resume->Options settings panel. To modify the default permissions, take a look at permissions plugins such as [Members](http://wordpress.org/extend/plugins/members/).
+
 ### Can I display just one section on a page? ###
 
-Yes! Simply pass a "section" parameter to the shortcode. You can identify the section by name, by ID, or by slug. Note, if your section has a hyphen in it, you may need to identify the section by ID. Examples: `[wp_resume section="9"]` or `[wp_resume section="experience"]`. 
+**Yes! Simply pass a "section" parameter to the shortcode. You can identify the section by name, by ID, or by slug. Note, if your section has a hyphen in it, you may need to identify the section by ID. Examples:** `[wp_resume section="9"]` or `[wp_resume section="experience"]`.    
 
 ## Planned Features ##
  
@@ -119,14 +123,19 @@ Yes! Simply pass a "section" parameter to the shortcode. You can identify the se
 ###3. Resume menu in wp-admin sidebar###
 ![Resume menu in wp-admin sidebar](http://s.wordpress.org/extend/plugins/wp-resume/screenshot-3.png)
 
+
 ## Changelog ##
+
+### 2.5.2 ###
+* Enhanced translation support on administrative backend, props phpcore
+* Added French language translation, props phpcore
 
 ### 2.5.1 ###
 * Fix for sections not appearing in the right order under certain circumstances
 * Organization links now open in a new window
 
 ### 2.5 ###
-* **NOTE: you may need to manually reactivate the plugin after upgrading to this version**
+*** **NOTE:** you may need to manually reactivate the plugin after upgrading to this version**  
 * Complete codebase overhaul for stability, scalability, and performance
 * Added project to [Github](https://github.com/benbalter/WP-Resume/)
 * Added qTranslate and enhanced i18n support for sections, organizations, and dates (Special thanks to [Fabio A Locati](http://fabiolocati.com/))

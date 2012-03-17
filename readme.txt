@@ -1,6 +1,6 @@
 === WP Resume ===
 Contributors: benbalter
-Donate link: http://ben.balter.com/donate/
+Donate link: http://ben.balter.com/donate/?utm_source=wp&utm_medium=org_plugin_page&utm_campaign=wp_resume
 Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume
 Requires at least: 3.2
 Tested up to: 3.4
@@ -26,7 +26,7 @@ You can [see it in action](http://ben.balter.com/resume/) or for information and
 * Automatically saves revisions of every change you make
 * The WYSIWYG editing experience you know and love
 * Integrates with your theme like they were made for each other (via a shortcode)
-* Spanish and Portuguese (BR) Translation Support
+* Spanish, Portuguese (BR), and French Translation Support
 * Does not use pretentious accents on the word "resume"
 * Extremely original title
 
@@ -119,6 +119,10 @@ Yes! Simply pass a "section" parameter to the shortcode. You can identify the se
 3. Resume menu in wp-admin sidebar
 
 == Changelog ==
+
+= 2.5.2 =
+* Enhanced translation support on administrative backend, props phpcore
+* Added French language translation, props phpcore
 
 = 2.5.1 =
 * Fix for sections not appearing in the right order under certain circumstances
