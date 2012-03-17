@@ -13,7 +13,7 @@
 <label for="none"><?php _e('None', 'wp-resume'); ?></label><br />
 <a href="#" id="add_<?php echo $type ?>_toggle">+ <?php echo $taxonomy->labels->add_new_item; ?></a>
 <div id="add_<?php echo $type ?>_div" style="display:none">
-	<label for="new_<?php echo $type ?>"><?php echo $taxonomy->labels->singular_name; ?>:</label> 
+	<label for="new_<?php echo $type ?>"><?php _e( $taxonomy->labels->singular_name,'wp-resume' ); ?>:</label>
 	<input type="text" name="new_<?php echo $type ?>" id="new_<?php echo $type ?>" /><br />
 	<?php if ($type == 'wp_resume_organization') { ?>
 		<label for="new_<?php echo $type ?>_location" style="padding-right:24px;"><?php _e('Location', 'wp-resume'); ?>:</label>
