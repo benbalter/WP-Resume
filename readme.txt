@@ -26,7 +26,7 @@ You can [see it in action](http://ben.balter.com/resume/) or for information and
 * Automatically saves revisions of every change you make
 * The WYSIWYG editing experience you know and love
 * Integrates with your theme like they were made for each other (via a shortcode)
-* Spanish and Portuguese (BR) Translation Support
+* Spanish, Portuguese (BR), and French Translation Support
 * Does not use pretentious accents on the word "resume"
 * Extremely original title
 
@@ -122,7 +122,7 @@ Yes! Simply pass a "section" parameter to the shortcode. You can identify the se
 
 = 2.5.1 =
 * Enhanced translation support on administrative backend, props phpcore
-*
+* Added French language translation, props phpcore
 
 = 2.5 =
 * **NOTE: you may need to manually reactivate the plugin after upgrading to this version**
