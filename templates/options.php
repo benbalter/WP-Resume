@@ -4,7 +4,7 @@
  * @package WP_Resume
  */
 ?><div class="wp_resume_admin wrap">
-	<h2><?php _e('Resume Options', 'wp_resume'); ?></h2>
+	<h2><?php _e('Resume Options', 'wp-resume'); ?></h2>
 	<form method="post" action='options.php' id="wp_resume_form">
 <?php	settings_errors(); ?>
 <?php	settings_fields( 'wp_resume_options' );  ?>	
