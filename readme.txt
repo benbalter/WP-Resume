@@ -4,7 +4,7 @@ Donate link: http://ben.balter.com/donate/?utm_source=wp&utm_medium=org_plugin_p
 Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume
 Requires at least: 3.2
 Tested up to: 3.4
-Stable tag: 2.5.2
+Stable tag: 2.5.3
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
 
@@ -119,6 +119,10 @@ Yes! Simply pass a "section" parameter to the shortcode. You can identify the se
 3. Resume menu in wp-admin sidebar
 
 == Changelog ==
+
+= 2.5.3 =
+* Back compatibility with pre-2.0 templating functions
+* Fix for custom resume templates not properly loading
 
 = 2.5.2 =
 * Enhanced translation support on administrative backend, props phpcore

@@ -9,13 +9,14 @@
  * @since 1.0a
  */
 
+//even if using a custom template file, 
+// use this code to get the global resume and template objects
 $resume = &$this->parent;
-
-//grab templating class
 $template = &$resume->templating;
 
 //Retrieve plugin options for later use
 $options = $resume->options->get_options();
+
 ?>
 		<div class="hresume">
 			<div id="bar"> </div>
