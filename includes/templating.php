@@ -60,12 +60,15 @@ class WP_Resume_Templating {
 	 * @param int $ID the position ID
 	 * @return string the title, or the title link
 	 */
-	function get_title( $ID ) {
+	function get_title( $ID, $link = true ) {
 
 		if ( !$this->parent->options->get_option( 'rewrite' ) ) {
 			$title = get_the_title();
 		} else {
-            $title = '<a title="' . get_the_title() . '" href="' . get_permalink() . '">' . get_the_title() . '</a>';
+			if( $link )
+				$title = '<a title="' . get_the_title() . '" href="' . get_permalink() . '">' . get_the_title() . '</a>';
+			else
+				$title = get_the_title();
 			$title = $this->parent->api->apply_deprecated_filters( 'resume_title_link', '2.5', 'title_link', $title );
 			$title = $this->parent->api->apply_filters( 'title_link', $title );
 		}
