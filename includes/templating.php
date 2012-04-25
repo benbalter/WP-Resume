@@ -58,19 +58,24 @@ class WP_Resume_Templating {
 	/**
 	 * Returns the title of the postition, or if rewriting is enabled, a link to the position
 	 * @param int $ID the position ID
+	 * @pararm bool $link (optional) whether to wrap title in link or not
 	 * @return string the title, or the title link
 	 */
 	function get_title( $ID, $link = true ) {
 
-		if ( !$this->parent->options->get_option( 'rewrite' ) ) {
+		//rewriting is disabled globally, or linking explicitly disabled via 2nd argument
+		// return just the text of the title
+		if ( !$link || !$this->parent->options->get_option( 'rewrite' ) ) {
+		
 			$title = get_the_title();
+		
+		//return the title wrapped in a link to the position's permalink
 		} else {
-			if( $link )
-				$title = '<a title="' . get_the_title() . '" href="' . get_permalink() . '">' . get_the_title() . '</a>';
-			else
-				$title = get_the_title();
+		
+			$title = '<a title="' . get_the_title() . '" href="' . get_permalink() . '">' . get_the_title() . '</a>';
 			$title = $this->parent->api->apply_deprecated_filters( 'resume_title_link', '2.5', 'title_link', $title );
 			$title = $this->parent->api->apply_filters( 'title_link', $title );
+		
 		}
 
 		$title = $this->parent->api->apply_deprecated_filters( 'resume_position_title', '2.5', 'position_title', $title );
