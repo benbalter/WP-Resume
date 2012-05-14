@@ -34,9 +34,9 @@ $options = $resume->options->get_options();
 						<?php 
 							//per hCard specs (http://microformats.org/profile/hcard) adr needs to be an array
 							if ( is_array( $value ) ) { ?>
-							<div id="<?php echo $field; ?>">
+							<div id="<?php echo $field; ?>" <?php $template->contact_info_itemprop( $field ); ?>>
 								<?php foreach ($value as $subfield => $subvalue) { ?>
-									<li class="<?php echo $subfield; ?>"><?php echo $subvalue; ?></li>
+									<li class="<?php echo $subfield; ?>" <?php $template->contact_info_itemprop( $subfield ); ?>><?php echo $subvalue; ?></li>
 								<?php } ?>
 							</div>
 						<?php } elseif ($field == 'email') { ?>
@@ -79,7 +79,7 @@ $options = $resume->options->get_options();
 					// If this is the first organization, 
 					// or if this org. is different from the previous, begin new org
 					if ( $org && $resume->get_previous_org() != $org) { ?>
-				<article itemprop="affiliation"<?php if ( $section->slug == 'education' ) echo ' itemprop="alumniOf"'; ?> itemscope itemtype="http://schema.org/<?php if ( $section->slug == 'education' ) echo 'educational'; ?>Organization" class="organization <?php echo $section->slug; ?> vevent" id="<?php echo $org->slug; ?>">
+				<article itemprop="affiliation"<?php if ( $section->slug == 'education' ) echo ' itemprop="alumniOf"'; ?> itemscope itemtype="http://schema.org/<?php if ( $section->slug == 'education' ) echo 'Educational'; ?>Organization" class="organization <?php echo $section->slug; ?> vevent" id="<?php echo $org->slug; ?>">
 					<header>
 						<div class="orgName summary" itemprop="name" id="<?php echo $org->slug; ?>-name"><?php echo $template->get_organization_name( $org ); ?></div>
 						<div class="location" itemprop="location" itemprop="workLocation"><?php echo $org->description; ?></div>

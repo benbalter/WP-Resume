@@ -279,6 +279,39 @@ class WP_Resume_Templating {
 		return $date;
 
 	}
+	
+	/**
+	 * Translates hresume field names to author/postalAddress microformat fields
+	 * @param string $field the hresume field
+	 * @return string the schema.org compliant field
+	 */
+	function get_contact_info_itemprop( $field ) {
+		
+		$trans = array( 
+			'tel'            => 'itemprop="telephone"',
+			'email'          => 'itemprop="email"',
+			'adr'            => 'itemprop="address" itemscope itemtype="http://schema.org/PostalAddress"',
+			'street-address' => 'itemprop="streetAddress"',
+			'locality'       => 'itemprop="addressLocality"',
+			'region'         => 'itemprop="addressRegion"',
+			'postal-code'    => 'itemprop="postalCode"',
+			'country-name'   => 'itemprop="addressCountry"',
+		);
+		
+		if ( !array_key_exists( $field, $trans ) )
+			return;
+			
+		return $trans[ $field ];
+		
+	}
+	
+	/**
+	 * Retrieves and echos contact info itemprop property
+	 * @param string $field the hresume field	 
+	 */
+	function contact_info_itemprop( $field ) {
+		echo $this->get_contact_info_itemprop( $field );
+	}
 
 
 }
