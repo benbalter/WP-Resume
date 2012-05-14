@@ -274,13 +274,19 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 	 */
 	function section_order_filter( $terms, $taxonomies, $args ) {
 
+		global $post;
+		
 		if ( $taxonomies != array( 'wp_resume_section' ) )
 			return $terms;
 
 		if ( $args['fields'] != 'all' )
 			return $terms;
-		
+
 		$author = get_user_by( 'slug', $this->author );
+	
+		if ( !$author && is_admin() ) 
+			$author = get_user_by( 'id', $post->post_author );
+
 		$order = $this->options->get_user_option( 'order', $author->ID );
 
 		$output = array( );
