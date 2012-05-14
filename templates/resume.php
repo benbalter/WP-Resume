@@ -22,7 +22,7 @@ $options = $resume->options->get_options();
 			<div id="bar"> </div>
 			<header class="vcard">
 				<h2 class="fn n url" id="name" itemprop="name">
-					<a href="<?php get_permalink(); ?>" itemprop="url">
+					<a href="<?php echo get_permalink(); ?>" itemprop="url">
 						<?php echo $template->get_name(); ?>
 					</a>
 				</h2>
@@ -40,9 +40,9 @@ $options = $resume->options->get_options();
 								<?php } ?>
 							</div>
 						<?php } elseif ($field == 'email') { ?>
-							<li><a href="mailto:<?php echo $value; ?>" class="<?php echo $field; ?>"><?php echo $value; ?></a></li>
+							<li><a href="mailto:<?php echo $value; ?>" class="<?php echo $field; ?>" <?php $template->contact_info_itemprop( $field ); ?>><?php echo $value; ?></a></li>
 						<?php } else { ?>
-							<li class="<?php echo $field; ?>"><?php echo $value; ?></li>
+							<li class="<?php echo $field; ?>" <?php $template->contact_info_itemprop( $field ); ?>><?php echo $value; ?></li>
 						<?php } ?>
 					<?php } ?>
 				<?php } ?>
