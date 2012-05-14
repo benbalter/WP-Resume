@@ -101,7 +101,7 @@ if ( !class_exists( 'Plugin_Boilerplate_v_1' ) ):
 			//the name of this particular class, e.g., API or Options
 			$include = $this->_get_include_object( $file );
 
-			if ( !apply_filters( "{$this->prefix}_load_{$include->object_name}", true, $include ) )
+			if ( !apply_filters( "{$this->prefix}load_{$include->object_name}", true, $include ) )
 				continue;
 
 			if ( !class_exists( $include->class ) )

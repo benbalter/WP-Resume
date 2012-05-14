@@ -88,7 +88,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 		add_action( 'wp_resume_init', array( &$this, 'init' ) );
 		
 		//back compat
-		add_filter( 'wp_resume_load_deprecated', '_return_false' );
+		add_filter( 'wp_resume_load_deprecated', '__return_false' );
 
 	}
 
@@ -125,7 +125,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 	function register_cpt_and_t() {
 
 		$rewrite = $this->options->get_option( 'rewrite' );
-//var_dump( $rewrite );
+
 		//Custom post type labels array
 		$labels = array(
 			'name'               => _x('Positions', 'post type general name', 'wp-resume'),
@@ -729,7 +729,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 	 */
 	function shortcode( $atts ) {
 	
-		$defaults = array( 'author' => null, 'section' => null );
+		$defaults = array( 'user' => null, 'section' => null );
 		$atts = shortcode_atts( $defaults, $atts );
 
 		//determine author and set as global so templates can read
@@ -739,7 +739,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 		$section = $this->get_section( $atts );
 
 		ob_start();
-		$this->api->do_action( 'shortcode_pre' );
+		$this->api->do_action( 'shortcode_pre' ); 
 
 		if ( !( $resume = $this->cache->get( $this->author . '_resume' . $section ) ) ) {
 			$this->template->resume( );
