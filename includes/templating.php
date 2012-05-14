@@ -141,7 +141,7 @@ class WP_Resume_Templating {
 			return $this->parent->api->apply_filters( "{$taxonomy}_name", $name );
 		}
 
-        $title = '<a title="' . $object->name . '" target="_new" href="' . $link . '">' . $object->name . '</a>';
+        $title = '<a title="' . $object->name . '" itemprop="url" target="_new" href="' . $link . '">' . $object->name . '</a>';
 
 		$title = $this->parent->api->apply_deprecated_filters( "resume_{$taxonomy}_link", '2.5', "{$taxonomy}_link", $title );
 		$title = $this->parent->api->apply_filters( '{$taxonomy}_link', $title );
@@ -199,6 +199,7 @@ class WP_Resume_Templating {
 		foreach( array( 'from' => 'dtstart', 'to' => 'dtend' ) as $field => $class ) {
 			
 			$value = get_post_meta( $ID, "wp_resume_{$field}", true );
+			$itemprop = ( $class = 'dtstart' ) ? 'startDate' : 'endDate';
 
 			//we don't have this field, skip
 			if ( !$value)
@@ -209,19 +210,19 @@ class WP_Resume_Templating {
 			
 			//if we can parse the date, append the proper class and formatted date to span
 			if ( strtotime( $value ) ) 
-				$date .= '<span class="' . $class . '" title="' . date( 'Y-m-d', strtotime( $value ) ). '">';
+				$date .= '<time itemprop="' . $itemprop . '" class="' . $class . '" datetime="' . date( 'Y-m-d', strtotime( $value ) ) . '" title="' . date( 'Y-m-d', strtotime( $value ) ) . '">';
 			
 			//if the position is current, append todays date to span
 			else if ( $value == 'Present' )
-				$date .= '<span title="' . date( 'Y-m-d' ) . '">';
+				$date .= '<time datetime="' . date( 'Y-m-d' ) . ' title="' . date( 'Y-m-d' ) . '">';
 				
 			//if we can't parse the date, just output a standard span
 			else
-				$date .= '<span>';
+				$date .= '<time>';
 	
 			$date .= $this->parent->api->apply_filters( 'date', $value, $field );
 			
-			$date .= '</span>';		
+			$date .= '</time>';		
 			
 			//this is the from field and there is a to field, append the dash
 			//it's okay that we're calling get_post_meta twice on "to" because it's cached automatically
