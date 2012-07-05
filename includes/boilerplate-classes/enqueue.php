@@ -90,11 +90,11 @@ class Plugin_Boilerplate_Enqueue_v_1 {
 
 		$data = str_replace( '-', '_', $name . '_data' );
 		$this->$data = apply_filters( 'localize_script', $this->$data, $name );
-
-		if ( empty( $this->$data ) )
+		
+		if ( empty( $this->data ) )
 			return;
 
-		wp_localize_script( $this->parent->slug, $this->parent->slug_, $this->$data );
+		wp_localize_script( $this->parent->slug, $this->parent->slug_, $this->data );
 
 	}
 
