@@ -3,7 +3,7 @@ Contributors: benbalter
 Donate link: http://ben.balter.com/donate/?utm_source=wp&utm_medium=org_plugin_page&utm_campaign=wp_resume
 Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume
 Requires at least: 3.2
-Tested up to: 3.4
+Tested up to: 3.5
 Stable tag: 2.5.3
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
@@ -36,6 +36,12 @@ You can [see it in action](http://ben.balter.com/resume/) or for information and
 * JSON API so you can use the data anywhere
 * Support for custom templates and CSS files (like a child theme, just place them in your theme directory)
 * Plugin API hooks for developers to build on
+
+= Translations: =
+
+* Spanish - [Rodolfo Buaiz](http://rodbuaiz.com/)
+* Portuguese - [Rodolfo Buaiz](http://rodbuaiz.com/)
+* French - phpcore
 
 The hardest part of getting your resume online should be doing the work listed on it, not wrestling the publishing platform. Simply put, WP Resume steps aside and lets your experience shine.
 
@@ -121,8 +127,15 @@ Yes! Simply pass a "section" parameter to the shortcode. You can identify the se
 == Changelog ==
 
 = 2.5.3 =
+* Default resume now outputs schema.org compliant microdata
+* JSON resume feed now supports JSONP (just pass the ?callback=foo argument)
 * Back compatibility with pre-2.0 templating functions
 * Fix for custom resume templates not properly loading
+* French translation update, props phpcore
+* Template function `get_title` now accepts a second argument to explicitly toggle links on and off, props Fabio Alessandro Locati
+* .clearfix CSS class now prefixed with .resume to prevent conflicts with themes
+* Fix for shortcode user attribute not properly parsing
+* Fix for undefined variable error on post edit screen
 
 = 2.5.2 =
 * Enhanced translation support on administrative backend, props phpcore
