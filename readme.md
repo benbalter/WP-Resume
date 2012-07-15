@@ -132,6 +132,9 @@ Default permissions are automatically mapped to any standard WordPress roles (e.
 
 ## Changelog ##
 
+### 2.5.4 ###
+* PHP 5.4 compatability: Fix for "calltime pass by reference" error.
+
 ### 2.5.3 ###
 * Default resume now outputs schema.org compliant microdata
 * JSON resume feed now supports JSONP (just pass the ?callback=foo argument)
