@@ -112,7 +112,7 @@ if ( !class_exists( 'Plugin_Boilerplate_v_1' ) ):
 				continue;
 			}
 
-			$this->{$include->object_name} = new $include->class( &$this );
+			$this->{$include->object_name} = new $include->class( $this );
 			$this->classes[ $include->object_name ] = $include->class;
 
 		}
@@ -209,7 +209,7 @@ if ( !class_exists( 'Plugin_Boilerplate_v_1' ) ):
 
 		//base, either Plugin class or Plugin_Boilerplate
 		$class->native = ( dirname( $file ) == dirname( __FILE__ ) . '/boilerplate-classes' );
-		$class->base = ( $class->native ) ? 'Plugin_Boilerplate' : get_class( &$this );
+		$class->base = ( $class->native ) ? 'Plugin_Boilerplate' : get_class( $this );
 		$class->class = $class->base . '_' . $class->name;
 
 		//if this is a PB native class, append a version # to prevent collision
