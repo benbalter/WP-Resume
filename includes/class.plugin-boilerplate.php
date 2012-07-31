@@ -53,7 +53,7 @@ if ( !class_exists( 'Plugin_Boilerplate_v_1' ) ):
 		//verify minimum WP version, and shutdown if insufficient
 		if ( !$this->_verify_wp_version() )
 			return false;
-
+			
 		//upgrade db
 		add_action( 'admin_init', array( &$this, '_upgrade_check' ) );
 

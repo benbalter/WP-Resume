@@ -18,7 +18,7 @@ class Plugin_Boilerplate_Debug_v_1 {
 	 */
 	function __construct( &$parent ) {
 
-		$this->parent = &$parent;
+		$this->parent = $parent;
 
 		add_action( 'init', array( &$this, 'init' ), 5 );
 
@@ -93,7 +93,7 @@ class Plugin_Boilerplate_Debug_v_1 {
 	function register_panel( $panels ) {
 		$slug = $this->parent->slug_;
 		$class = "{$slug}_Debug_Panel";
-		$panels[] = new $class( $this->parent->name . ' Debug', &$this );
+		$panels[] = new $class( $this->parent->name . ' Debug', $this );
 
 		return $panels;
 
@@ -119,8 +119,8 @@ class Plugin_Boilerplate_Debug_v_1 {
 		$code = 'class ' . $this->parent->slug_ . '_Debug_Panel extends Debug_Bar_Panel {
 			static $parent;
 
-			function __construct( $name, &$instance ) {
-				$this->parent = &$instance;
+			function __construct( $name, $instance ) {
+				$this->parent = $instance;
 				parent::__construct( $name );
 			}
 

@@ -15,7 +15,7 @@ class WP_Resume_Plaintext {
 	 */
 	function __construct( &$parent ) {
 
-		$this->parent = &$parent;
+		$this->parent = $parent;
 
 		add_action( 'parse_query', array( &$this, 'init' ) );
 	}
@@ -56,7 +56,7 @@ class WP_Resume_Plaintext {
 		$author = $this->parent->get_author( $author );
 		$contact_info = $this->parent->options->get_user_option( 'contact_info', $author );
 
-		array_walk_recursive( &$contact_info, array( &$this, 'contact_info_walker' ) );
+		array_walk_recursive( $contact_info, array( &$this, 'contact_info_walker' ) );
 
 		$contact_info = $this->parent->api->apply_filters( 'plaintext_contact_info', $contact_info );
 
