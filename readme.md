@@ -1,10 +1,11 @@
 # WP Resume #
+
 **Contributors:** benbalter  
 **Donate link:** http://ben.balter.com/donate/?utm_source=wp&utm_medium=org_plugin_page&utm_campaign=wp_resume  
 **Tags:** resume, online reputation, personal branding, experience, education, awards, cv, hresume  
 **Requires at least:** 3.2  
 **Tested up to:** 3.5  
-**Stable tag:** 2.5.3
+**Stable tag:** 2.5.4
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
 
@@ -47,7 +48,7 @@ The hardest part of getting your resume online should be doing the work listed o
 
 **Developers,** have a killer feature you'd love to see included? Feel free to [fork the project on GitHub](https://github.com/benbalter/WP-Resume/) and submit your contributions via pull request.
 
-*Enjoy using WP Resume? Please consider [making a small donation](http://ben.balter.com/donate/) to support the software’s continued development.*
+[Photo via [shawnmichael](http://www.flickr.com/photos/shawnmichael/4246330043/)]
 
 ## Installation ##
 
@@ -70,53 +71,9 @@ Within each section, your positions are grouped by organizations.  These are oft
 
 **Note:** Although some styling is included by default, you can customize the layout by modifying your theme's stylesheet or creating a custom template file.  
 
-[Photo via [shawnmichael](http://www.flickr.com/photos/shawnmichael/4246330043/)]
-
 ## Frequently Asked Questions ##
 
-### I don't like your CSS, can I use my own? ###
-
-Yes, (and I don't blame you). Simply create a file in your theme directory called "resume-style.css" and the plugin will pull that style sheet rather than its built in default style.
-
-### The included template doesn't fit into my theme all that well, can I build my own? ###
-
-Yes. Simply place a file in your theme directory and call it "resume.php" (or "resume-json.php" or "resume-text.php" for the feeds) and edit away. The plugin will use your template, rather than the one included. It may be easier to begin by copying the default template into your theme folder and editing it to meet your needs rather than starting from scratch.
-
-### hResume? What's that ###
-
-[hResume](http://microformats.org/wiki/hresume) is a machine-readable format for sharing your resume on the net. It's a format that allows both users (you and me) and computers (automated job searching software) to read your resume. You don't have to do anything special to take advantage of the format, just fill out your resume if you would normally.
-
-### I need a plain-text version of my resume to paste into a job application, can you help me out? ###
-
-Yes. Just append "?feed=text" to the URL of your resume. So if you resume were at http://mydomain.com/resume/, the plain text version would be at http://mydomain.com/resume/?feed=text.
-
-### I'm building a really cool app and it'd be awesome if I could get a JSON feed of the resume content to do awesome stuff ###
-
-Awesome. Just append "?feed=json" to the URL of your resume and you're all set.  So if you resume were at http://mydomain.com/resume/, the API frontend would be at http://mydomain.com/resume/?feed=json.
-
-### Wouldn't it be really cool if it could do X? ###
-
-Yes.  It probably would be.  [Leave a comment on the plugin page](http://ben.balter.com/2010/09/12/wordpress-resume-plugin/), and I'll try my best to make it happen, or if you're a developer, feel free to [fork the code on Github](https://github.com/benbalter/WP-Resume/) and send a pull request to get your feature included.
-
-### I just want to make a small tweak to the CSS, do I have to do the whole template thing? ###
-
-No.  WP Resume includes a default stylesheet that can easily be overridden by your theme's defaults or other CSS you may drop in.
-
-### I'm having trouble organizing some of the positions on the options screen; they're not sortable. What gives? ###
-
-Make sure all your positions are associated with sections.
-
-### How do Permissions work? ###
-
-Default permissions are automatically mapped to any standard WordPress roles (e.g., administrator, author, etc.) The ability to edit a positions is defined by `edit_resume_position`, to delete is `delete_resume_position`, etc., following the standard syntax and roles as for posts. Additionally, `edit_resume` allows access to the Resume->Options settings panel, and `edit_others_resume` allows access to other users' Resume->Options settings panel. To modify the default permissions, take a look at permissions plugins such as [Members](http://wordpress.org/extend/plugins/members/).
-
-### Can I display just one section on a page? ###
-
-**Yes! Simply pass a "section" parameter to the shortcode. You can identify the section by name, by ID, or by slug. Note, if your section has a hyphen in it, you may need to identify the section by ID. Examples:** `[wp_resume section="9"]` or `[wp_resume section="experience"]`.    
-
-## Planned Features ##
- 
-* Import from LinkedIn via API
+Please see (and feel free to contribute to) the [Frequently Asked Questions Wiki](https://github.com/benbalter/WP-Resume/wiki/Frequently-Asked-Questions).
 
 ## Screenshots ##
 
@@ -129,11 +86,12 @@ Default permissions are automatically mapped to any standard WordPress roles (e.
 ###3. Resume menu in wp-admin sidebar###
 ![Resume menu in wp-admin sidebar](http://s.wordpress.org/extend/plugins/wp-resume/screenshot-3.png)
 
-
 ## Changelog ##
 
 ### 2.5.4 ###
-* PHP 5.4 compatability: Fix for "calltime pass by reference" error.
+* Plugin documentation now maintained in a [collaboratively edited wiki](https://github.com/benbalter/WP-Resume/wiki/). Feel free to contribute!
+* Created [listserv to provide a discussion forum](https://groups.google.com/forum/#!forum/WP-Resume) for users and contributors, as well as general annoucements. Feel free to join!
+* PHP 5.4 compatability: Fix for "calltime pass by reference" error, special thanks to Raphael Berlamont.
 
 ### 2.5.3 ###
 * Default resume now outputs schema.org compliant microdata
@@ -350,3 +308,53 @@ Complete code overhaul; rewritten from the ground up with performance and stabil
 
 ### 1.6.6 ###
 Fixes handling of custom stylesheets and template files with child themes in versions of WordPress greater than 3.1
+
+## Donate ##
+
+*Enjoy using WP Resume? Please consider [making a small donation](http://ben.balter.com/donate/) to support the software’s continued development.*
+
+
+## Frequently Asked Questions ##
+
+Please see (and feel free to contribute to) the [Frequently Asked Questions Wiki](https://github.com/benbalter/WP-Resume/wiki/Frequently-Asked-Questions).
+
+## How To Contribute ##
+
+WP Resume is an open source project and is supported by the efforts of an entire community. We'd love for you to get involved. Whatever your level of skill or however much time you can give, your contribution is greatly appreciated.
+
+* **Everyone** - help expand the projects [documentation wiki](https://github.com/benbalter/WP-Resume/wiki) to make it easier for other users to get started
+* **Users** - download the latest [development version](https://github.com/benbalter/WP-Resume/tree/develop) of the plugin, and [submit bug/feature requests](https://github.com/benbalter/WP-Resume/issues).
+* **Non-English Speaking Users** - [Contribute a translation](http://translations.benbalter.com/projects/WP-Resume/) using the GlotPress web interface - no technical knowledge required ([how to](http://translations.benbalter.com/projects/how-to-translate)).
+* **Developers** - [Fork the development version](https://github.com/benbalter/WP-Resume/tree/develop) and submit a pull request, especially for any [known issues](https://github.com/benbalter/WP-Resume/issues?direction=desc&sort=created&state=open)
+
+## Upgrade Notice ##
+
+### 2.1 ###
+Bug fixes for dragdrop interface and URL rewriting
+
+### 2.0.4 ###
+Formatting fixes including ability to hide page titles
+
+### 2.0.3 ###
+Minor performance improvements, bug fixes, and user interface tweaks
+
+### 2.0.2 ###
+Fixes bug where options would not save and positions/summary would not display if user_nicename differed from user_login
+
+### 2.0 ###
+Complete code overhaul; rewritten from the ground up with performance and stability improvements, bug fixes; Spanish and Portuguese internationalization.
+
+### 1.6.6 ###
+Fixes handling of custom stylesheets and template files with child themes in versions of WordPress greater than 3.1
+
+## Where To Get Support Or Report An Issue ##
+
+*There are various resources available, depending on the type of help you're looking for:*
+
+* For getting started and general documentation, please browse, and feel free to contribute to [the project wiki](https://github.com/benbalter/WP-Resume/wiki).
+ 
+* For support questions ("How do I", "I can't seem to", etc.) please search and if not already answered, open a thread in the [Support Forums](http://wordpress.org/support/plugin/WP-Resume).
+
+* For technical issues (e.g., to submit a bug or feature request) please search and if not already filed, [open an issue on GitHub](https://github.com/benbalter/WP-Resume/issues).
+
+* For implementation, and all general questions ("Is it possible to..", "Has anyone..."), please search, and if not already answered, post a topic to the [general discussion list serve](https://groups.google.com/forum/#!forum/WP-Resume)
