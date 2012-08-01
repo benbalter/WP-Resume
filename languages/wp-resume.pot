@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the WP Resume package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Resume 2.5.1\n"
+"Project-Id-Version: WP Resume 2.5.3\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-resume\n"
-"POT-Creation-Date: 2012-03-17 18:12:24+00:00\n"
+"POT-Creation-Date: 2012-07-07 19:56:07+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,7 +28,7 @@ msgstr ""
 msgid "Resume Order"
 msgstr ""
 
-#: includes/admin.php:417 templates/options.php:7 wp-resume.php:485
+#: includes/admin.php:417 templates/options.php:7 wp-resume.php:494
 msgid "Resume Options"
 msgstr ""
 
@@ -90,7 +90,7 @@ msgstr ""
 msgid " (Anticipated)"
 msgstr ""
 
-#: includes/templating.php:249
+#: includes/templating.php:258
 msgid "Present"
 msgstr ""
 
@@ -123,7 +123,6 @@ msgstr ""
 #: templates/donate.php:15
 msgid "hide this message"
 msgstr ""
-
 
 #: templates/link_field.php:9 templates/link_field.php:14
 msgid "Link"
@@ -399,169 +398,169 @@ msgid ""
 "upgrade your WordPress install."
 msgstr ""
 
-#: wp-resume.php:128
+#: wp-resume.php:131
 msgctxt "post type general name"
 msgid "Positions"
 msgstr ""
 
-#: wp-resume.php:129
+#: wp-resume.php:132
 msgctxt "post type singular name"
 msgid "Resume Position"
 msgstr ""
 
-#: wp-resume.php:130 wp-resume.php:131
+#: wp-resume.php:133 wp-resume.php:134
 msgid "Add New Position"
 msgstr ""
 
-#: wp-resume.php:132
+#: wp-resume.php:135
 msgid "Edit Position"
 msgstr ""
 
-#: wp-resume.php:133
+#: wp-resume.php:136
 msgid "New Position"
 msgstr ""
 
-#: wp-resume.php:134
+#: wp-resume.php:137
 msgid "View Position"
 msgstr ""
 
-#: wp-resume.php:135
+#: wp-resume.php:138
 msgid "Search Positions"
 msgstr ""
 
-#: wp-resume.php:136
+#: wp-resume.php:139
 msgid "No Positions Found"
 msgstr ""
 
-#: wp-resume.php:137
+#: wp-resume.php:140
 msgid "No Positions Found in Trash"
 msgstr ""
 
-#: wp-resume.php:139
+#: wp-resume.php:142
 msgid "Resume"
 msgstr ""
 
-#: wp-resume.php:140
+#: wp-resume.php:143
 msgid "All Positions"
 msgstr ""
 
-#: wp-resume.php:169
+#: wp-resume.php:172
 msgctxt "taxonomy general name"
 msgid "Sections"
 msgstr ""
 
-#: wp-resume.php:170
+#: wp-resume.php:173
 msgctxt "taxonomy singular name"
 msgid "Section"
 msgstr ""
 
-#: wp-resume.php:171
+#: wp-resume.php:174
 msgid "Search Sections"
 msgstr ""
 
-#: wp-resume.php:172
+#: wp-resume.php:175
 msgid "All Sections"
 msgstr ""
 
-#: wp-resume.php:173
+#: wp-resume.php:176
 msgid "Parent Section"
 msgstr ""
 
-#: wp-resume.php:174
+#: wp-resume.php:177
 msgid "Parent Section:"
 msgstr ""
 
-#: wp-resume.php:175
+#: wp-resume.php:178
 msgid "Edit Section"
 msgstr ""
 
-#: wp-resume.php:176
+#: wp-resume.php:179
 msgid "Update Section"
 msgstr ""
 
-#: wp-resume.php:177
+#: wp-resume.php:180
 msgid "Add New Section"
 msgstr ""
 
-#: wp-resume.php:178
+#: wp-resume.php:181
 msgid "New Section Name"
 msgstr ""
 
-#: wp-resume.php:200
+#: wp-resume.php:203
 msgctxt "taxonomy general name"
 msgid "Organizations"
 msgstr ""
 
-#: wp-resume.php:201
+#: wp-resume.php:204
 msgctxt "taxonomy singular name"
 msgid "Organization"
 msgstr ""
 
-#: wp-resume.php:202
+#: wp-resume.php:205
 msgid "Search Organizations"
 msgstr ""
 
-#: wp-resume.php:203
+#: wp-resume.php:206
 msgid "All Organizations"
 msgstr ""
 
-#: wp-resume.php:204
+#: wp-resume.php:207
 msgid "Parent Organization"
 msgstr ""
 
-#: wp-resume.php:205
+#: wp-resume.php:208
 msgid "Parent Organization:"
 msgstr ""
 
-#: wp-resume.php:206
+#: wp-resume.php:209
 msgid "Edit Organization"
 msgstr ""
 
-#: wp-resume.php:207
+#: wp-resume.php:210
 msgid "Update Organization"
 msgstr ""
 
-#: wp-resume.php:208
+#: wp-resume.php:211
 msgid "Add New Organization"
 msgstr ""
 
-#: wp-resume.php:209
+#: wp-resume.php:212
 msgid "New Organization Name"
 msgstr ""
 
-#: wp-resume.php:478
+#: wp-resume.php:487
 msgid "Edit Resume"
 msgstr ""
 
-#: wp-resume.php:575
+#: wp-resume.php:584
 msgid "E-Mail"
 msgstr ""
 
-#: wp-resume.php:576
+#: wp-resume.php:585
 msgid "Phone"
 msgstr ""
 
-#: wp-resume.php:577
+#: wp-resume.php:586
 msgid "Other"
 msgstr ""
 
-#: wp-resume.php:579
+#: wp-resume.php:588
 msgid "Street Address"
 msgstr ""
 
-#: wp-resume.php:580
+#: wp-resume.php:589
 msgid "City/Locality"
 msgstr ""
 
-#: wp-resume.php:581
+#: wp-resume.php:590
 msgid "State/Region"
 msgstr ""
 
-#: wp-resume.php:582
+#: wp-resume.php:591
 msgid "Zip/Postal Code"
 msgstr ""
 
-#: wp-resume.php:583
+#: wp-resume.php:592
 msgid "Country"
 msgstr ""
 
