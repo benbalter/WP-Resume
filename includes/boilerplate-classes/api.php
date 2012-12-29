@@ -32,7 +32,7 @@ class Plugin_Boilerplate_Api_v_1 {
 		$args = func_get_args();
 		array_unshift( $args, 'action' );
 
-		call_user_func_array( array( &$this, 'api'), $args );
+		call_user_func_array( array( $this, 'api'), $args );
 
 	}
 
@@ -56,7 +56,7 @@ class Plugin_Boilerplate_Api_v_1 {
 		//remove replacement and version arguments
 		$args = array_slice( func_get_args(), 2 );
 
-		call_user_func_array( array( &$this, 'do_action'), $args );
+		call_user_func_array( array( $this, 'do_action'), $args );
 
 	}
 
@@ -71,7 +71,7 @@ class Plugin_Boilerplate_Api_v_1 {
 		$args = func_get_args();
 		array_unshift( $args, 'filter' );
 
-		return call_user_func_array( array( &$this, 'api'), $args );
+		return call_user_func_array( array( $this, 'api'), $args );
 	}
 
 
@@ -95,7 +95,7 @@ class Plugin_Boilerplate_Api_v_1 {
 		//remove replacement and version arguments
 		$args = array_slice( func_get_args(), 2 );
 
-		call_user_func_array( array( &$this, 'apply_filters'), $args );
+		call_user_func_array( array( $this, 'apply_filters'), $args );
 	}
 
 

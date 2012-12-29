@@ -21,10 +21,10 @@ class Plugin_Boilerplate_Enqueue_v_1 {
 
 		$this->parent = &$parent;
 
-		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_admin_js' ), 50 );
-		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_admin_css' ), 50 );
-		add_action( 'wp_print_styles', array( &$this, 'enqueue_front_end_css' ), 50 );
-		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_end_js' ), 50 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_js' ), 50 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_css' ), 50 );
+		add_action( 'wp_print_styles', array( $this, 'enqueue_front_end_css' ), 50 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_front_end_js' ), 50 );
 
 	}
 
@@ -91,10 +91,10 @@ class Plugin_Boilerplate_Enqueue_v_1 {
 		$data = str_replace( '-', '_', $name . '_data' );
 		$this->$data = apply_filters( 'localize_script', $this->$data, $name );
 		
-		if ( empty( $this->data ) )
+		if ( empty( $this->$data ) )
 			return;
 
-		wp_localize_script( $this->parent->slug, $this->parent->slug_, $this->data );
+		wp_localize_script( $this->parent->slug, $this->parent->slug_, $this->$data );
 
 	}
 

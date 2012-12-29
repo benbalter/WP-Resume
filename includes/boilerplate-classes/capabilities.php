@@ -37,7 +37,7 @@ class Plugin_Boilerplate_Capabilities_v_1 {
 
 		$this->parent = &$parent;
 
-		add_action( 'init', array( &$this, 'add_caps' ) );
+		add_action( 'init', array( $this, 'add_caps' ) );
 
 	}
 

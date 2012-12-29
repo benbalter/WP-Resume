@@ -37,7 +37,7 @@ if ( !class_exists( 'Plugin_Boilerplate_v_1' ) ):
 	public $directory           = null;
 	public $version             = '1.0';
 	public $boilerplate_version = '1';
-	public $min_wp              = '3.2';
+	public $min_wp              = '3.3';
 	public $classes             = array();
 
 	/**
@@ -53,15 +53,15 @@ if ( !class_exists( 'Plugin_Boilerplate_v_1' ) ):
 		//verify minimum WP version, and shutdown if insufficient
 		if ( !$this->_verify_wp_version() )
 			return false;
-			
+
 		//upgrade db
-		add_action( 'admin_init', array( &$this, '_upgrade_check' ) );
+		add_action( 'admin_init', array( $this, '_upgrade_check' ) );
 
 		//i18n
-		add_action( 'init', array( &$this, '_i18n' ) );
+		add_action( 'init', array( $this, '_i18n' ) );
 
 		//load subclasses on init, allowing other plugins or self to override
-		add_action( 'plugins_loaded', array( &$this, '_init' ), 5 );
+		add_action( 'plugins_loaded', array( $this, '_init' ), 5 );
 
 	}
 
@@ -167,7 +167,7 @@ if ( !class_exists( 'Plugin_Boilerplate_v_1' ) ):
 		if ( get_bloginfo( 'version' ) >= $this->min_wp )
 			return true;
 
-		add_action( 'admin_notices', array( &$this, 'update_wp' ) );
+		add_action( 'admin_notices', array( $this, 'update_wp' ) );
 		do_action( "{$this->prefix}_wp_outdated" );
 
 		return false;

@@ -22,8 +22,8 @@ class Plugin_Boilerplate_Options_v_1 {
 
 		$this->parent = &$parent;
 
-		add_action( 'admin_init', array( &$this, 'options_init' ) );
-		add_action( $this->parent->prefix . 'options', array( &$this, 'default_options_filter' ), 20 );
+		add_action( 'admin_init', array( $this, 'options_init' ) );
+		add_action( $this->parent->prefix . 'options', array( $this, 'default_options_filter' ), 20 );
 		
 	}
 
@@ -36,7 +36,7 @@ class Plugin_Boilerplate_Options_v_1 {
 		if ( empty( $this->parent->options->defaults ) )
 			return;
 
-		register_setting( $this->parent->slug_, $this->parent->slug_, array( &$this, 'validate' ) );
+		register_setting( $this->parent->slug_, $this->parent->slug_, array( $this, 'validate' ) );
 
 	}
 
