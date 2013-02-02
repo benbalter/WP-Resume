@@ -1,12 +1,5 @@
 # WP Resume #
 
-**Contributors:** benbalter  
-**Donate link:** http://ben.balter.com/donate/?utm_source=wp&utm_medium=org_plugin_page&utm_campaign=wp_resume  
-**Tags:** resume, online reputation, personal branding, experience, education, awards, cv, hresume  
-**Requires at least:** 3.3  
-**Tested up to:** 3.5  
-**Stable tag:** 2.5.5
-
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
 
 ## Description ##
@@ -45,6 +38,7 @@ The hardest part of getting your resume online should be doing the work listed o
 * Spanish - [Rodolfo Buaiz](http://rodbuaiz.com/)
 * Portuguese - [Rodolfo Buaiz](http://rodbuaiz.com/)
 * French - phpcore
+* Slovak Translation - Branco of [WebHostingGeeks.com](http://webhostinggeeks.com/user-reviews/)
 
 **Developers,** have a killer feature you'd love to see included? Feel free to [fork the project on GitHub](https://github.com/benbalter/WP-Resume/) and submit your contributions via pull request.
 
@@ -89,9 +83,11 @@ Please see (and feel free to contribute to) the [Frequently Asked Questions Wiki
 ## Changelog ##
 
 ### 2.5.5 ###
-* Better PHP 5.4 comptability
+* Better PHP 5.4 compatibility
 * Better prevention of javascript conflicts with other plugins on options page
 * Minimum version supported bumped to 3.3 (2 legacy versions)
+* Added Slovak Translation, special thanks to Branco of [WebHostingGeeks.com](http://webhostinggeeks.com/user-reviews/)
+* Prevent warnings when saving options or adding sections under certain conditions
 
 ### 2.5.4 ###
 * Plugin documentation now maintained in a [collaboratively edited wiki](https://github.com/benbalter/WP-Resume/wiki/). Feel free to contribute!
