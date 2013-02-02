@@ -494,8 +494,11 @@ class WP_Resume_Admin {
 
 		//sanitize section order data
 		$order = array();
-		foreach ( (array) $data['order'] as $key=>$value)
-			$order[] = (int) $key ;
+
+		//if there are no positions, don't err out
+		if ( array_key_exists( 'order', (array) $data ) )
+			foreach ( (array) $data['order'] as $key => $value)
+				$order[] = (int) $key ;
 
 		$user_options['order'] = $order;
 

@@ -284,8 +284,14 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 
 		$author = get_user_by( 'slug', $this->author );
 	
-		if ( !$author && is_admin() ) 
+		if ( !$author && is_admin() ) {
+			
+			if ( is_null( $post ) ) //if we don't have a post obj. kick to original
+				return $terms;
+
 			$author = get_user_by( 'id', $post->post_author );
+		
+		}
 
 		$order = $this->options->get_user_option( 'order', $author->ID );
 
