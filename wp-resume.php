@@ -52,6 +52,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 
 	static $instance;
 	public $author    = null;
+	public $author_id = null;
 	public $section   = null;
 	public $query_obj;
 
@@ -252,6 +253,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 			$author = $user->user_nicename;
 		}
 
+		$this->author_id = $user->id;
 		$this->author = $author;
 
 		//get all sections ordered by term_id (order added)
