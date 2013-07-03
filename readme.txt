@@ -4,8 +4,8 @@ Contributors: benbalter
 Donate link: http://ben.balter.com/donate/?utm_source=wp&utm_medium=org_plugin_page&utm_campaign=wp_resume  
 Tags: resume, online reputation, personal branding, experience, education, awards, cv, hresume  
 Requires at least: 3.3  
-Tested up to: 3.5  
-Stable tag: 2.5.5
+Tested up to: 3.6  
+Stable tag: 2.5.6
 
 Out-of-the-box solution to get your resume online. Built on WordPress's custom post types, it offers a uniquely familiar approach to publishing
 
@@ -88,6 +88,10 @@ Please see (and feel free to contribute to) the [Frequently Asked Questions Wiki
 ![Resume menu in wp-admin sidebar](http://s.wordpress.org/extend/plugins/wp-resume/screenshot-3.png)
 
 == Changelog ==
+
+= 2.5.6 = 
+* Updated translations
+* Project is looking for contributors and maintainers! [halp?](https://github.com/benbalter/WP-Document-Revisions)
 
 = 2.5.5 =
 * Better PHP 5.4 compatibility
@@ -298,6 +302,9 @@ Please see (and feel free to contribute to) the [Frequently Asked Questions Wiki
 * Initial Alpha Release
 
 == Upgrade Notice ==
+
+= 2.5.6 =
+Updated translations; Project is looking for contributors and maintainers! [halp?](https://github.com/benbalter/WP-Document-Revisions)
 
 = 2.1 =
 Bug fixes for dragdrop interface and URL rewriting
