@@ -748,6 +748,8 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 
 		//determine author and set as global so templates can read
 		$this->author = $this->get_author( $atts );
+        $user = get_user_by('slug', $this->author);
+        $this->author_id = $user->id; 
 
 		//allow shortcode to accept section argument
 		$section = $this->get_section( $atts );
@@ -983,9 +985,10 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 		} else {
 
 			$this->author = $matches[1];
+            $user = get_userdata('slag', $this->author);
 
 		}
-
+        $this->author_id = $user->id;
 		$this->author = $this->api->apply_filters( 'author', $this->author );
 
 		return $this->author;
