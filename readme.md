@@ -82,6 +82,10 @@ Please see (and feel free to contribute to) the [Frequently Asked Questions Wiki
 
 ## Changelog ##
 
+## 2.5.6 ##
+* Updated translations
+* Project is looking for contributors and maintainers! [halp?](https://github.com/benbalter/WP-Document-Revisions)
+
 ### 2.5.5 ###
 * Better PHP 5.4 compatibility
 * Better prevention of javascript conflicts with other plugins on options page
@@ -291,6 +295,9 @@ Please see (and feel free to contribute to) the [Frequently Asked Questions Wiki
 * Initial Alpha Release
 
 ## Upgrade Notice ##
+
+### 2.5.6 ###
+Updated translations; Project is looking for contributors and maintainers! [halp?](https://github.com/benbalter/WP-Document-Revisions)
 
 ### 2.1 ###
 Bug fixes for dragdrop interface and URL rewriting

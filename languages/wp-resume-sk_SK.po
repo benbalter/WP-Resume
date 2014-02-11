@@ -1,494 +1,494 @@
-# Translation of WP Resume in French (France)
+# Translation of WP Resume in Slovak
 # This file is distributed under the same license as the WP Resume package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2013-07-03 13:31:26+0000\n"
+"PO-Revision-Date: 2013-07-03 13:31:11+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: GlotPress/0.1\n"
 "Project-Id-Version: WP Resume\n"
 
 msgid "http://ben.balter.com/2010/09/12/wordpress-resume-plugin/"
-msgstr "http://ben.balter.com/2010/09/12/wordpress-resume-plugin/"
+msgstr "http://Ben.balter.com/2010/09/12/WordPress-Resume-plugin/"
 
 msgid "Out-of-the-box plugin which utilizes custom post types and taxonomies to add a snazzy resume to your personal blog or Web site."
-msgstr "Le plugin \"Out-of-the-box\" qui utilise des types d'articles personnalisés et des catégories pour rajouter d'excellents Curriculum Vitae à votre Blog ou à votre Site Web."
+msgstr "Out-of--box plugin, ktorý využíva vlastné post typy a taxonómie pridať snazzy životopis na vaše osobné blog alebo webovú stránku."
 
 msgid "Benjamin J. Balter"
-msgstr "Benjamin J. Balter"
+msgstr "Benjamin J. Balterová"
 
 msgid "http://ben.balter.com/"
-msgstr "http://ben.balter.com/"
+msgstr "http://Ben.balter.com/"
 
 #: includes/admin.php:204
 msgid "Section"
-msgstr "Section"
+msgstr "Sekcia"
 
 #: includes/admin.php:207
 msgid "Organization"
-msgstr "Organisme"
+msgstr "Organizácia"
 
 #: includes/admin.php:210
 msgid "Date"
-msgstr "Date"
+msgstr "Dátum"
 
 #: includes/admin.php:213 templates/options.php:81
 msgid "Resume Order"
-msgstr "Ordre du Curriculum Vitae"
+msgstr "Životopis objednávky"
 
 #: includes/admin.php:417 templates/options.php:7 wp-resume.php:485
 msgid "Resume Options"
-msgstr "Options du Curriculum Vitae"
+msgstr "Životopis možnosti"
 
 #: includes/admin.php:417
 msgid "Options"
-msgstr "Options"
+msgstr "Možnosti"
 
 #: includes/admin.php:774 templates/order_box.php:9
 msgid "More"
-msgstr "Plus"
+msgstr "Viac"
 
 #: includes/admin.php:775
 msgid "less"
-msgstr "Moins"
+msgstr "menej"
 
 #: includes/admin.php:776 templates/options.php:25
 msgid "Yes!"
-msgstr "Oui!"
+msgstr "áno!"
 
 #: includes/admin.php:777
 msgid "No."
-msgstr "N°"
+msgstr "nie."
 
 #: includes/admin.php:778
 msgid "Hide Advanced Options"
-msgstr "Masquer les Options Avancées"
+msgstr "Skryť ďalšie možnosti"
 
 #: includes/admin.php:779 templates/options.php:93
 msgid "Show Advanced Options"
-msgstr "Afficher les Options Avancées"
+msgstr "Zobraziť rozšírené možnosti"
 
 #: includes/admin.php:780
 msgid "The name of the organization as you want it to appear"
-msgstr "Le nom de l'organisme comme vous aimeriez le voir apparaître"
+msgstr "Názov organizácie ako vám má zobraziť"
 
 #: includes/admin.php:781
 msgid "Traditionally the location of the organization (optional)"
-msgstr "Lieu de l'organisme (facultatif)"
+msgstr "Tradične umiestnenie organizácie (voliteľné)"
 
 #: includes/admin.php:782
 msgid "Please make sure that the position is associated with a section before saving"
-msgstr "Prière d'être sure que la position est associée avec un position avant de sauvegarder"
+msgstr "Uistite sa, že pozícia je spojená s časť pred uložením"
 
 #: includes/boilerplate-classes/api.php:54
 msgid "Use the action hook \"%s\" instead."
-msgstr "Utiliser l'action d'extension \"%s\" à la place."
+msgstr "Použiť háčik \"%s\" akcia&quot; miesto."
 
 #: includes/boilerplate-classes/api.php:54
 #: includes/boilerplate-classes/api.php:93
 msgid "%1$s of %2$s"
-msgstr "%1$s de %2$s"
+msgstr "%1$ s %2$ s"
 
 #: includes/boilerplate-classes/api.php:93
 msgid "Use the filter \"%s\" instead."
-msgstr "Utiliser le filtre \"%s\" à la place."
+msgstr "Použiť filter \"%s\" miesto."
 
 #: includes/templating.php:35
 msgid " (Anticipated)"
-msgstr "(Anticipé(e))"
+msgstr " (Očakávaný)"
 
 #: includes/templating.php:249
 msgid "Present"
-msgstr "Parent"
+msgstr "Súčasnosť"
 
 #: templates/date_box.php:6
 msgid "From"
-msgstr "Depuis"
+msgstr "Od"
 
 #: templates/date_box.php:7
 msgid "e.g., May 2011"
-msgstr "exp., Mai 2011"
+msgstr "napr, máj 2011"
 
 #: templates/date_box.php:9
 msgid "To"
-msgstr "A"
+msgstr "Na"
 
 #: templates/date_box.php:10
 msgid "e.g., Present"
-msgstr "exp., Présent"
+msgstr "napr, prezentovať"
 
 #: templates/donate.php:11
 msgid "Support"
-msgstr "Support"
+msgstr "Podpora"
 
 #: templates/donate.php:14
 msgid "Enjoy using %1$s? Please consider <a href=\"%2$s\">making a small donation</a> to support the software's continued development."
-msgstr "Vous aimez %1$s? Prière de faire <a href=\"%2$s\">un don</a> pour aider au développement de cette application."
+msgstr "Si pomocou %1$ s? <a href=&quot;\"%2$s\"&quot;>Prosím zvážte malý dar</a>> na podporu softvéru, pokračujúce rozvoja."
 
 #: templates/donate.php:15
 msgid "hide this message"
-msgstr "Masquer ce message"
+msgstr "Skryť túto správu"
 
 #: templates/link_field.php:9 templates/link_field.php:14
 msgid "Link"
-msgstr "Lien"
+msgstr "Odkaz"
 
 #: templates/link_field.php:18
 msgid "(optional) The link to the organization's home page"
-msgstr "Le lien vers le site web de l'organisme (facultatif)"
+msgstr "(voliteľné) Odkaz na domovskej stránky organizácie"
 
 #: templates/options.php:13
 msgid "Usage"
-msgstr "Usage"
+msgstr "Využitie"
 
 #: templates/options.php:15
 msgid "To use WP Resume..."
-msgstr "Pour utiliser WP Resume..."
+msgstr "Používať WP životopis..."
 
 #: templates/options.php:17
 msgid "Add content to your resume through the menus on the left"
-msgstr "Ajouter du contenu à votre Curriculum Vitae à travers le menu de gauche"
+msgstr "Pridať obsah do životopisu cez menu na ľavej strane"
 
 #: templates/options.php:18
 msgid "If you wish, add your name, contact information, summary, and order your resume below"
-msgstr "Si vous le voulez, ajouter votre nom, informations de contacts, résumé, et ordonner votre Curriculum Vitae ci-dessous"
+msgstr "Ak chcete, pridať svoje meno, kontaktné informácie, Zhrnutie a poradie vaše životopis nižšie"
 
 #: templates/options.php:19
 msgid "Create a new page as you would normally"
-msgstr "Créer une nouvelle page comme vous le faites souvent"
+msgstr "Vytvorí novú stranu, ako by ste normálne"
 
 #: templates/options.php:20
 msgid "Add the text <code>[wp_resume]</code> to the page's body"
-msgstr "Ajouter le code suivant <code>[wp-resume]</code> dans le corps de votre page."
+msgstr "Pridať text <code>[wp_resume]</code> stránky orgánu"
 
 #: templates/options.php:21
 msgid "Your resume will now display on that page"
-msgstr "Votre Curriculum Vitae sera affiché maintenant sur cette page"
+msgstr "Váš životopis sa teraz bude zobrazovať na tejto stránke"
 
 #: templates/options.php:25
 msgid "Want to have multiple resumes on your site?"
-msgstr "Voulez-vous avoir plusieurs Curriculum Vitae sur votre site ?"
+msgstr "Chcete mať viaceré životopisy na vašich stránkach?"
 
 #: templates/options.php:27
 msgid "WP Resume associates each resume with a user. To create a second resume..."
-msgstr "WP Resume associera à chaque utilisateur un Curriculum Vitae. Pour créer un second Curriculum Vitae ..."
+msgstr "WP životopis associates každý životopis s používateľom. Vytvoriť druhý životopis..."
 
 #: templates/options.php:29
 msgid "Simply <a href=\"user-new.php\">add a new user</a> (or select an existing user in step two)"
-msgstr "Simplement <a href=\"user-new.php\">ajouter un nouvel utilisateur</a> (ou bien choisissez un utilisateur dans l'étape 2)"
+msgstr "Stačí <a href=&quot;\"user-new.php\"&quot;>Pridať nového používateľa</a> (alebo vyberte existujúciužívateľ v druhom kroku)"
 
 #: templates/options.php:30
 msgid "Add positions</a> as you would normally, being sure to select that user as the position's author. You may need to display the author box by enabling it in the \"Screen Options\" toggle in the top-right corner of the position page"
-msgstr "Ajouter des positions</a> comme vous le faites souvent, en étant sure que vous désignez la position de cet utlisateur comme étant Auteur. Vous devez peut être afficher la boite Auteur en l'activant dans \"Options écran\" a basculer dans le coin haut-droit dans la page des positions"
+msgstr "Pridať pozície, ako by ste normálne, nezabudnite začiarknuť daného používateľa akopostavenie autora. Musíte Zobraziť pole Autor zabezpečíte tým, že v \"Screen Options\" prepnúť v pravom hornom rohu stránky pozíciu"
 
 #: templates/options.php:31
 msgid "Select the author from the drop down below and fill in the name, contact info, and summary fields (optional)"
-msgstr "Sélectionnez l'auteur depuis le menu déroulant suivant et remplir le nom avec le nom, informations de Contacts, et le champs Résumé (facultatif)"
+msgstr "Nadol vyberte autor z rozbaľovacieho nižšie a vyplňte názov, kontakt info a sumárnych polí (voliteľné)"
 
 #: templates/options.php:32
 msgid "Create a new page</a> and add the <code>[wp_resume]</code> shortcode, similar to above, but set the page author to the resume's author (the author from step two). Again, you may need to enable the author box"
-msgstr "Créaer une nouvelle page</a> et ajouter le <em>code</em> <code>[wp-resume]</code>, similaire au suivant, mais fixez la page de l'auteur au Curriculum Vitae de ce dernier (l'auteur depuis l'étape 2). Encore, vous devez peut être activer la boite des auteurs."
+msgstr "Vytvoriť novú stránku a pridať <code>[wp_resume]</code> krátky,Podobne ako vyššie, ale nastaviť stránku autora na životopis autora (autor z kroku dva). Znova, možno budete musieť povoliť poľa autor"
 
 #: templates/options.php:34
 msgid "Note"
-msgstr "Notes"
+msgstr "Poznámka"
 
 #: templates/options.php:34
 msgid "To embed multiple resumes on the same page, you can alternatively use the syntax <code>[wp_resume user=\"user_nicename\"]</code> where <code>user_nicename</code> is the username of the resume's author"
-msgstr "Pour intégrer plusieurs Curriculum Vitae sur une même page, vous pouvez alternativement utiliser la syntaxe <code>[wp_resume user=\"user_nicename\"]</code> où <code>user_nicename</code> est le nom d'utilisateur de l'auteur."
+msgstr "Ak chcete vložiť viaceré životopisy na rovnakej stránke, môžete alternatívne použiť Syntax <code>[wp_resume user=\"user_nicename\"]</code> kde<code>user_nicename</code>je meno používateľa životopis autora"
 
 #: templates/options.php:43
 msgid "User"
-msgstr "Utilisateur"
+msgstr "Používateľ"
 
 #: templates/options.php:51 templates/org_helptext.php:8
 msgid "Name"
-msgstr "Nom"
+msgstr "meno"
 
 #: templates/options.php:54
 msgid "Your name -- displays on the top of your resume"
-msgstr "Votre nom -- sera affiché en haut de votre  Curriculum Vitae"
+msgstr "Vaše meno--zobrazuje na vrchole svoj životopis"
 
 #: templates/options.php:58
 msgid "Contact Information"
-msgstr "Informations de Contacts"
+msgstr "Kontaktné informácie"
 
 #: templates/options.php:67
 msgid "Add Field"
-msgstr "Ajouter un champs"
+msgstr "Pridať pole"
 
 #: templates/options.php:68
 msgid "(optional) Add any contact info you would like included in your resume"
-msgstr "(facultatif) Ajouter n'importe quelle information de Contacts que vous voulez inclure dans votre Curriculum Vitae"
+msgstr "(voliteľné) Pridať nejaký kontakt, by ste súčasťou svoj životopis"
 
 #: templates/options.php:72
 msgid "Summary"
-msgstr "Résumé"
+msgstr "Zhrnutie"
 
 #: templates/options.php:77
 msgid "(optional) Plain-text summary of your resume, professional goals, etc. Will appear on your resume below your contact information before the body"
-msgstr "(facultatif) Résumé de votre Curriculum Vitae en texte brut, vos buts professionnels, etc. Apparaiteront sur votre Curriculum Vitae après les informations de Contacts avant le texte."
+msgstr "(voliteľné) Plain-textové Zhrnutie váš životopis, profesijné ciele, atď. Bude objaviť na váš životopis nižšie Vaše kontaktné údaje pred telo"
 
 #: templates/options.php:84
 msgid "New positions are automatically displayed in reverse chronological order, but you can fine tune that order by rearranging the elements in the list above"
-msgstr "Les nouvelles positions seront automatiquement affichées en ordre chronologique inverse, mais vous pouvez améliorer cet ordre en réarrangeant les éléments dans la liste suivante"
+msgstr "Nové pozície sa automaticky zobrazujú v obrátenom chronologickom poradí, ale môžete doladiť príkazu tým, že preskupením prvky v zozname nad"
 
 #: templates/options.php:90
 msgid "Advanced Options"
-msgstr "Options Avancées"
+msgstr "Rozšírené možnosti"
 
 #: templates/options.php:97
 msgid "Force IE HTML5 Support"
-msgstr "Forcer IE au support de HTML5"
+msgstr "Sila IE HTML5 podporu"
 
 #: templates/options.php:99 templates/options.php:107 templates/options.php:115
 msgid "Yes"
-msgstr "Oui"
+msgstr "áno"
 
 #: templates/options.php:100 templates/options.php:108
 #: templates/options.php:116
 msgid "No"
-msgstr "Non"
+msgstr "nie"
 
 #: templates/options.php:101
 msgid "If Internet Explorer breaks your resume's formatting, conditionally including a short Javascript file should force IE to recognize html5 semantic tags"
-msgstr "Si Internet Explorer déforme le formatage de votre Curriculum Vitae, alors inclure un fichier javascript qui doit forcer IE à reconnaitre les balises HTML5"
+msgstr "Ak program Internet Explorer prestávky svoj životopis formátovanie, podmienečne vrátane krátke Javascript súboru by mala prinútiť IE rozpoznať html5 sémantické Tagy"
 
 #: templates/options.php:105
 msgid "Hide Page Title"
-msgstr "Masquer le titre de la page"
+msgstr "Skryť Nadpis strany"
 
 #: templates/options.php:109
 msgid "Hides the standard page title on pages (or posts) containing the <code>[wp_resume]</code> shortcode by adding a <code>hide-title</code> class"
-msgstr "Masque le titre standard des pages (ou articles) qui contiennent le code <code>[wp_resume]</code> en ajoutant une classe <code>hide-title</code>"
+msgstr "Skryje názov stránky štandardných strán (alebo príspevky), obsahujúce<code></code>[wp_resume] krátky pridaním <code>hide-title</code> triedy"
 
 #: templates/options.php:113
 msgid "Enable URL Rewriting"
-msgstr "Activer la réécriture des URLs"
+msgstr "Povoliť prepisovanie URL"
 
 #: templates/options.php:117
 msgid "Creates individual pages for each position, and index pages for each section and organization"
-msgstr "Créer des pages individuelles pour chaque position, et indexer les pages pour chaque position et organisme"
+msgstr "Vytvára pre každé jednotlivé stránky a index stránky pre každú sekciu a organizácia"
 
 #: templates/options.php:121
 msgid "Customizing WP Resume"
-msgstr "Personnaliser WP Resume"
+msgstr "Prispôsobenie WP životopis"
 
 #: templates/options.php:123
 msgid "Style Sheets"
-msgstr "Feuilles de style"
+msgstr "Šablóny so štýlmi"
 
 #: templates/options.php:124
 msgid "Although some styling is included by default, you can customize the layout by modifying <a href=\"theme-editor.php\">your theme's stylesheet</a>"
-msgstr "Aussi, et pour personnaliser le style par défaut, vous pouvez éditer le fichier de <a href=\"theme-editor.php\">style du thème</a>"
+msgstr "Aj keď niektoré styling je zahrnuté v predvolenom nastavení, môžete prispôsobiť rozloženie zmenou <a href=&quot;\"theme-editor.php\"&quot;>vášho téme stylopis</a>"
 
 #: templates/options.php:126
 msgid "Templates"
-msgstr "Thèmes"
+msgstr "Šablóny"
 
 #: templates/options.php:127
 msgid "Any WP Resume template file (resume.php, resume-style.css, resume-text.php, etc.) found in your theme's directory will override the plugin's included template. Feel free to copy the file from the plugin directory into your theme's template directory and modify the file to meet your needs"
-msgstr "N'importe quel fichier de thème de WP Resume (resume.php, resume-style.css, resume-text.php, etc.) trouvé dans le répertoire du thème du site en cours sera pris en considération et sera utilisé à la place du fichier par défaut. Vous pouvez copier et mettre ces fichiers dans votre thème et les modifier à souhait."
+msgstr "Akýkoľvek súbor WP Resume šablóny (resume.php, životopis-style.css, životopis-text.php, atď.) nájdené vaše tému adresára bude prepísať plugin je v cene Šablóna. Neváhajte a skopírovať súbor z adresára plugin do vášho motívu šablónu adresár a súbor upravte, aby vyhovoval vašim potrebám"
 
 #: templates/options.php:129
 msgid "Feeds"
-msgstr "Remarques"
+msgstr "Kanály"
 
 #: templates/options.php:130
 msgid "WP Resume allows you to access your data in three machine-readable formats. By default, the resume outputs in an <a href=\"http://microformats.org/wiki/hresume\">hResume</a> compatible format. A JSON feed can be generated by appending <code>?feed=json</code> to your resume page's URL and a plain-text alternative (useful for copying and pasting into applications and forms) is available by appending <code>?feed=text</code> to your resume page's URL"
-msgstr "WP Resume vous permet d'avoir accès à vos données dans 3 formats différents. Par défaut, le Curriculum Vitae s'affiche dans le format compatible à <a href=\"http://microformats.org/wiki/hresume\">hResume</a>. Un flux JSON peut être généré en analysant le code <code>?feed=json</code> dans l'url de la page de votre Curriculum Vitae. La même astuce mais en utilisant cette fois-ci le code <code>?feed=text</code> permet de récupérer des données au format texte brut."
+msgstr "WP životopis umožňuje prístup k vašim údajom v troch formátoch strojovo. Predvolene životopis výstupy v < href=\"http://microformats.org/wiki/hresume\" &quot;> formát kompatibilný s hResume. Môžu byť generované JSON krmivoPridanie <code>?feed=json</code> URL stránky váš životopis a plain-textalternatíva (užitočné pre kopírovanie a vkladanie do žiadostí a formulárov) k dispozícii pridaním <code>?feed=text</code> váš životopis stránky URL"
 
 #: templates/options.php:137
 msgid "Save Changes"
-msgstr "Sauvegarder changements"
+msgstr "Uložiť zmeny"
 
 #: templates/order_box.php:6
 msgid "Order"
-msgstr "Order"
+msgstr "Objednávky"
 
 #: templates/order_box.php:9
 msgid "Your resume will be sorted based on this number (ascending)"
-msgstr "Votre Curriculum Vitae sera trié selon son numéro (du plus petit au plus grand)"
+msgstr "Váš životopis budú usporiadané na základe tohto čísla (vzostupne)"
 
 #: templates/order_box.php:10
 msgid "When you add a new position, feel free to leave this number at \"0\" and a best guess will be made based on the position's end date (reverse chronological order)"
-msgstr "Quand vous ajoutez une position, vous êtes libre de laisser ce nombre à \"0\" et ainsi la procédure s'appuiera sur la date de fin de la position (ordre chronologique inverse)"
+msgstr "Keď pridáte novú pozíciu, neváhajte a opustiť toto číslo v \"0\" a najlepšieho vedomia a svedomia sa uskutoční na základe pozície koncový dátum (reverse chronologicky)"
 
 #: templates/order_box.php:10
 msgid "Of Course, you can always <a href=\"edit.php?post_type=wp_resume_position&page=wp_resume_options#sections\">fine tune your resume order</a> on the options page"
-msgstr "Biensur, vous pouvez toujours <a href=\"edit.php?post_type=wp_resume_position&page=wp_resume_options#sections\">améliorer votre Curriculum Vitae</a> dans les options des pages"
+msgstr "Samozrejme, môžete vždy < href=\"edit.php?post_type = wp_resume_position &amp; page = wp_resume_options #sections\" &quot;> vyladiť životopis objednávku na stránke možnosti"
 
 #: templates/org_helptext.php:7
 msgid "Help"
-msgstr "Aide"
+msgstr "pomoc"
 
 #: templates/org_helptext.php:8
 msgid "The name of the organization"
-msgstr "Le nom de l'organisme"
+msgstr "Názov organizácie"
 
 #: templates/org_helptext.php:9
 msgid "Parent"
-msgstr "Parent"
+msgstr "Rodič"
 
 #: templates/org_helptext.php:9
 msgid "Do not add a parent"
-msgstr "Ne pas ajouter un parent"
+msgstr "Nepridávajte rodič"
 
 #: templates/org_helptext.php:10
 msgid "Description"
-msgstr "Description"
+msgstr "Popis"
 
 #: templates/org_helptext.php:10
 msgid "You can put the location of the organization here (optional)"
-msgstr "Vous pouvez mettre le lieu de l'organisme ici (facultatif)"
+msgstr "Môžete dať umiestnenie organizácie tu (nepovinné)"
 
 #: templates/taxonomy_box.php:13
 msgid "None"
-msgstr "Aucun"
+msgstr "Žiadny"
 
 #: templates/taxonomy_box.php:19
 msgid "Location"
-msgstr "Lieu"
+msgstr "Umiestnenie"
 
 #: templates/upgrade-wp.php:7
 msgid "%s requires WordPress version %s or greater. Please disable the plugin or upgrade your WordPress install."
-msgstr "%s requiert WordPress avec la version %s ou plus. Prière de désactiver le plugin ou de mettre à jour WordPress."
+msgstr "%s vyžaduje WordPress verzia %s alebo väčšia. Prosím Zakázať plugin alebo upgrade vášho WordPress inštalovať."
 
 #: wp-resume.php:128
 msgctxt "post type general name"
 msgid "Positions"
-msgstr "Positions"
+msgstr "Pozície"
 
 #: wp-resume.php:129
 msgctxt "post type singular name"
 msgid "Resume Position"
-msgstr "Position du Curriculum Vitae"
+msgstr "Životopis pozície"
 
 #: wp-resume.php:130 wp-resume.php:131
 msgid "Add New Position"
-msgstr "Ajouter une nouvelle position"
+msgstr "Pridať novú pozíciu"
 
 #: wp-resume.php:132
 msgid "Edit Position"
-msgstr "Modifier position"
+msgstr "Upraviť pozíciu"
 
 #: wp-resume.php:133
 msgid "New Position"
-msgstr "Nouvelle position"
+msgstr "Novú pozíciu"
 
 #: wp-resume.php:134
 msgid "View Position"
-msgstr "Afficher position"
+msgstr "Zobraziť polohu"
 
 #: wp-resume.php:135
 msgid "Search Positions"
-msgstr "Rechercher dans les positions"
+msgstr "Vyhľadávanie pozícií"
 
 #: wp-resume.php:136
 msgid "No Positions Found"
-msgstr "Aucune position trouvée"
+msgstr "Žiadne pozície našiel"
 
 #: wp-resume.php:137
 msgid "No Positions Found in Trash"
-msgstr "Aucune position trouvée dans la corbeille"
+msgstr "Žiadne pozície našiel v koši"
 
 #: wp-resume.php:139
 msgid "Resume"
-msgstr "Curriculum Vitae"
+msgstr "Životopis"
 
 #: wp-resume.php:140
 msgid "All Positions"
-msgstr "Toutes les positions"
+msgstr "Všetky pozície"
 
 #: wp-resume.php:169
 msgctxt "taxonomy general name"
 msgid "Sections"
-msgstr "Sections"
+msgstr "Sekcie"
 
 #: wp-resume.php:170
 msgctxt "taxonomy singular name"
 msgid "Section"
-msgstr "Section"
+msgstr "Sekcia"
 
 #: wp-resume.php:171
 msgid "Search Sections"
-msgstr "Rechercher dans les sections"
+msgstr "Hľadať sekcie"
 
 #: wp-resume.php:172
 msgid "All Sections"
-msgstr "Toutes les sections"
+msgstr "Všetky sekcie"
 
 #: wp-resume.php:173
 msgid "Parent Section"
-msgstr "Section parente"
+msgstr "Nadradená sekcia"
 
 #: wp-resume.php:174
 msgid "Parent Section:"
-msgstr "Section parente:"
+msgstr "Nadradená sekcia:"
 
 #: wp-resume.php:175
 msgid "Edit Section"
-msgstr "Modifier section"
+msgstr "Upraviť sekciu"
 
 #: wp-resume.php:176
 msgid "Update Section"
-msgstr "Mettre à jour position"
+msgstr "Update sekcia"
 
 #: wp-resume.php:177
 msgid "Add New Section"
-msgstr "Ajouter nouvelle section"
+msgstr "Pridať novú sekciu"
 
 #: wp-resume.php:178
 msgid "New Section Name"
-msgstr "Nom de la nouvelle section"
+msgstr "Nový názov sekcie"
 
 #: wp-resume.php:200
 msgctxt "taxonomy general name"
 msgid "Organizations"
-msgstr "Organismes"
+msgstr "Organizácie"
 
 #: wp-resume.php:201
 msgctxt "taxonomy singular name"
 msgid "Organization"
-msgstr "Organisme"
+msgstr "Organizácia"
 
 #: wp-resume.php:202
 msgid "Search Organizations"
-msgstr "Rechercher dans les Organismes"
+msgstr "Hľadať organizácie"
 
 #: wp-resume.php:203
 msgid "All Organizations"
-msgstr "Tous les organismes"
+msgstr "Všetky organizácie"
 
 #: wp-resume.php:204
 msgid "Parent Organization"
-msgstr "Organisme parent"
+msgstr "Materská organizácia"
 
 #: wp-resume.php:205
 msgid "Parent Organization:"
-msgstr "Organisme parent:"
+msgstr "Materská organizácia:"
 
 #: wp-resume.php:206
 msgid "Edit Organization"
-msgstr "Modifier organisme"
+msgstr "Upraviť organizáciu"
 
 #: wp-resume.php:207
 msgid "Update Organization"
-msgstr "Mettre à jour organisme"
+msgstr "Aktualizácia organizácie"
 
 #: wp-resume.php:208
 msgid "Add New Organization"
-msgstr "Ajouter une nouvel organisme"
+msgstr "Pridať novú organizáciu"
 
 #: wp-resume.php:209
 msgid "New Organization Name"
-msgstr "Nom de la nouvel organisme"
+msgstr "Nový názov organizácie"
 
 #: wp-resume.php:478
 msgid "Edit Resume"
-msgstr "Modifier Curriculum Vitae"
+msgstr "Upravte životopis"
 
 #: wp-resume.php:575
 msgid "E-Mail"
@@ -496,31 +496,31 @@ msgstr "E-Mail"
 
 #: wp-resume.php:576
 msgid "Phone"
-msgstr "Téléphone"
+msgstr "Telefón"
 
 #: wp-resume.php:577
 msgid "Other"
-msgstr "Autre"
+msgstr "Ostatné"
 
 #: wp-resume.php:579
 msgid "Street Address"
-msgstr "Adresse postale"
+msgstr "Adresu ulice"
 
 #: wp-resume.php:580
 msgid "City/Locality"
-msgstr "Ville/Localité"
+msgstr "Meste/mieste"
 
 #: wp-resume.php:581
 msgid "State/Region"
-msgstr "Etat/Région"
+msgstr "Štát/región"
 
 #: wp-resume.php:582
 msgid "Zip/Postal Code"
-msgstr "Code postal"
+msgstr "Poštové smerovacie číslo"
 
 #: wp-resume.php:583
 msgid "Country"
-msgstr "Pays"
+msgstr "Krajiny"
 
 msgid "WP Resume"
-msgstr "Curriculum Vitae"
+msgstr "WP životopis"
