@@ -8,6 +8,7 @@
 class WP_Resume_Plaintext {
 
 	private $parent;
+	public $author_id;
 
 	/**
 	 * Register Init Hook
@@ -16,6 +17,7 @@ class WP_Resume_Plaintext {
 	function __construct( &$parent ) {
 
 		$this->parent = $parent;
+		$this->author_id = &$parent->author_id;
 
 		add_action( 'parse_query', array( &$this, 'init' ) );
 	}
@@ -54,7 +56,7 @@ class WP_Resume_Plaintext {
 	function contact_info( $author = null ) {
 
 		$author = $this->parent->get_author( $author );
-		$contact_info = $this->parent->options->get_user_option( 'contact_info', $author );
+		$contact_info = $this->parent->options->get_user_option( 'contact_info', $this->author_id);
 
 		array_walk_recursive( $contact_info, array( &$this, 'contact_info_walker' ) );
 
