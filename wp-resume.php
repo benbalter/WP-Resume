@@ -87,7 +87,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 
 		//init
 		add_action( 'wp_resume_init', array( &$this, 'init' ) );
-		
+
 		//back compat
 		add_filter( 'wp_resume_load_deprecated', '__return_false' );
 
@@ -99,20 +99,20 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 	function init() {
 
 		//default fields and values
-		$this->options->defaults = array( 
+		$this->options->defaults = array(
 			'fix_ie'     => true,
 			'rewrite'    => false,
 			'hide-title' => false
 		);
 
-		$this->options->user_defaults = array( 
+		$this->options->user_defaults = array(
 			'name'         => '',
 			'summary'      => '',
 			'contact_info' => array(),
 			'order'        => array(),
 			'hide-donate'  => false
 		);
-		
+
 		//user overridable templates
 		$this->template->overrides = array( 'resume', 'resume-text', 'resume-json' );
 
@@ -182,18 +182,18 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 			'new_item_name'     => __( 'New Section Name', 'wp-resume' ),
 		);
 
-		$args = $this->api->apply_filters( 'section_ct', array( 
-			'hierarchical' => true, 
-			'labels' => $labels,  
-			'query_var' => true, 
-			'rewrite' => ( $rewrite ) ? array( 'slug' => 'sections' ) : false, 
-			'capabilities' => array( 
+		$args = $this->api->apply_filters( 'section_ct', array(
+			'hierarchical' => true,
+			'labels' => $labels,
+			'query_var' => true,
+			'rewrite' => ( $rewrite ) ? array( 'slug' => 'sections' ) : false,
+			'capabilities' => array(
 				'manage_terms'  => 'manage_resume_sections',
 				'edit_terms'    => 'edit_resume_sections',
 				'delete_terms'  => 'delete_resume_sections',
 				'assign_terms ' => 'assign_resume_sections',
 				),
-			) 
+			)
 		);
 
 		//Register section taxonomy
@@ -213,18 +213,18 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 			'new_item_name'     => __( 'New Organization Name', 'wp-resume' ),
 		);
 
-		$args = $this->api->apply_filters( 'organization_ct', array( 
-					'hierarchical' => true, 
-					'labels'       => $labels,  
-					'query_var'    => true, 
+		$args = $this->api->apply_filters( 'organization_ct', array(
+					'hierarchical' => true,
+					'labels'       => $labels,
+					'query_var'    => true,
 					'rewrite'      => ( $rewrite ) ? array( 'slug' => 'organizations' ) : false,
-					'capabilities' => array( 
+					'capabilities' => array(
 						'manage_terms'  => 'manage_resume_organizations',
 						'edit_terms'    => 'edit_resume_organizations',
 						'delete_terms'  => 'delete_resume_organizations',
 						'assign_terms ' => 'assign_resume_organizations',
 					),
-				) 
+				)
 			);
 
 		//Register organization taxonomy
@@ -277,7 +277,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 	function section_order_filter( $terms, $taxonomies, $args ) {
 
 		global $post;
-		
+
 		if ( $taxonomies != array( 'wp_resume_section' ) )
 			return $terms;
 
@@ -285,14 +285,14 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 			return $terms;
 
 		$author = get_user_by( 'slug', $this->author );
-	
+
 		if ( !$author && is_admin() ) {
-			
+
 			if ( is_null( $post ) ) //if we don't have a post obj. kick to original
 				return $terms;
 
 			$author = get_user_by( 'id', $post->post_author );
-		
+
 		}
 
 		$order = $this->options->get_user_option( 'order', $author->ID );
@@ -430,7 +430,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 	 */
 	function flush_cache() {
 		global $wp_object_cache;
-		unset( $wp_object_cache->cache['wp_resume']);
+		$wp_object_cache->flush('wp_resume');
 	}
 
 
@@ -515,7 +515,7 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 
 		if ( !$this->resume_in_query() )
 			return;
-			
+
 		if ( file_exists ( get_stylesheet_directory() . '/resume-style.css' ) ) {
 			wp_enqueue_style('wp-resume-custom-stylesheet', get_stylesheet_directory_uri() . '/resume-style.css' );
 			add_filter( 'wp_resume_enqueue_css', array( &$this, 'dont_enqueue_default_css' ), 10, 3 );
@@ -524,22 +524,22 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 		add_filter( 'post_class', array( &$this, 'add_post_class' ) );
 
 	}
-	
+
 	/**
 	 * If user has a custom css file, enqueue that, instead of our own
 	 */
 	function dont_enqueue_default_css( $default, $file, $type ) {
-	
+
 		if ( $type != 'front-end' )
 			return $default;
-			
+
 		if ( $file == 'resume-style.css' )
 			return false;
-			
+
 		return $default;
-		
+
 	}
-	
+
 	/**
 	 * Filter to conditionally enqueue HTML5 shiv if enabled
 	 */
@@ -547,17 +547,17 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 
 		if ( $name != 'front-end' )
 			return $default;
-			
+
 		if ( $file != 'html5.js' )
 			return $default;
 
 		if ( !$this->options->fix_ie )
 			return $default;
-			
+
 		if ( !$this->resume_in_query() )
 			return false;
-			
-		return true;		
+
+		return true;
 	}
 
 
@@ -742,20 +742,20 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 	 * @since 1.3
 	 */
 	function shortcode( $atts ) {
-	
+
 		$defaults = array( 'user' => null, 'section' => null );
 		$atts = shortcode_atts( $defaults, $atts );
 
 		//determine author and set as global so templates can read
 		$this->author = $this->get_author( $atts );
         $user = get_user_by('slug', $this->author);
-        $this->author_id = get_the_author_meta('ID'); 
+        $this->author_id = get_the_author_meta('ID');
 
 		//allow shortcode to accept section argument
 		$section = $this->get_section( $atts );
 
 		ob_start();
-		$this->api->do_action( 'shortcode_pre' ); 
+		$this->api->do_action( 'shortcode_pre' );
 
 		if ( !( $resume = $this->cache->get( $this->author . '_resume' . $section ) ) ) {
 			$this->template->resume( );
@@ -781,14 +781,14 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 	 * @return array the filtered section array
 	 */
 	function section_shortcode_filter( $sections ) {
-		
+
 		if ( $this->section == null )
 			return $sections;
-		
+
 		$sections = wp_list_filter( $sections, array( 'term_id' => $this->section ) );
-				
+
 		return $sections;
-		
+
 	}
 
 	/**
@@ -873,35 +873,35 @@ class WP_Resume extends Plugin_Boilerplate_v_1 {
 		$user = get_userdata($post->post_author);
 		return $user->user_nicename;
 	}
-	
+
 	/**
 	 * Parses requested section, if any, from shortcode atts
 	 * @param array the shortcode atts
 	 * @return string the slug to suffix the cache with
 	 */
 	function get_section( $atts = array() ) {
-		
+
 		$this->section = null;
-		
+
 		if ( $atts['section'] == null )
 			return '';
-		
-		//if section *ID* is passed, must typecast it from string to int 
+
+		//if section *ID* is passed, must typecast it from string to int
 		// for term_exists to properly parse
-		if ( $atts['section'] == preg_replace( '([^0-9])', '',  $atts['section'] ) ) 
+		if ( $atts['section'] == preg_replace( '([^0-9])', '',  $atts['section'] ) )
 			$atts['section'] = (int) $atts['section'];
 
 		//verify section exists
 		if ( !( $section = term_exists( $atts['section'], 'wp_resume_section' ) ) )
 			return '';
-				
-		//store sectionID as property and add filter to get_sections()	
+
+		//store sectionID as property and add filter to get_sections()
 		$this->section = $section['term_id'];
 		add_filter( 'wp_resume_sections', array( &$this, 'section_shortcode_filter' ) );
-	
-		//return slug to suffix cache with		
+
+		//return slug to suffix cache with
 		return '_section_' . $section['term_id'];
-			
+
 	}
 
 
