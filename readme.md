@@ -53,7 +53,7 @@ The hardest part of getting your resume online should be doing the work listed o
 
 WP Resume groups your resume content into sections. Common sections might be "Experience", "Education", or "Awards".
 
-Within each section, your positions are grouped by organizations.  These are often places you've worked (e.g., Cogs, Inc.) or places you've studies (e.g., University U.). 
+Within each section, your positions are grouped by organizations.  These are often places you've worked (e.g., Cogs, Inc.) or places you've studies (e.g., University U.).
 
 **Each position has a title (e.g., Widget Specialist), details (e.g., increased bottom line by 25%), and dates of service (e.g., from:** May 2005, to:August 2009). Dates are not required, but the positions on your resume are sorted reverse chronologically by default (you can always manually arrange them on the options page).  
 
@@ -81,6 +81,9 @@ Please see (and feel free to contribute to) the [Frequently Asked Questions Wiki
 ![Resume menu in wp-admin sidebar](http://s.wordpress.org/extend/plugins/wp-resume/screenshot-3.png)
 
 ## Changelog ##
+
+## 2.5.7 ##
+* Fix for fatal error when saving options
 
 ## 2.5.6 ##
 * Updated translations
@@ -141,7 +144,7 @@ Please see (and feel free to contribute to) the [Frequently Asked Questions Wiki
 
 ### 2.2.2 ###
 * Additional refinement of upgrade path from certain older versions
- 
+
 ### 2.2.1 ###
 * Fixed bug where users upgrading from certain versions would receive an error upon reactivation.
 
@@ -249,7 +252,7 @@ Please see (and feel free to contribute to) the [Frequently Asked Questions Wiki
 * Removed stray hook which reset resume title to site title
 
 ### 1.41 ###
-* Fixed minor bug where activated would display a notice level warning if wp_debug was on 
+* Fixed minor bug where activated would display a notice level warning if wp_debug was on
 * Moved db_upgrade procedure to admin_init hook
 * Made sure db_upgrade does not overwrite existing settings
 * Gave the section ordering backend a much needed coat of paint (h/t Andrew Norcross)
@@ -360,7 +363,7 @@ Fixes handling of custom stylesheets and template files with child themes in ver
 *There are various resources available, depending on the type of help you're looking for:*
 
 * For getting started and general documentation, please browse, and feel free to contribute to [the project wiki](https://github.com/benbalter/WP-Resume/wiki).
- 
+
 * For support questions ("How do I", "I can't seem to", etc.) please search and if not already answered, open a thread in the [Support Forums](http://wordpress.org/support/plugin/WP-Resume).
 
 * For technical issues (e.g., to submit a bug or feature request) please search and if not already filed, [open an issue on GitHub](https://github.com/benbalter/WP-Resume/issues).

@@ -89,6 +89,9 @@ Please see (and feel free to contribute to) the [Frequently Asked Questions Wiki
 
 == Changelog ==
 
+= 2.5.7 =
+* Fix for fatal error when saving options
+
 = 2.5.6 =
 * Updated translations
 * Project is looking for contributors and maintainers! [halp?](https://github.com/benbalter/WP-Document-Revisions)
