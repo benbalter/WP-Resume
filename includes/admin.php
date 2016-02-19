@@ -475,7 +475,7 @@ class WP_Resume_Admin {
 
 		//strip html from fields
 		$user_options['name'] = wp_filter_nohtml_kses( $data['name'] );
-		$user_options['summary'] = wp_filter_post_kses( $data['summary'] );
+		$user_options['summary'] = wp_filter_post_kses( $_POST['wp_resume_options_summary'] );
 
 		foreach ($data['contact_info_field'] as $id=>$value) {
 
@@ -862,11 +862,11 @@ class WP_Resume_Admin {
 	
 		//3.3
 		if ( function_exists( 'wp_editor' ) )
-			wp_editor( $summary, 'wp_resume_options[summary]' );
+			wp_editor( $summary, 'wp_resume_options_summary' );
 		
 		//3.2
 		else
-			the_editor( $summary, 'wp_resume_options[summary]' );
+			the_editor( $summary, 'wp_resume_options_summary' );
 		
 	}
 
