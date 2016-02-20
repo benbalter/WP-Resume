@@ -333,7 +333,7 @@ class WP_Resume_Templating {
 			        $temp[$field] = $contact_info['adr'][$field];
 			}
 
-			$sorted[] = $temp;
+			$sorted = $temp;
 
 		}
 
