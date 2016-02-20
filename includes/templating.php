@@ -313,5 +313,32 @@ class WP_Resume_Templating {
 		echo $this->get_contact_info_itemprop( $field );
 	}
 
+	/**
+	 * Sort adr array keys from given order
+	 * @param array $contact_info 
+	 * @param $sorted (optional) to order in given order
+	 */
+	function contact_info_sort_adr( $contact_info, $sorter = array() ) {
+		$sorted = array();
+
+		if( empty($sorter) ){
+			$sorter = array_keys($this->parent->contact_fields()['adr']);
+		}
+
+		if( isset( $contact_info['adr'] ) && !empty( $contact_info['adr'] ) ){
+			$temp = array();
+
+			foreach ( $sorter as $field ) {
+				if ( array_key_exists( $field, $contact_info['adr'] ) )
+			        $temp[$field] = $contact_info['adr'][$field];
+			}
+
+			$sorted[] = $temp;
+
+		}
+
+		return $sorted;
+	}
+
 
 }
