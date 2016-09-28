@@ -214,7 +214,7 @@ class WP_Resume_Templating {
 			
 			//if the position is current, append todays date to span
 			else if ( $value == 'Present' )
-				$date .= '<time datetime="' . date( 'Y-m-d' ) . ' title="' . date( 'Y-m-d' ) . '">';
+				$date .= '<time datetime="' . date( 'Y-m-d' ) . '" title="' . date( 'Y-m-d' ) . '">';
 				
 			//if we can't parse the date, just output a standard span
 			else
