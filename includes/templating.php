@@ -208,17 +208,23 @@ class WP_Resume_Templating {
 			//to ensure compliance with hResume format, span should reflect ability to parse date
 			//@link https://github.com/benbalter/WP-Resume/issues/7
 			
-			//if we can parse the date, append the proper class and formatted date to span
-			if ( strtotime( $value ) ) 
-				$date .= '<time itemprop="' . $itemprop . '" class="' . $class . '" datetime="' . date( 'Y-m-d', strtotime( $value ) ) . '">';
-			
-			//if the position is current, append todays date to span
-			else if ( $value == 'Present' )
-				$date .= '<time datetime="' . date( 'Y-m-d' ) . '">';
-				
-			//if we can't parse the date, just output a standard span
-			else
-				$date .= '<time>';
+		// Don't output a 'datetime' attribute. (This worked correctly
+		// only when a specific day is given, whereas a month or year
+		// is usually given for a resume position.)
+		//	
+		//	//if we can parse the date, append the proper class and formatted date to span
+		//	if ( strtotime( $value ) ) 
+		//		$date .= '<time itemprop="' . $itemprop . '" class="' . $class . '" datetime="' . date( 'Y-m-d', strtotime( $value ) ) . '">';
+		//	
+		//	//if the position is current, append todays date to span
+		//	else if ( $value == 'Present' )
+		//		$date .= '<time datetime="' . date( 'Y-m-d' ) . '">';
+		//		
+		//	//if we can't parse the date, just output a standard span
+		//	else
+		//		$date .= '<time>';
+		//	
+			$date .= '<time>';
 	
 			$date .= $this->parent->api->apply_filters( 'date', $value, $field );
 			
