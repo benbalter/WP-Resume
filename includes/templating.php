@@ -210,11 +210,11 @@ class WP_Resume_Templating {
 			
 			//if we can parse the date, append the proper class and formatted date to span
 			if ( strtotime( $value ) ) 
-				$date .= '<time itemprop="' . $itemprop . '" class="' . $class . '" datetime="' . date( 'Y-m-d', strtotime( $value ) ) . '" title="' . date( 'Y-m-d', strtotime( $value ) ) . '">';
+				$date .= '<time itemprop="' . $itemprop . '" class="' . $class . '" datetime="' . date( 'Y-m-d', strtotime( $value ) ) . '">';
 			
 			//if the position is current, append todays date to span
 			else if ( $value == 'Present' )
-				$date .= '<time datetime="' . date( 'Y-m-d' ) . '" title="' . date( 'Y-m-d' ) . '">';
+				$date .= '<time datetime="' . date( 'Y-m-d' ) . '">';
 				
 			//if we can't parse the date, just output a standard span
 			else
