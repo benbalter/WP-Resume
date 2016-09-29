@@ -245,13 +245,6 @@ class WP_Resume_Templating {
 		//	else if ( strtotime( $value ) )
 		//		$date .= '<time itemprop="' . $itemprop . '" class="' . $class . '" datetime="' . date( 'Y-m-d', strtotime( $value ) ) . '">';
 		//	
-		//	//if the position is current, mark up as today's date
-		//	//### Omits microformats mark-up.
-		//	//### Doesn't recognise alternative words/spellings/languages.
-		//	//### I don't like 'now' being converted to a specific date.
-		//	else if ( $value == 'Present' )
-		//		$date .= '<time datetime="' . date( 'Y-m-d' ) . '">';
-		//		
 			//if we can't parse the date, don't mark it up
 			else
 				$use_markup = false;
