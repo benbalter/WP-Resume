@@ -182,6 +182,32 @@ class WP_Resume_Templating {
 
 
 	/**
+	 * Return true iff date is valid value for an HTML <time> element
+	 * representing a date (with no time nor timezone).
+	 * See https://html.spec.whatwg.org/multipage/semantics.html#the-time-element
+	 *
+	 * @param string $date the date as stored in post_meta
+	 * @return true if date is in a valid format, else false
+	 */
+	function is_valid_html_date( $date ) {
+
+		$patterns = array(
+			'\d\d\d\d',
+			'\d\d\d\d-\d\d',
+			'\d\d\d\d-\d\d-\d\d',
+			'\d\d\d\d-W\d\d',
+			'\d\d-\d\d',
+		);
+
+		foreach( $patterns as $pattern )
+			if ( preg_match( '/\A' . $pattern . '\z/', $date ))
+				return true;
+
+		return false;
+	}
+
+
+	/**
 	 * Function used to parse the date meta and move to human-readable format
 	 * 
 	 * Both from and to are option, and if both are present, will be joined by an &ndash;
@@ -200,29 +226,33 @@ class WP_Resume_Templating {
 			
 			$value = get_post_meta( $ID, "wp_resume_{$field}", true );
 			$itemprop = ( $class = 'dtstart' ) ? 'startDate' : 'endDate';
+			$use_markup = true;
 
 			//we don't have this field, skip
 			if ( !$value)
 				continue;
 			
-			//to ensure compliance with hResume format, span should reflect ability to parse date
+			//to ensure compliance with hResume format, markup should reflect ability to parse date
 			//@link https://github.com/benbalter/WP-Resume/issues/7
 			
-			//if we can parse the date, append the proper class and formatted date to span
-			if ( strtotime( $value ) ) 
-				$date .= '<time itemprop="' . $itemprop . '" class="' . $class . '" datetime="' . date( 'Y-m-d', strtotime( $value ) ) . '" title="' . date( 'Y-m-d', strtotime( $value ) ) . '">';
-			
-			//if the position is current, append todays date to span
-			else if ( $value == 'Present' )
-				$date .= '<time datetime="' . date( 'Y-m-d' ) . ' title="' . date( 'Y-m-d' ) . '">';
-				
-			//if we can't parse the date, just output a standard span
+			//if a valid HTML-format date, wrap in a <time> element with no 'datetime' attr.
+			if ( $this->is_valid_html_date( $value ) )
+				$date .= '<time itemprop="' . $itemprop . '" class="' . $class . '">';
+
+		//	//if we can parse the date, append the proper class and formatted date
+		//	//### Ignores the specified precision (year vs. month vs. day) and
+		//	//### writes '01' for a missing month or day, which is misleading.
+		//	else if ( strtotime( $value ) )
+		//		$date .= '<time itemprop="' . $itemprop . '" class="' . $class . '" datetime="' . date( 'Y-m-d', strtotime( $value ) ) . '">';
+		//	
+			//if we can't parse the date, don't mark it up
 			else
-				$date .= '<time>';
+				$use_markup = false;
 	
 			$date .= $this->parent->api->apply_filters( 'date', $value, $field );
 			
-			$date .= '</time>';		
+			if ( $use_markup )
+				$date .= '</time>';
 			
 			//this is the from field and there is a to field, append the dash
 			//it's okay that we're calling get_post_meta twice on "to" because it's cached automatically
